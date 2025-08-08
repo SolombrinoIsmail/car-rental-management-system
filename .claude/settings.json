@@ -110,5 +110,12 @@
     ]
   },
   "includeCoAuthoredBy": true,
-  "enabledMcpjsonServers": ["claude-flow", "ruv-swarm"]
+  "enabledMcpjsonServers": ["claude-flow", "ruv-swarm"],
+  "slashCommands": {
+    "dev-cycle": {
+      "description": "Execute 4-phase development workflow with Hive Mind collective intelligence",
+      "usage": "/dev-cycle [story-id] [--verbose] [--analysis] [--monitor]",
+      "script": "./scripts/dev-cycle-command.js"
+    }
+  }
 }

@@ -1,272 +1,253 @@
-# Claude Code Configuration - SPARC Development Environment
+# Claude Code Configuration - Swiss Car Rental Management System
 
-## 🚨 CRITICAL: CONCURRENT EXECUTION & FILE MANAGEMENT
+## 🚨 CRITICAL RULES
+1. **CONCURRENT EXECUTION**: ALL operations in ONE message
+2. **FILE ORGANIZATION**: NEVER save to root - use `/src`, `/apps`, `/packages`, `/docs`
+3. **RESEARCH FIRST**: Always use MCP tools (Brave, Context7, Linear, Notion) before implementation
 
-**ABSOLUTE RULES**:
-1. ALL operations MUST be concurrent/parallel in a single message
-2. **NEVER save working files, text/mds and tests to the root folder**
-3. ALWAYS organize files in appropriate subdirectories
+## Quick Reference
 
-### ⚡ GOLDEN RULE: "1 MESSAGE = ALL RELATED OPERATIONS"
+### Essential Commands
+```bash
+# Development
+pnpm dev                    # Start all services
+pnpm build                  # Build all packages
+pnpm test                   # Run test suite
+pnpm typecheck             # TypeScript validation
+pnpm lint                  # Lint with auto-fix
 
-**MANDATORY PATTERNS:**
-- **TodoWrite**: ALWAYS batch ALL todos in ONE call (5-10+ todos minimum)
-- **Task tool**: ALWAYS spawn ALL agents in ONE message with full instructions
-- **File operations**: ALWAYS batch ALL reads/writes/edits in ONE message
-- **Bash commands**: ALWAYS batch ALL terminal operations in ONE message
-- **Memory operations**: ALWAYS batch ALL memory store/retrieve in ONE message
-
-### 📁 File Organization Rules
-
-**NEVER save to root folder. Use these directories:**
-- `/src` - Source code files
-- `/tests` - Test files
-- `/docs` - Documentation and markdown files
-- `/config` - Configuration files
-- `/scripts` - Utility scripts
-- `/examples` - Example code
+# SPARC Development
+npx claude-flow sparc run <mode> "<task>"    # Execute SPARC mode
+npx claude-flow sparc tdd "<feature>"        # TDD workflow
+npx claude-flow sparc batch <modes> "<task>" # Parallel execution
+```
 
 ## Project Overview
 
-This project uses SPARC (Specification, Pseudocode, Architecture, Refinement, Completion) methodology with Claude-Flow orchestration for systematic Test-Driven Development.
+**Mission**: Replace 15-30 minute paper contracts with 2-minute digital contracts for Swiss SME car rental companies.
 
-## SPARC Commands
+**Target**: 20 paying customers in 4 months (CHF 99-299/month)
 
-### Core Commands
-- `npx claude-flow sparc modes` - List available modes
-- `npx claude-flow sparc run <mode> "<task>"` - Execute specific mode
-- `npx claude-flow sparc tdd "<feature>"` - Run complete TDD workflow
-- `npx claude-flow sparc info <mode>` - Get mode details
+### Tech Stack
+- **Framework**: Next.js 15.4 + React 19 + TypeScript 5.8
+- **Monorepo**: Turborepo 2.0 with pnpm workspaces
+- **Database**: Supabase (PostgreSQL) with RLS
+- **Styling**: TailwindCSS v4 + shadcn/ui
+- **Payments**: Swiss QR-bill, TWINT, PostFinance
+- **Monitoring**: Sentry + OpenTelemetry
 
-### Batchtools Commands
-- `npx claude-flow sparc batch <modes> "<task>"` - Parallel execution
-- `npx claude-flow sparc pipeline "<task>"` - Full pipeline processing
-- `npx claude-flow sparc concurrent <mode> "<tasks-file>"` - Multi-task processing
+## Development Workflow
 
-### Build Commands
-- `npm run build` - Build project
-- `npm run test` - Run tests
-- `npm run lint` - Linting
-- `npm run typecheck` - Type checking
-
-## SPARC Workflow Phases
-
-1. **Specification** - Requirements analysis (`sparc run spec-pseudocode`)
-2. **Pseudocode** - Algorithm design (`sparc run spec-pseudocode`)
-3. **Architecture** - System design (`sparc run architect`)
-4. **Refinement** - TDD implementation (`sparc tdd`)
-5. **Completion** - Integration (`sparc run integration`)
-
-## Code Style & Best Practices
-
-- **Modular Design**: Files under 500 lines
-- **Environment Safety**: Never hardcode secrets
-- **Test-First**: Write tests before implementation
-- **Clean Architecture**: Separate concerns
-- **Documentation**: Keep updated
-
-## 🚀 Available Agents (54 Total)
-
-### Core Development
-`coder`, `reviewer`, `tester`, `planner`, `researcher`
-
-### Swarm Coordination
-`hierarchical-coordinator`, `mesh-coordinator`, `adaptive-coordinator`, `collective-intelligence-coordinator`, `swarm-memory-manager`
-
-### Consensus & Distributed
-`byzantine-coordinator`, `raft-manager`, `gossip-coordinator`, `consensus-builder`, `crdt-synchronizer`, `quorum-manager`, `security-manager`
-
-### Performance & Optimization
-`perf-analyzer`, `performance-benchmarker`, `task-orchestrator`, `memory-coordinator`, `smart-agent`
-
-### GitHub & Repository
-`github-modes`, `pr-manager`, `code-review-swarm`, `issue-tracker`, `release-manager`, `workflow-automation`, `project-board-sync`, `repo-architect`, `multi-repo-swarm`
-
-### SPARC Methodology
-`sparc-coord`, `sparc-coder`, `specification`, `pseudocode`, `architecture`, `refinement`
-
-### Specialized Development
-`backend-dev`, `mobile-dev`, `ml-developer`, `cicd-engineer`, `api-docs`, `system-architect`, `code-analyzer`, `base-template-generator`
-
-### Testing & Validation
-`tdd-london-swarm`, `production-validator`
-
-### Migration & Planning
-`migration-planner`, `swarm-init`
-
-## 🎯 Claude Code vs MCP Tools
-
-### Claude Code Handles ALL:
-- File operations (Read, Write, Edit, MultiEdit, Glob, Grep)
-- Code generation and programming
-- Bash commands and system operations
-- Implementation work
-- Project navigation and analysis
-- TodoWrite and task management
-- Git operations
-- Package management
-- Testing and debugging
-
-### MCP Tools ONLY:
-- Coordination and planning
-- Memory management
-- Neural features
-- Performance tracking
-- Swarm orchestration
-- GitHub integration
-
-**KEY**: MCP coordinates, Claude Code executes.
-
-## 🚀 Quick Setup
-
-```bash
-# Add Claude Flow MCP server
-claude mcp add claude-flow npx claude-flow@alpha mcp start
+### 1. Pre-Implementation Checklist
+```typescript
+const mandatorySteps = [
+  '✅ Sentry: Check existing errors',
+  '✅ Brave: Research best practices',
+  '✅ Context7: Review library docs',
+  '✅ Linear: Create tracking issue',
+  '✅ Notion: Document specification',
+  '✅ Implementation with tests',
+  '✅ Security & performance checks',
+  '✅ Swiss compliance verification'
+]
 ```
 
-## MCP Tool Categories
+### 2. File Structure
+```
+/apps/web          - Next.js application
+/packages/ui       - Component library  
+/packages/shared   - Shared utilities
+/docs             - Documentation
+/scripts          - Utility scripts
+```
 
-### Coordination
-`swarm_init`, `agent_spawn`, `task_orchestrate`
+### 3. Git Workflow
+```bash
+# Branch naming
+feat/SOL-XXX-feature-name
+fix/SOL-XXX-bug-description
+
+# Commit format
+feat(scope): description
+fix(scope): description
+docs(scope): description
+```
+
+## MCP Tool Usage
+
+### Research & Documentation
+- `mcp__brave-search__brave_web_search` - Industry research
+- `mcp__context7__get-library-docs` - Library documentation
+- `mcp__notion__*` - Technical documentation
+- `mcp__linear-server__*` - Issue tracking
+- `mcp__sentry__*` - Error monitoring
+
+### Claude Flow Orchestration
+- `mcp__claude-flow__swarm_init` - Initialize swarm
+- `mcp__claude-flow__agent_spawn` - Create agents
+- `mcp__claude-flow__task_orchestrate` - Execute tasks
+- `mcp__claude-flow__memory_usage` - Persist knowledge
+
+## Testing Strategy
+
+### Test Commands
+```bash
+pnpm test              # All tests
+pnpm test:unit        # Unit tests (Vitest)
+pnpm test:e2e         # E2E tests (Playwright)
+pnpm test:security    # Security scanning
+pnpm test:compliance  # Swiss compliance
+```
+
+### Coverage Requirements
+- Statements: 80%
+- Critical paths: 95% (payments, contracts, compliance)
+- Swiss business logic: 100%
+
+## Swiss Compliance
+
+### Key Requirements
+```typescript
+const swissCompliance = {
+  dataRetention: '7 years',        // Commercial law
+  vatRate: '7.7%',                // Swiss VAT
+  languages: ['de-CH', 'fr-CH', 'it-CH', 'en-US'],
+  paymentMethods: ['QR-bill', 'TWINT', 'SEPA'],
+  personalLiability: 'CHF 250,000' // FADP executives
+}
+```
+
+### Compliance Commands
+```bash
+pnpm test:compliance:gdpr     # GDPR verification
+pnpm test:compliance:finance  # Financial regulations
+pnpm db:gdpr-export          # Data export (Article 20)
+pnpm db:retention-check      # Retention compliance
+```
+
+## Performance Requirements
+
+### Targets
+- Contract generation: < 2s
+- Payment processing: < 5s
+- Search response: < 500ms
+- Bundle size: < 250KB total
 
 ### Monitoring
-`swarm_status`, `agent_list`, `agent_metrics`, `task_status`, `task_results`
-
-### Memory & Neural
-`memory_usage`, `neural_status`, `neural_train`, `neural_patterns`
-
-### GitHub Integration
-`github_swarm`, `repo_analyze`, `pr_enhance`, `issue_triage`, `code_review`
-
-### System
-`benchmark_run`, `features_detect`, `swarm_monitor`
-
-## 📋 Agent Coordination Protocol
-
-### Every Agent MUST:
-
-**1️⃣ BEFORE Work:**
 ```bash
-npx claude-flow@alpha hooks pre-task --description "[task]"
-npx claude-flow@alpha hooks session-restore --session-id "swarm-[id]"
+pnpm perf:lighthouse  # Core Web Vitals
+pnpm perf:bundle     # Bundle analysis
+pnpm analyze-bundle  # Size breakdown
 ```
 
-**2️⃣ DURING Work:**
+## Security Framework
+
+### Security Headers (Required)
+```typescript
+{
+  'Strict-Transport-Security': 'max-age=31536000',
+  'X-Frame-Options': 'DENY',
+  'X-Content-Type-Options': 'nosniff',
+  'Referrer-Policy': 'strict-origin-when-cross-origin'
+}
+```
+
+### Security Commands
 ```bash
-npx claude-flow@alpha hooks post-edit --file "[file]" --memory-key "swarm/[agent]/[step]"
-npx claude-flow@alpha hooks notify --message "[what was done]"
+pnpm audit --audit-level high  # Dependency scan
+pnpm security:scan             # Full security audit
+pnpm security:sast            # Static analysis
 ```
 
-**3️⃣ AFTER Work:**
+## Database Schema
+
+### Core Tables
+- `customers` - GDPR-compliant customer data
+- `rental_contracts` - Swiss legal requirements
+- `payments` - QR-bill and payment processing
+- `vehicles` - Fleet management
+
+### Supabase RLS Policies
+- Customer data: User or staff access only
+- Financial data: Manager/accountant only
+- Audit logs: Immutable, auditor access only
+
+## Deployment
+
+### Vercel Configuration
+```json
+{
+  "regions": ["fra1"],  // Frankfurt for Swiss users
+  "functions": {
+    "maxDuration": 10   // Payment processing timeout
+  }
+}
+```
+
+### Environment Variables
+- `DATABASE_URL` - Supabase connection
+- `NEXT_PUBLIC_SENTRY_DSN` - Error tracking
+- `NEXTAUTH_SECRET` - Authentication
+
+## Available Agents (54)
+
+### Core: 
+`coder`, `reviewer`, `tester`, `planner`, `researcher`
+
+### Specialized:
+`backend-dev`, `mobile-dev`, `api-docs`, `system-architect`, `code-analyzer`
+
+### Swarm:
+`hierarchical-coordinator`, `mesh-coordinator`, `adaptive-coordinator`
+
+### GitHub:
+`pr-manager`, `issue-tracker`, `release-manager`, `workflow-automation`
+
+## Quality Gates
+
+### Pre-commit (Blocking)
 ```bash
-npx claude-flow@alpha hooks post-task --task-id "[task]"
-npx claude-flow@alpha hooks session-end --export-metrics true
+pnpm typecheck && pnpm lint && pnpm test:unit
 ```
 
-## 🎯 Concurrent Execution Examples
-
-### ✅ CORRECT (Single Message):
-```javascript
-[BatchTool]:
-  // Initialize swarm
-  mcp__claude-flow__swarm_init { topology: "mesh", maxAgents: 6 }
-  mcp__claude-flow__agent_spawn { type: "researcher" }
-  mcp__claude-flow__agent_spawn { type: "coder" }
-  mcp__claude-flow__agent_spawn { type: "tester" }
-  
-  // Spawn agents with Task tool
-  Task("Research agent: Analyze requirements...")
-  Task("Coder agent: Implement features...")
-  Task("Tester agent: Create test suite...")
-  
-  // Batch todos
-  TodoWrite { todos: [
-    {id: "1", content: "Research", status: "in_progress", priority: "high"},
-    {id: "2", content: "Design", status: "pending", priority: "high"},
-    {id: "3", content: "Implement", status: "pending", priority: "high"},
-    {id: "4", content: "Test", status: "pending", priority: "medium"},
-    {id: "5", content: "Document", status: "pending", priority: "low"}
-  ]}
-  
-  // File operations
-  Bash "mkdir -p app/{src,tests,docs}"
-  Write "app/src/index.js"
-  Write "app/tests/index.test.js"
-  Write "app/docs/README.md"
+### Pre-deployment (Required)
+```bash
+pnpm test:integration && pnpm test:e2e:critical && pnpm test:security
 ```
 
-### ❌ WRONG (Multiple Messages):
-```javascript
-Message 1: mcp__claude-flow__swarm_init
-Message 2: Task("agent 1")
-Message 3: TodoWrite { todos: [single todo] }
-Message 4: Write "file.js"
-// This breaks parallel coordination!
+## Breaking Changes
+
+### Next.js 15 - Async Params
+```typescript
+// ✅ NEW - Must await params
+export default async function Page({ 
+  params, 
+  searchParams 
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ q?: string }>;
+}) {
+  const { id } = await params;
+  const { q } = await searchParams;
+  return <div>ID: {id}</div>
+}
 ```
 
-## Performance Benefits
-
-- **84.8% SWE-Bench solve rate**
-- **32.3% token reduction**
-- **2.8-4.4x speed improvement**
-- **27+ neural models**
-
-## Hooks Integration
-
-### Pre-Operation
-- Auto-assign agents by file type
-- Validate commands for safety
-- Prepare resources automatically
-- Optimize topology by complexity
-- Cache searches
-
-### Post-Operation
-- Auto-format code
-- Train neural patterns
-- Update memory
-- Analyze performance
-- Track token usage
-
-### Session Management
-- Generate summaries
-- Persist state
-- Track metrics
-- Restore context
-- Export workflows
-
-## Advanced Features (v2.0.0)
-
-- 🚀 Automatic Topology Selection
-- ⚡ Parallel Execution (2.8-4.4x speed)
-- 🧠 Neural Training
-- 📊 Bottleneck Analysis
-- 🤖 Smart Auto-Spawning
-- 🛡️ Self-Healing Workflows
-- 💾 Cross-Session Memory
-- 🔗 GitHub Integration
-
-## Integration Tips
-
-1. Start with basic swarm init
-2. Scale agents gradually
-3. Use memory for context
-4. Monitor progress regularly
-5. Train patterns from success
-6. Enable hooks automation
-7. Use GitHub tools first
+### TailwindCSS v4 - CSS-First
+```css
+/* No config file - use CSS variables */
+@theme {
+  --color-swiss-red: #FF0000;
+  --color-swiss-blue: #0066CC;
+}
+```
 
 ## Support
 
-- Documentation: https://github.com/ruvnet/claude-flow
-- Issues: https://github.com/ruvnet/claude-flow/issues
+- **Issues**: Use Linear for tracking
+- **Documentation**: Update in Notion
+- **Errors**: Monitor via Sentry
+- **Claude Flow**: https://github.com/ruvnet/claude-flow/issues
 
 ---
-
-Remember: **Claude Flow coordinates, Claude Code creates!**
-
-# important-instruction-reminders
-Do what has been asked; nothing more, nothing less.
-NEVER create files unless they're absolutely necessary for achieving your goal.
-ALWAYS prefer editing an existing file to creating a new one.
-NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.
-Never save working files, text/mds and tests to the root folder.
+**Remember**: Research First → Document → Implement → Test → Deploy
