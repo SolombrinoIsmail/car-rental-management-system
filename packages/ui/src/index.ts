@@ -42,7 +42,10 @@ export { RadioGroup } from './components/radio-group';
 export type { RadioGroupProps, RadioOption } from './components/radio-group';
 
 export { FormField } from './components/form-field';
-export type { FormFieldProps } from './components/form-field';
+export type { FormFieldProps, ValidationRule } from './components/form-field';
+
+export { ErrorBoundary } from './components/error-boundary';
+export type { ErrorBoundaryProps } from './components/error-boundary';
 
 export { Grid } from './components/grid';
 export type { GridProps } from './components/grid';
