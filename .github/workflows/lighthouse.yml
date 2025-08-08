@@ -1,0 +1,126 @@
+name: Lighthouse Performance
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  lighthouse:
+    name: Lighthouse Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: '9.15.2'
+          run_install: false
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build application
+        run: pnpm build
+
+      - name: Run Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v11
+        with:
+          configPath: './.lighthouserc.json'
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+          runs: 3
+
+      - name: Format Lighthouse results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const results = JSON.parse(fs.readFileSync('.lighthouseci/manifest.json', 'utf8'));
+
+            const scores = results[0].summary;
+            const formatScore = (score) => {
+              const percentage = Math.round(score * 100);
+              if (percentage >= 90) return `🟢 ${percentage}`;
+              if (percentage >= 50) return `🟡 ${percentage}`;
+              return `🔴 ${percentage}`;
+            };
+
+            const comment = `## 📊 Lighthouse Performance Report
+
+            | Metric | Score | Target |
+            |--------|-------|--------|
+            | Performance | ${formatScore(scores.performance)} | ≥ 90 |
+            | Accessibility | ${formatScore(scores.accessibility)} | ≥ 95 |
+            | Best Practices | ${formatScore(scores['best-practices'])} | ≥ 95 |
+            | SEO | ${formatScore(scores.seo)} | ≥ 90 |
+            | PWA | ${formatScore(scores.pwa)} | ≥ 90 |
+
+            ### Core Web Vitals
+            - **LCP** (Largest Contentful Paint): Target < 2.5s
+            - **FID** (First Input Delay): Target < 100ms
+            - **CLS** (Cumulative Layout Shift): Target < 0.1
+
+            [View Full Report](${results[0].url})`;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: comment
+            });
+
+      - name: Check performance budget
+        run: |
+          echo "Checking performance budget..."
+          node -e "
+            const fs = require('fs');
+            const results = JSON.parse(fs.readFileSync('.lighthouseci/manifest.json', 'utf8'));
+            const scores = results[0].summary;
+            
+            const failed = [];
+            if (scores.performance < 0.9) failed.push('Performance');
+            if (scores.accessibility < 0.95) failed.push('Accessibility');
+            if (scores['best-practices'] < 0.95) failed.push('Best Practices');
+            if (scores.seo < 0.9) failed.push('SEO');
+            
+            if (failed.length > 0) {
+              console.error('❌ Performance budget failed for: ' + failed.join(', '));
+              process.exit(1);
+            } else {
+              console.log('✅ All performance budgets met!');
+            }
+          "
+
+      - name: Upload Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-reports
+          path: .lighthouseci
+          retention-days: 7
