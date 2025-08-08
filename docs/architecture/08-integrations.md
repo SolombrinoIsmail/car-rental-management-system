@@ -13,6 +13,7 @@ The CRMS system integrates with several external services to provide comprehensi
 ## Stripe Integration
 
 ### Payment Processing Setup
+
 ```typescript
 // lib/stripe.ts
 import Stripe from 'stripe';
@@ -23,7 +24,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function createPaymentIntent(
   amount: number,
-  contractId: string
+  contractId: string,
 ): Promise<Stripe.PaymentIntent> {
   return await stripe.paymentIntents.create({
     amount: Math.round(amount * 100), // Convert to cents
@@ -38,16 +39,13 @@ export async function createPaymentIntent(
   });
 }
 
-export async function handleWebhook(
-  payload: string,
-  signature: string
-): Promise<void> {
+export async function handleWebhook(payload: string, signature: string): Promise<void> {
   const event = stripe.webhooks.constructEvent(
     payload,
     signature,
-    process.env.STRIPE_WEBHOOK_SECRET!
+    process.env.STRIPE_WEBHOOK_SECRET!,
   );
-  
+
   switch (event.type) {
     case 'payment_intent.succeeded':
       await markPaymentComplete(event.data.object);
@@ -60,6 +58,7 @@ export async function handleWebhook(
 ```
 
 ### Webhook Handler
+
 ```typescript
 // app/api/webhooks/stripe/route.ts
 import { NextRequest } from 'next/server';
@@ -68,7 +67,7 @@ import { handleWebhook } from '@/lib/stripe';
 export async function POST(req: NextRequest) {
   const body = await req.text();
   const signature = req.headers.get('stripe-signature')!;
-  
+
   try {
     await handleWebhook(body, signature);
     return new Response('OK', { status: 200 });
@@ -80,6 +79,7 @@ export async function POST(req: NextRequest) {
 ```
 
 ### Payment Components
+
 ```tsx
 // components/payments/StripePayment.tsx
 'use client';
@@ -89,13 +89,9 @@ import { loadStripe } from '@stripe/stripe-js';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
-export function StripePayment({ 
-  amount, 
-  contractId, 
-  onSuccess 
-}: StripePaymentProps) {
+export function StripePayment({ amount, contractId, onSuccess }: StripePaymentProps) {
   const [clientSecret, setClientSecret] = useState('');
-  
+
   useEffect(() => {
     // Create payment intent
     fetch('/api/payments/create-intent', {
@@ -103,10 +99,10 @@ export function StripePayment({
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ amount, contractId }),
     })
-    .then(res => res.json())
-    .then(data => setClientSecret(data.clientSecret));
+      .then((res) => res.json())
+      .then((data) => setClientSecret(data.clientSecret));
   }, [amount, contractId]);
-  
+
   return (
     <Elements stripe={stripePromise} options={{ clientSecret }}>
       <PaymentForm onSuccess={onSuccess} />
@@ -118,6 +114,7 @@ export function StripePayment({
 ## Swiss QR Bill Integration
 
 ### QR Bill Generation
+
 ```typescript
 // lib/qr-bill.ts
 import { SwissQRBill } from 'swissqrbill';
@@ -143,7 +140,7 @@ export function generateQRBill(payment: Payment): Buffer {
       country: 'CH',
     },
   };
-  
+
   return SwissQRBill.PDF(data);
 }
 
@@ -156,16 +153,14 @@ function generateReference(paymentId: string): string {
 ```
 
 ### QR Bill API Endpoint
+
 ```typescript
 // app/api/payments/[id]/qr-bill/route.ts
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     const payment = await getPayment(params.id);
     const qrBillPDF = generateQRBill(payment);
-    
+
     return new Response(qrBillPDF, {
       headers: {
         'Content-Type': 'application/pdf',
@@ -181,6 +176,7 @@ export async function GET(
 ## Email Integration (Resend)
 
 ### Email Service Setup
+
 ```typescript
 // lib/email.ts
 import { Resend } from 'resend';
@@ -188,10 +184,7 @@ import ContractConfirmationEmail from '@/emails/contract-confirmation';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-export async function sendContractEmail(
-  contract: Contract,
-  customer: Customer
-): Promise<void> {
+export async function sendContractEmail(contract: Contract, customer: Customer): Promise<void> {
   await resend.emails.send({
     from: 'CRMS <noreply@crms.ch>',
     to: customer.email,
@@ -206,10 +199,7 @@ export async function sendContractEmail(
   });
 }
 
-export async function sendPaymentReminder(
-  payment: Payment,
-  customer: Customer
-): Promise<void> {
+export async function sendPaymentReminder(payment: Payment, customer: Customer): Promise<void> {
   await resend.emails.send({
     from: 'CRMS Finance <finance@crms.ch>',
     to: customer.email,
@@ -220,6 +210,7 @@ export async function sendPaymentReminder(
 ```
 
 ### Email Templates
+
 ```tsx
 // emails/contract-confirmation.tsx
 import { Html, Head, Body, Container, Text, Button } from '@react-email/components';
@@ -245,12 +236,7 @@ export default function ContractConfirmationEmail({
           <Text style={paragraph}>
             Your rental contract {contract.contract_number} has been confirmed.
           </Text>
-          <Button
-            pX={20}
-            pY={12}
-            style={btn}
-            href={`https://crms.ch/contracts/${contract.id}`}
-          >
+          <Button pX={20} pY={12} style={btn} href={`https://crms.ch/contracts/${contract.id}`}>
             View Contract
           </Button>
         </Container>
@@ -263,39 +249,40 @@ export default function ContractConfirmationEmail({
 ## File Storage Integration
 
 ### Supabase Storage Setup
+
 ```typescript
 // lib/storage.ts
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_KEY!
+  process.env.SUPABASE_SERVICE_KEY!,
 );
 
 export async function uploadPhoto(
   file: File,
   contractId: string,
-  photoType: 'pickup' | 'return' | 'damage'
+  photoType: 'pickup' | 'return' | 'damage',
 ): Promise<string> {
   const fileName = `${contractId}/${photoType}/${Date.now()}-${file.name}`;
-  
+
   // Compress image before upload
   const compressedFile = await compressImage(file);
-  
+
   const { data, error } = await supabase.storage
     .from('contract-photos')
     .upload(fileName, compressedFile, {
       contentType: file.type,
       upsert: false,
     });
-    
+
   if (error) throw error;
-  
+
   // Get public URL
-  const { data: { publicUrl } } = supabase.storage
-    .from('contract-photos')
-    .getPublicUrl(data.path);
-    
+  const {
+    data: { publicUrl },
+  } = supabase.storage.from('contract-photos').getPublicUrl(data.path);
+
   return publicUrl;
 }
 
@@ -309,13 +296,14 @@ export async function generateThumbnail(imagePath: string): Promise<string> {
         resize: 'contain',
       },
     });
-    
+
   if (error) throw error;
   return data.signedUrl;
 }
 ```
 
 ### Photo Upload Component
+
 ```tsx
 // components/photos/PhotoUploader.tsx
 'use client';
@@ -324,21 +312,20 @@ import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { uploadPhoto } from '@/lib/storage';
 
-export function PhotoUploader({ 
-  contractId, 
-  photoType, 
-  onUpload 
-}: PhotoUploaderProps) {
-  const onDrop = useCallback(async (acceptedFiles: File[]) => {
-    for (const file of acceptedFiles) {
-      try {
-        const url = await uploadPhoto(file, contractId, photoType);
-        onUpload(url);
-      } catch (error) {
-        console.error('Upload failed:', error);
+export function PhotoUploader({ contractId, photoType, onUpload }: PhotoUploaderProps) {
+  const onDrop = useCallback(
+    async (acceptedFiles: File[]) => {
+      for (const file of acceptedFiles) {
+        try {
+          const url = await uploadPhoto(file, contractId, photoType);
+          onUpload(url);
+        } catch (error) {
+          console.error('Upload failed:', error);
+        }
       }
-    }
-  }, [contractId, photoType, onUpload]);
+    },
+    [contractId, photoType, onUpload],
+  );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -353,11 +340,7 @@ export function PhotoUploader({
   return (
     <div {...getRootProps()} className="border-2 border-dashed p-6">
       <input {...getInputProps()} />
-      {isDragActive ? (
-        <p>Drop the photos here...</p>
-      ) : (
-        <p>Drag photos here, or click to select</p>
-      )}
+      {isDragActive ? <p>Drop the photos here...</p> : <p>Drag photos here, or click to select</p>}
     </div>
   );
 }
@@ -366,6 +349,7 @@ export function PhotoUploader({
 ## Error Monitoring Integration
 
 ### Sentry Configuration
+
 ```typescript
 // sentry.client.config.ts
 import * as Sentry from '@sentry/nextjs';
@@ -375,7 +359,7 @@ Sentry.init({
   environment: process.env.NODE_ENV,
   tracesSampleRate: 0.1,
   profilesSampleRate: 0.1,
-  
+
   integrations: [
     new Sentry.BrowserTracing({
       tracePropagationTargets: [
@@ -389,23 +373,24 @@ Sentry.init({
       blockAllMedia: true,
     }),
   ],
-  
+
   beforeSend(event, hint) {
     // Filter sensitive data
     if (event.request?.cookies) {
       delete event.request.cookies;
     }
-    
+
     if (event.contexts?.response?.data) {
       delete event.contexts.response.data;
     }
-    
+
     return event;
   },
 });
 ```
 
 ### Error Boundary
+
 ```tsx
 // components/ErrorBoundary.tsx
 'use client';
@@ -418,13 +403,13 @@ export function ErrorBoundary({ children }: { children: React.ReactNode }) {
     <SentryErrorBoundary
       fallback={({ error, resetError }) => (
         <div className="p-8 text-center">
-          <h2 className="text-xl font-semibold mb-4">Something went wrong</h2>
-          <p className="text-gray-600 mb-6">
+          <h2 className="mb-4 text-xl font-semibold">Something went wrong</h2>
+          <p className="mb-6 text-gray-600">
             We've been notified about this error and will fix it soon.
           </p>
           <button
             onClick={resetError}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
           >
             Try again
           </button>
@@ -443,16 +428,14 @@ export function ErrorBoundary({ children }: { children: React.ReactNode }) {
 ## Real-time Integration
 
 ### Supabase Realtime
+
 ```typescript
 // lib/realtime.ts
 import { createClient } from '@/lib/supabase/client';
 
-export function subscribeToVehicleStatus(
-  companyId: string,
-  callback: (payload: any) => void
-) {
+export function subscribeToVehicleStatus(companyId: string, callback: (payload: any) => void) {
   const supabase = createClient();
-  
+
   return supabase
     .channel('vehicle-status')
     .on(
@@ -463,17 +446,14 @@ export function subscribeToVehicleStatus(
         table: 'vehicles',
         filter: `company_id=eq.${companyId}`,
       },
-      callback
+      callback,
     )
     .subscribe();
 }
 
-export function subscribeToContractUpdates(
-  companyId: string,
-  callback: (payload: any) => void
-) {
+export function subscribeToContractUpdates(companyId: string, callback: (payload: any) => void) {
   const supabase = createClient();
-  
+
   return supabase
     .channel('contract-updates')
     .on(
@@ -484,13 +464,14 @@ export function subscribeToContractUpdates(
         table: 'contracts',
         filter: `company_id=eq.${companyId}`,
       },
-      callback
+      callback,
     )
     .subscribe();
 }
 ```
 
 ### Real-time Hooks
+
 ```tsx
 // hooks/useRealtime.ts
 'use client';
@@ -500,19 +481,17 @@ import { subscribeToVehicleStatus } from '@/lib/realtime';
 
 export function useVehicleStatus(companyId: string) {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
-  
+
   useEffect(() => {
     const subscription = subscribeToVehicleStatus(companyId, (payload) => {
       const { eventType, new: newData, old: oldData } = payload;
-      
+
       setVehicles((current) => {
         switch (eventType) {
           case 'INSERT':
             return [...current, newData];
           case 'UPDATE':
-            return current.map((v) => 
-              v.id === newData.id ? newData : v
-            );
+            return current.map((v) => (v.id === newData.id ? newData : v));
           case 'DELETE':
             return current.filter((v) => v.id !== oldData.id);
           default:
@@ -520,16 +499,15 @@ export function useVehicleStatus(companyId: string) {
         }
       });
     });
-    
+
     return () => subscription.unsubscribe();
   }, [companyId]);
-  
+
   return vehicles;
 }
 ```
 
 ---
 
-**Document Version:** 3.0 - Integration Architecture
-**Last Updated:** 2025-08-06
-**Status:** Ready for Implementation
+**Document Version:** 3.0 - Integration Architecture **Last Updated:** 2025-08-06 **Status:** Ready
+for Implementation

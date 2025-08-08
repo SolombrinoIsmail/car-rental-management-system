@@ -1,12 +1,15 @@
 # Story 1: Photo Capture System
 
 ## Story ID
+
 **Epic 7 - Story 1**
 
 ## User Story Statement
+
 **As a** rental staff member  
 **I want to** capture photos quickly and easily through device camera or file upload  
-**So that** I can efficiently document vehicle condition and customer documents for legal protection and dispute prevention
+**So that** I can efficiently document vehicle condition and customer documents for legal protection
+and dispute prevention
 
 ## Detailed Acceptance Criteria
 
@@ -73,25 +76,28 @@
 ## Technical Implementation Notes
 
 ### Frontend Components
+
 - **CameraCapture.vue**: Main camera interface component
 - **PhotoPreview.vue**: Image preview with zoom/rotate functionality
 - **DocumentCapture.vue**: Specialized interface for document photography
 - **PhotoSequence.vue**: Guided photo capture workflow
 
 ### Camera API Integration
+
 ```javascript
 // Camera access with fallback
 const constraints = {
-  video: { 
-    width: { ideal: 1920 }, 
+  video: {
+    width: { ideal: 1920 },
     height: { ideal: 1080 },
-    facingMode: 'environment' // rear camera preferred
-  }
-}
-await navigator.mediaDevices.getUserMedia(constraints)
+    facingMode: 'environment', // rear camera preferred
+  },
+};
+await navigator.mediaDevices.getUserMedia(constraints);
 ```
 
 ### Image Processing
+
 - Canvas API for image manipulation
 - WebP format with JPEG fallback
 - Client-side compression before upload
@@ -100,6 +106,7 @@ await navigator.mediaDevices.getUserMedia(constraints)
 ## API Endpoints Needed
 
 ### Photo Capture Endpoints
+
 ```
 POST /api/v1/photos/capture
 - Upload captured photo with metadata
@@ -120,6 +127,7 @@ DELETE /api/v1/photos/{photo_id}
 ```
 
 ### Device Capability Endpoints
+
 ```
 GET /api/v1/device/camera-support
 - Check camera API availability
@@ -132,6 +140,7 @@ POST /api/v1/device/upload-fallback
 ## Database Schema Requirements
 
 ### photos Table
+
 ```sql
 CREATE TABLE photos (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -161,6 +170,7 @@ CREATE INDEX idx_photos_type ON photos(photo_type);
 ```
 
 ### photo_sessions Table
+
 ```sql
 CREATE TABLE photo_sessions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -178,24 +188,28 @@ CREATE TABLE photo_sessions (
 ## UI/UX Considerations
 
 ### Mobile-First Design
+
 - Large touch targets for camera controls (minimum 44px)
 - Swipe gestures for photo navigation
 - Portrait/landscape orientation support
 - Bottom sheet modal for photo options
 
 ### Visual Feedback
+
 - Camera viewfinder with grid lines for composition
 - Capture animation with sound feedback
 - Progress indicators for upload status
 - Success/error states with appropriate icons
 
 ### Guided Workflow
+
 - Step-by-step photo capture checklist
 - Visual prompts showing required vehicle angles
 - Auto-advance to next photo type after capture
 - Skip options for optional photos
 
 ### Accessibility
+
 - Screen reader support for all camera controls
 - High contrast mode for low-light environments
 - Voice guidance for photo sequence
@@ -204,6 +218,7 @@ CREATE TABLE photo_sessions (
 ## Testing Scenarios
 
 ### Scenario 1: Happy Path Mobile Capture
+
 **Given** a staff member is on mobile device with camera access  
 **When** they capture required vehicle photos in sequence  
 **Then** all photos are captured successfully with proper metadata  
@@ -211,6 +226,7 @@ CREATE TABLE photo_sessions (
 **And** photos are saved to temporary storage
 
 ### Scenario 2: Camera Permission Denied
+
 **Given** a user denies camera permission  
 **When** they attempt to capture photos  
 **Then** system displays fallback file upload option  
@@ -218,6 +234,7 @@ CREATE TABLE photo_sessions (
 **And** user can complete photo documentation
 
 ### Scenario 3: Poor Lighting Conditions
+
 **Given** a user captures photos in low light  
 **When** image quality is below threshold  
 **Then** system suggests retake with flash  
@@ -225,6 +242,7 @@ CREATE TABLE photo_sessions (
 **And** allows override if necessary
 
 ### Scenario 4: Network Interruption
+
 **Given** photos are being uploaded  
 **When** network connection is lost  
 **Then** photos remain in local storage  
@@ -232,6 +250,7 @@ CREATE TABLE photo_sessions (
 **And** no data is lost during interruption
 
 ### Scenario 5: Multiple Device Types
+
 **Given** different devices (iPhone, Android, desktop)  
 **When** accessing photo capture functionality  
 **Then** interface adapts appropriately  
@@ -239,6 +258,7 @@ CREATE TABLE photo_sessions (
 **And** device-specific features are utilized
 
 ### Scenario 6: Large File Handling
+
 **Given** high-resolution photos are captured  
 **When** file size exceeds normal limits  
 **Then** automatic compression is applied  
@@ -246,6 +266,7 @@ CREATE TABLE photo_sessions (
 **And** upload completes within timeout limits
 
 ### Scenario 7: Batch Photo Operations
+
 **Given** multiple photos need to be captured  
 **When** user captures photos in sequence  
 **Then** all photos are tracked correctly  
@@ -253,6 +274,7 @@ CREATE TABLE photo_sessions (
 **And** session state is maintained
 
 ### Scenario 8: Error Recovery
+
 **Given** photo capture fails due to technical error  
 **When** user attempts retry  
 **Then** system recovers gracefully  
@@ -278,15 +300,18 @@ CREATE TABLE photo_sessions (
 - [ ] Documentation updated for staff training
 
 ## Estimated Effort
+
 **8 Story Points** (2 Developer Days)
 
 ### Breakdown:
+
 - Frontend camera integration: 3 points
 - API development: 2 points
 - Database schema: 1 point
 - Testing and validation: 2 points
 
 ### Dependencies:
+
 - Camera API compatibility research
 - File storage infrastructure setup
 - Image processing library selection

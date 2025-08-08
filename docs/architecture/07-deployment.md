@@ -3,6 +3,7 @@
 ## CI/CD Pipeline
 
 ### GitHub Actions Workflow
+
 ```yaml
 # .github/workflows/main.yml
 name: CI/CD Pipeline
@@ -25,13 +26,13 @@ jobs:
         with:
           node-version: '20'
           cache: 'pnpm'
-      
+
       - run: pnpm install
       - run: pnpm lint
       - run: pnpm type-check
       - run: pnpm test:unit
       - run: pnpm test:integration
-      
+
   e2e:
     runs-on: ubuntu-latest
     steps:
@@ -40,7 +41,7 @@ jobs:
       - run: pnpm install
       - run: pnpm exec playwright install
       - run: pnpm test:e2e
-      
+
   deploy-preview:
     if: github.event_name == 'pull_request'
     needs: [test]
@@ -53,7 +54,7 @@ jobs:
           vercel-args: '--prod'
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          
+
   deploy-production:
     if: github.ref == 'refs/heads/main'
     needs: [test, e2e]
@@ -71,6 +72,7 @@ jobs:
 ## Environment Configuration
 
 ### Environment Variables
+
 ```bash
 # .env.local
 NEXT_PUBLIC_SUPABASE_URL=https://[project].supabase.co
@@ -87,56 +89,38 @@ UPSTASH_REDIS_TOKEN=...
 ### Multi-Environment Setup
 
 #### Development Environment
+
 ```yaml
 # vercel.json
 {
-  "env": {
-    "NODE_ENV": "development",
-    "NEXT_PUBLIC_APP_ENV": "development"
-  },
-  "build": {
-    "env": {
-      "SENTRY_ENVIRONMENT": "development"
-    }
-  }
+  'env': { 'NODE_ENV': 'development', 'NEXT_PUBLIC_APP_ENV': 'development' },
+  'build': { 'env': { 'SENTRY_ENVIRONMENT': 'development' } },
 }
 ```
 
 #### Staging Environment
+
 ```yaml
 {
-  "env": {
-    "NODE_ENV": "production",
-    "NEXT_PUBLIC_APP_ENV": "staging"
-  },
-  "functions": {
-    "app/api/**": {
-      "memory": 1024
-    }
-  }
+  'env': { 'NODE_ENV': 'production', 'NEXT_PUBLIC_APP_ENV': 'staging' },
+  'functions': { 'app/api/**': { 'memory': 1024 } },
 }
 ```
 
 #### Production Environment
+
 ```yaml
 {
-  "env": {
-    "NODE_ENV": "production",
-    "NEXT_PUBLIC_APP_ENV": "production"
-  },
-  "functions": {
-    "app/api/**": {
-      "memory": 3008,
-      "maxDuration": 60
-    }
-  },
-  "regions": ["fra1"]
+  'env': { 'NODE_ENV': 'production', 'NEXT_PUBLIC_APP_ENV': 'production' },
+  'functions': { 'app/api/**': { 'memory': 3008, 'maxDuration': 60 } },
+  'regions': ['fra1'],
 }
 ```
 
 ## Infrastructure as Code
 
 ### Terraform Configuration
+
 ```hcl
 # infrastructure/main.tf
 terraform {
@@ -153,7 +137,7 @@ terraform {
 resource "vercel_project" "crms" {
   name      = "crms-production"
   framework = "nextjs"
-  
+
   environment = [
     {
       key    = "NEXT_PUBLIC_SUPABASE_URL"
@@ -174,6 +158,7 @@ resource "supabase_project" "crms" {
 ### Docker Configuration
 
 #### Development Dockerfile
+
 ```dockerfile
 # Dockerfile.dev
 FROM node:20-alpine
@@ -200,6 +185,7 @@ CMD ["pnpm", "dev"]
 ```
 
 #### Production Dockerfile
+
 ```dockerfile
 # Dockerfile.prod
 FROM node:20-alpine AS deps
@@ -233,6 +219,7 @@ CMD ["node", "server.js"]
 ## Database Migration Strategy
 
 ### Supabase Migrations
+
 ```sql
 -- migrations/001_initial_schema.sql
 -- This file is automatically applied via Supabase CLI
@@ -253,14 +240,12 @@ CREATE POLICY company_isolation ON companies
 ```
 
 ### Migration Scripts
+
 ```typescript
 // scripts/migrate.ts
 import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_KEY!
-);
+const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_KEY!);
 
 export async function runMigrations() {
   const migrations = [
@@ -268,18 +253,18 @@ export async function runMigrations() {
     '002_add_audit_logging.sql',
     '003_optimize_indexes.sql',
   ];
-  
+
   for (const migration of migrations) {
     console.log(`Running migration: ${migration}`);
-    
+
     const sql = await fs.readFile(`migrations/${migration}`, 'utf8');
     const { error } = await supabase.rpc('exec_sql', { sql });
-    
+
     if (error) {
       console.error(`Migration ${migration} failed:`, error);
       process.exit(1);
     }
-    
+
     console.log(`Migration ${migration} completed`);
   }
 }
@@ -288,6 +273,7 @@ export async function runMigrations() {
 ## Monitoring & Observability
 
 ### Application Monitoring
+
 ```typescript
 // lib/monitoring.ts
 import * as Sentry from '@sentry/nextjs';
@@ -315,6 +301,7 @@ Sentry.init({
 ```
 
 ### Health Check Endpoints
+
 ```typescript
 // app/api/health/route.ts
 import { NextResponse } from 'next/server';
@@ -324,42 +311,40 @@ export async function GET() {
   try {
     // Check database connection
     const supabase = createClient();
-    const { data, error } = await supabase
-      .from('companies')
-      .select('id')
-      .limit(1);
-      
+    const { data, error } = await supabase.from('companies').select('id').limit(1);
+
     if (error) throw error;
-    
+
     // Check Redis connection
     await redis.ping();
-    
+
     // Check external services
     const stripeHealth = await fetch('https://status.stripe.com/api/v2/status.json');
-    
+
     return NextResponse.json({
       status: 'healthy',
       timestamp: new Date().toISOString(),
       services: {
         database: 'healthy',
         redis: 'healthy',
-        stripe: stripeHealth.ok ? 'healthy' : 'degraded'
-      }
+        stripe: stripeHealth.ok ? 'healthy' : 'degraded',
+      },
     });
   } catch (error) {
     return NextResponse.json(
       {
         status: 'unhealthy',
         error: error.message,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       },
-      { status: 503 }
+      { status: 503 },
     );
   }
 }
 ```
 
 ### Alerting Configuration
+
 ```yaml
 # monitoring/alerts.yml
 alerts:
@@ -368,19 +353,19 @@ alerts:
     duration: 5m
     severity: critical
     notify: ['oncall@crms.ch']
-    
+
   - name: slow_contract_creation
     condition: p95_contract_creation > 5s
     duration: 10m
     severity: warning
     notify: ['dev-team@crms.ch']
-    
+
   - name: low_disk_space
     condition: disk_usage > 80%
     duration: 15m
     severity: warning
     notify: ['ops@crms.ch']
-    
+
   - name: payment_failures
     condition: payment_failure_rate > 5%
     duration: 5m
@@ -391,36 +376,36 @@ alerts:
 ## Backup & Disaster Recovery
 
 ### Automated Backup Strategy
+
 ```typescript
 // scripts/backup.ts
 export async function createBackup() {
   const timestamp = new Date().toISOString().split('T')[0];
-  
+
   // Database backup (handled by Supabase automatically)
   // But we can also create manual snapshots
-  
+
   // File storage backup
-  const { data: files } = await supabase.storage
-    .from('photos')
-    .list();
-    
+  const { data: files } = await supabase.storage.from('photos').list();
+
   const backupManifest = {
     timestamp,
     database_backup: `${timestamp}-db-backup`,
     files_count: files?.length || 0,
     backup_size: await calculateBackupSize(),
   };
-  
+
   // Store manifest
   await supabase.storage
     .from('backups')
     .upload(`manifests/${timestamp}.json`, JSON.stringify(backupManifest));
-    
+
   return backupManifest;
 }
 ```
 
 ### Recovery Procedures
+
 ```bash
 #!/bin/bash
 # scripts/disaster-recovery.sh
@@ -451,6 +436,7 @@ echo "Recovery completed successfully!"
 ## Performance Optimization
 
 ### CDN Configuration
+
 ```javascript
 // next.config.js
 module.exports = {
@@ -465,44 +451,44 @@ module.exports = {
       headers: [
         {
           key: 'Cache-Control',
-          value: 'public, s-maxage=10, stale-while-revalidate=59'
-        }
-      ]
-    }
+          value: 'public, s-maxage=10, stale-while-revalidate=59',
+        },
+      ],
+    },
   ],
   experimental: {
     optimizeCss: true,
     optimizeImages: true,
-  }
+  },
 };
 ```
 
 ### Caching Strategy
+
 ```typescript
 // lib/cache-strategy.ts
 export const cacheConfig = {
   // Static content
   static: {
     ttl: 31536000, // 1 year
-    paths: ['/images', '/fonts', '/icons']
+    paths: ['/images', '/fonts', '/icons'],
   },
-  
+
   // API responses
   api: {
     ttl: 300, // 5 minutes
-    paths: ['/api/dashboard', '/api/vehicles/availability']
+    paths: ['/api/dashboard', '/api/vehicles/availability'],
   },
-  
+
   // Dynamic content
   dynamic: {
     ttl: 60, // 1 minute
-    paths: ['/dashboard', '/contracts', '/customers']
-  }
+    paths: ['/dashboard', '/contracts', '/customers'],
+  },
 };
 ```
 
 ---
 
-**Document Version:** 3.0 - Deployment Architecture
-**Last Updated:** 2025-08-06
-**Status:** Ready for Implementation
+**Document Version:** 3.0 - Deployment Architecture **Last Updated:** 2025-08-06 **Status:** Ready
+for Implementation

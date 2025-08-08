@@ -9,7 +9,8 @@
 
 **As an** owner  
 **I want to** reconcile all payments daily  
-**So that** finances are accurate, complete, and I have full visibility into revenue streams with ability to export for accounting
+**So that** finances are accurate, complete, and I have full visibility into revenue streams with
+ability to export for accounting
 
 ## Detailed Acceptance Criteria
 
@@ -88,6 +89,7 @@
 ## Technical Implementation Notes
 
 ### Reconciliation Engine Architecture
+
 ```typescript
 interface ReconciliationEngine {
   reconcileCash(location: Location, date: Date): CashReconciliation;
@@ -109,12 +111,14 @@ interface ReconciliationResult {
 ```
 
 ### Settlement Integration
+
 - **Card Processors:** API integration for settlement download
 - **Twint:** Merchant portal integration or API access
 - **Bank Statements:** Automated bank statement import via ISO 20022
 - **Cash Management:** Physical count vs system total comparison
 
 ### Database Design
+
 ```sql
 -- Daily reconciliation records
 CREATE TABLE daily_reconciliations (
@@ -167,6 +171,7 @@ CREATE TABLE settlement_imports (
 ## API Endpoints Needed
 
 ### Reconciliation Operations
+
 ```
 POST /api/v1/reconciliation/daily/{date}
 - Body: { location_id?, reconciliation_types[], external_data }
@@ -182,6 +187,7 @@ POST /api/v1/reconciliation/{reconciliation_id}/approve
 ```
 
 ### Settlement Integration
+
 ```
 POST /api/v1/reconciliation/import-settlement
 - Body: { processor, settlement_file, date_range }
@@ -193,6 +199,7 @@ GET /api/v1/reconciliation/settlement-data/{date}
 ```
 
 ### Reporting and Export
+
 ```
 GET /api/v1/reconciliation/report/{date}
 - Query: location_id?, format?, include_details?
@@ -206,6 +213,7 @@ POST /api/v1/reconciliation/export-accounting
 ## Database Schema Requirements
 
 ### Core Tables
+
 - `daily_reconciliations` - Master reconciliation records with approvals
 - `reconciliation_discrepancies` - Detailed variance tracking and resolution
 - `settlement_imports` - External settlement data import tracking
@@ -213,12 +221,14 @@ POST /api/v1/reconciliation/export-accounting
 - `accounting_exports` - History of financial data exports
 
 ### Indexes Required
+
 - `daily_reconciliations(reconciliation_date, location_id, status)`
 - `reconciliation_discrepancies(reconciliation_id, resolution_status)`
 - `settlement_imports(settlement_date, payment_processor, import_status)`
 - `daily_reconciliations(status, variance_percentage DESC)`
 
 ### Constraints
+
 - Reconciliation date cannot be in the future
 - Variance percentage calculated from system vs external totals
 - Approval timestamps must be after reconciliation timestamps
@@ -227,24 +237,28 @@ POST /api/v1/reconciliation/export-accounting
 ## UI/UX Considerations
 
 ### Reconciliation Dashboard
+
 - **Daily Overview:** Visual dashboard showing reconciliation status across all locations
 - **Variance Highlighting:** Clear indication of discrepancies requiring attention
 - **Quick Actions:** One-click reconciliation for balanced days
 - **Progress Tracking:** Show reconciliation completion percentage
 
 ### Discrepancy Management Interface
+
 - **Investigation Tools:** Detailed drill-down into payment transaction details
 - **Side-by-Side Comparison:** System vs external data comparison views
 - **Resolution Workflow:** Step-by-step process for resolving discrepancies
 - **Documentation Tools:** Easy attachment of supporting documents and notes
 
 ### Reporting Interface
+
 - **Interactive Reports:** Clickable charts and tables for deeper analysis
 - **Export Options:** Multiple format options with preview capability
 - **Scheduled Reports:** Automated daily/weekly/monthly report generation
 - **Trend Analysis:** Historical variance trends and pattern identification
 
 ### Mobile Reconciliation Tools
+
 - **Cash Count Entry:** Mobile-optimized interface for physical cash counting
 - **Photo Documentation:** Attach photos of cash counts, receipts, settlement reports
 - **Quick Approval:** Mobile approval workflow for supervisors
@@ -253,6 +267,7 @@ POST /api/v1/reconciliation/export-accounting
 ## Testing Scenarios
 
 ### Standard Reconciliation Testing
+
 1. **Perfect Balance Day**
    - Process various payment types throughout the day
    - Run reconciliation with all amounts matching exactly
@@ -269,6 +284,7 @@ POST /api/v1/reconciliation/export-accounting
    - Verify location-specific and consolidated reporting
 
 ### Discrepancy Handling Testing
+
 4. **Missing External Payment**
    - System shows payment but external settlement doesn't
    - Verify discrepancy identification and flagging
@@ -280,6 +296,7 @@ POST /api/v1/reconciliation/export-accounting
    - Test cross-date reconciliation accuracy
 
 ### Integration Testing
+
 6. **Accounting Export Accuracy**
    - Complete reconciliation with various payment types
    - Export to multiple accounting formats
@@ -319,18 +336,21 @@ POST /api/v1/reconciliation/export-accounting
 ## Estimated Effort: 5 Story Points
 
 ### Breakdown
+
 - **Reconciliation Engine Development:** 2 points
 - **Settlement Integration:** 1 point
 - **Reporting and Export Functionality:** 1 point
 - **UI/UX and Workflow Implementation:** 1 point
 
 ### Dependencies
+
 - Payment processing system (Story 01) fully operational
 - Deposit management system (Story 02) completed
 - Settlement data access from payment processors
 - Accounting system integration requirements defined
 
 ### Risks
+
 - **High:** Settlement data format changes from processors
 - **Medium:** Reconciliation tolerance threshold configuration complexity
 - **Medium:** Multi-timezone handling for settlement timing

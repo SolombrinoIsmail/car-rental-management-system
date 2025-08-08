@@ -1,5 +1,5 @@
-import { type ClassValue, clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
+import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
 /**
  * Utility function to merge Tailwind CSS classes with clsx
@@ -14,11 +14,11 @@ export function cn(...inputs: ClassValue[]) {
  */
 export function formatCurrency(
   amount: number,
-  currency: string = "CHF",
-  locale: string = "de-CH"
+  currency: string = 'CHF',
+  locale: string = 'de-CH',
 ): string {
   return new Intl.NumberFormat(locale, {
-    style: "currency",
+    style: 'currency',
     currency,
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
@@ -30,16 +30,16 @@ export function formatCurrency(
  */
 export function formatDate(
   date: Date | string | number,
-  locale: string = "de-CH",
-  options?: Intl.DateTimeFormatOptions
+  locale: string = 'de-CH',
+  options?: Intl.DateTimeFormatOptions,
 ): string {
   const defaultOptions: Intl.DateTimeFormatOptions = {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
     ...options,
   };
-  
+
   return new Intl.DateTimeFormat(locale, defaultOptions).format(new Date(date));
 }
 
@@ -48,9 +48,9 @@ export function formatDate(
  */
 export function getInitials(name: string): string {
   return name
-    .split(" ")
+    .split(' ')
     .map((part) => part.charAt(0))
-    .join("")
+    .join('')
     .toUpperCase()
     .slice(0, 2);
 }
@@ -58,12 +58,9 @@ export function getInitials(name: string): string {
 /**
  * Debounce function for search inputs
  */
-export function debounce<T extends (...args: any[]) => void>(
-  func: T,
-  wait: number
-): T {
+export function debounce<T extends (...args: unknown[]) => void>(func: T, wait: number): T {
   let timeout: NodeJS.Timeout;
-  return ((...args: any[]) => {
+  return ((...args: unknown[]) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => func(...args), wait);
   }) as T;
@@ -99,42 +96,42 @@ export function isValidSwissPostalCode(code: string): boolean {
  * Get Swiss cantons
  */
 export const SWISS_CANTONS = [
-  { code: "AG", name: "Aargau" },
-  { code: "AI", name: "Appenzell Innerrhoden" },
-  { code: "AR", name: "Appenzell Ausserrhoden" },
-  { code: "BE", name: "Bern" },
-  { code: "BL", name: "Basel-Landschaft" },
-  { code: "BS", name: "Basel-Stadt" },
-  { code: "FR", name: "Fribourg" },
-  { code: "GE", name: "Geneva" },
-  { code: "GL", name: "Glarus" },
-  { code: "GR", name: "Graubünden" },
-  { code: "JU", name: "Jura" },
-  { code: "LU", name: "Lucerne" },
-  { code: "NE", name: "Neuchâtel" },
-  { code: "NW", name: "Nidwalden" },
-  { code: "OW", name: "Obwalden" },
-  { code: "SG", name: "St. Gallen" },
-  { code: "SH", name: "Schaffhausen" },
-  { code: "SO", name: "Solothurn" },
-  { code: "SZ", name: "Schwyz" },
-  { code: "TG", name: "Thurgau" },
-  { code: "TI", name: "Ticino" },
-  { code: "UR", name: "Uri" },
-  { code: "VD", name: "Vaud" },
-  { code: "VS", name: "Valais" },
-  { code: "ZG", name: "Zug" },
-  { code: "ZH", name: "Zürich" },
+  { code: 'AG', name: 'Aargau' },
+  { code: 'AI', name: 'Appenzell Innerrhoden' },
+  { code: 'AR', name: 'Appenzell Ausserrhoden' },
+  { code: 'BE', name: 'Bern' },
+  { code: 'BL', name: 'Basel-Landschaft' },
+  { code: 'BS', name: 'Basel-Stadt' },
+  { code: 'FR', name: 'Fribourg' },
+  { code: 'GE', name: 'Geneva' },
+  { code: 'GL', name: 'Glarus' },
+  { code: 'GR', name: 'Graubünden' },
+  { code: 'JU', name: 'Jura' },
+  { code: 'LU', name: 'Lucerne' },
+  { code: 'NE', name: 'Neuchâtel' },
+  { code: 'NW', name: 'Nidwalden' },
+  { code: 'OW', name: 'Obwalden' },
+  { code: 'SG', name: 'St. Gallen' },
+  { code: 'SH', name: 'Schaffhausen' },
+  { code: 'SO', name: 'Solothurn' },
+  { code: 'SZ', name: 'Schwyz' },
+  { code: 'TG', name: 'Thurgau' },
+  { code: 'TI', name: 'Ticino' },
+  { code: 'UR', name: 'Uri' },
+  { code: 'VD', name: 'Vaud' },
+  { code: 'VS', name: 'Valais' },
+  { code: 'ZG', name: 'Zug' },
+  { code: 'ZH', name: 'Zürich' },
 ] as const;
 
 /**
  * Get Swiss languages
  */
 export const SWISS_LANGUAGES = [
-  { code: "de-CH", name: "Deutsch (Schweiz)" },
-  { code: "fr-CH", name: "Français (Suisse)" },
-  { code: "it-CH", name: "Italiano (Svizzera)" },
-  { code: "rm-CH", name: "Rumantsch" },
+  { code: 'de-CH', name: 'Deutsch (Schweiz)' },
+  { code: 'fr-CH', name: 'Français (Suisse)' },
+  { code: 'it-CH', name: 'Italiano (Svizzera)' },
+  { code: 'rm-CH', name: 'Rumantsch' },
 ] as const;
 
 /**
@@ -149,12 +146,12 @@ export function getThemeAwareClasses(lightClasses: string, darkClasses: string) 
  */
 export async function withErrorHandling<T>(
   operation: () => Promise<T>,
-  errorMessage?: string
+  errorMessage?: string,
 ): Promise<T | null> {
   try {
     return await operation();
   } catch (error) {
-    console.error(errorMessage || "Operation failed:", error);
+    console.error(errorMessage || 'Operation failed:', error);
     return null;
   }
 }
@@ -172,20 +169,20 @@ export function isValidEmail(email: string): boolean {
  */
 export function truncateText(text: string, maxLength: number): string {
   if (text.length <= maxLength) return text;
-  return text.substring(0, maxLength).trim() + "...";
+  return `${text.substring(0, maxLength).trim()}...`;
 }
 
 /**
  * Convert bytes to human readable format
  */
 export function formatBytes(bytes: number, decimals = 2): string {
-  if (bytes === 0) return "0 Bytes";
-  
+  if (bytes === 0) return '0 Bytes';
+
   const k = 1024;
   const dm = decimals < 0 ? 0 : decimals;
-  const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
-  
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
 }

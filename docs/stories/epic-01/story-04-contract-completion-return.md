@@ -9,7 +9,8 @@
 
 **As a** rental staff member  
 **I want to** complete rental returns efficiently and accurately  
-**So that** I can calculate final charges, document vehicle condition, and close contracts professionally
+**So that** I can calculate final charges, document vehicle condition, and close contracts
+professionally
 
 ## Detailed Acceptance Criteria
 
@@ -270,6 +271,7 @@ damage_rates (
 **Story Points:** 8
 
 **Breakdown:**
+
 - Return lookup and workflow (1 point)
 - Photo comparison and damage assessment (2 points)
 - Charge calculation engine (2 points)
@@ -277,6 +279,7 @@ damage_rates (
 - Invoice generation and notifications (1 point)
 
 **Dependencies:**
+
 - Digital contract creation system (Story 02)
 - Customer management system (Story 01)
 - Payment gateway setup and integration
@@ -285,6 +288,7 @@ damage_rates (
 - Damage rate card configuration
 
 **Risks:**
+
 - Payment gateway integration complexity
 - Photo comparison performance with large image sets
 - Damage assessment accuracy and consistency

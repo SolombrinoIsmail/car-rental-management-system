@@ -1,14 +1,17 @@
 # Story 2: After-Hours Return Process
 
 ## Story Information
+
 - **Story ID:** CRMS-E9-S2
 - **Epic:** 9 - Operational Edge Cases
 - **Story Points:** 5
 
 ## User Story
+
 **As a** rental staff member  
 **I want to** process after-hours returns efficiently  
-**So that** customers have return flexibility while maintaining operational control and revenue protection
+**So that** customers have return flexibility while maintaining operational control and revenue
+protection
 
 ## Detailed Acceptance Criteria
 
@@ -87,6 +90,7 @@
 ## Technical Implementation Notes
 
 ### Backend Services
+
 - `AfterHoursReturnService`: Manages the complete after-hours return lifecycle
 - `InspectionWorkflowService`: Handles next-day inspection processes
 - `DiscrepancyResolutionService`: Manages difference detection and resolution
@@ -94,6 +98,7 @@
 - `ReturnValidationService`: Verifies return authenticity and accuracy
 
 ### Data Models
+
 ```sql
 after_hours_returns (
   id, rental_id, customer_id, vehicle_id,
@@ -111,23 +116,27 @@ return_inspections (
 ```
 
 ### State Machine
+
 Scheduled → Overdue → Provisionally Returned → Pending Inspection → Inspected → Processed → Closed
 
 ## API Endpoints
 
 ### Customer-Facing Endpoints
+
 - `POST /api/returns/after-hours/initiate` - Start after-hours return process
 - `POST /api/returns/after-hours/submit` - Submit return with photos and details
 - `GET /api/returns/after-hours/{id}/status` - Check return processing status
 - `GET /api/returns/after-hours/{id}/receipt` - Get final receipt
 
-### Staff-Facing Endpoints  
+### Staff-Facing Endpoints
+
 - `GET /api/inspections/pending` - Get list of returns needing inspection
 - `POST /api/inspections/{id}/complete` - Submit inspection results
 - `PUT /api/returns/after-hours/{id}/process` - Finalize return processing
 - `POST /api/returns/after-hours/{id}/dispute` - Handle customer disputes
 
 ### Integration Endpoints
+
 - `POST /api/external/photo-validation` - Validate submitted photos
 - `GET /api/external/weather/{location}` - Get weather conditions for return assessment
 - `POST /api/notifications/after-hours-alerts` - Send staff and customer notifications
@@ -135,6 +144,7 @@ Scheduled → Overdue → Provisionally Returned → Pending Inspection → Insp
 ## Database Schema Requirements
 
 ### New Tables
+
 ```sql
 CREATE TABLE after_hours_returns (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -176,6 +186,7 @@ CREATE TABLE return_discrepancies (
 ```
 
 ### Schema Updates
+
 - Add `after_hours_enabled` boolean to vehicles table
 - Add `after_hours_return_count` to customer profiles
 - Add `late_return_tolerance_minutes` to rental_terms table
@@ -183,24 +194,28 @@ CREATE TABLE return_discrepancies (
 ## UI/UX Considerations
 
 ### Customer Mobile Interface
+
 - Clear step-by-step return guidance with visual aids
 - Multiple photo capture with automatic lighting/quality checks
 - GPS confirmation with address validation
 - Real-time return confirmation with receipt preview
 
 ### Staff Inspection Interface
+
 - Split-screen comparison of customer photos vs. inspection photos
 - Quick-tap buttons for common inspection results
 - Voice-to-text notes capability for detailed findings
 - One-click approval for returns matching customer reports
 
 ### Dashboard Integration
+
 - After-hours returns requiring attention prominently displayed
 - Color-coded status indicators for processing urgency
 - Batch processing capabilities for multiple returns
 - Quick access to customer contact information for disputes
 
 ### Accessibility Features
+
 - Voice-guided return process for visually impaired customers
 - Large button interface for outdoor/low-light conditions
 - Multiple language support for return instructions
@@ -209,44 +224,49 @@ CREATE TABLE return_discrepancies (
 ## Testing Scenarios
 
 ### Scenario 1: Standard After-Hours Return
-**Given:** Customer returns vehicle at 10 PM with accurate reporting
-**When:** Customer completes drop process and staff inspects next morning
-**Then:** Return processed within 15 minutes, customer charged exact amount, vehicle available
+
+**Given:** Customer returns vehicle at 10 PM with accurate reporting **When:** Customer completes
+drop process and staff inspects next morning **Then:** Return processed within 15 minutes, customer
+charged exact amount, vehicle available
 
 ### Scenario 2: Fuel Level Discrepancy
-**Given:** Customer reports full tank but actual level is 75%
-**When:** Staff completes inspection and finds difference
-**Then:** System calculates fuel charge, notifies customer, processes payment automatically
+
+**Given:** Customer reports full tank but actual level is 75% **When:** Staff completes inspection
+and finds difference **Then:** System calculates fuel charge, notifies customer, processes payment
+automatically
 
 ### Scenario 3: Late Return with Grace Period
-**Given:** Customer returns 45 minutes after scheduled time (30-minute grace)
-**When:** System processes return timestamp
-**Then:** 15-minute late fee applied, customer notified of charge
+
+**Given:** Customer returns 45 minutes after scheduled time (30-minute grace) **When:** System
+processes return timestamp **Then:** 15-minute late fee applied, customer notified of charge
 
 ### Scenario 4: Photo Quality Issues
-**Given:** Customer submits blurry or dark photos during return
-**When:** System analyzes photo quality
-**Then:** Customer prompted to retake photos with guidance for better lighting
+
+**Given:** Customer submits blurry or dark photos during return **When:** System analyzes photo
+quality **Then:** Customer prompted to retake photos with guidance for better lighting
 
 ### Scenario 5: GPS Location Verification Failure
-**Given:** Customer attempts return from incorrect location
-**When:** GPS validation runs during submission
-**Then:** Return rejected, customer directed to correct drop location
+
+**Given:** Customer attempts return from incorrect location **When:** GPS validation runs during
+submission **Then:** Return rejected, customer directed to correct drop location
 
 ### Scenario 6: Key Drop Box Malfunction
-**Given:** Key drop box is full or broken during return attempt
-**When:** Customer selects alternative return method
-**Then:** System provides emergency contact number and alternative procedures
+
+**Given:** Key drop box is full or broken during return attempt **When:** Customer selects
+alternative return method **Then:** System provides emergency contact number and alternative
+procedures
 
 ### Scenario 7: Weather-Related Photo Exemption
-**Given:** Severe weather conditions during return
-**When:** Staff reviews return requiring reduced photo requirements
-**Then:** System applies weather exemption, accepts minimal photos, flags for careful inspection
+
+**Given:** Severe weather conditions during return **When:** Staff reviews return requiring reduced
+photo requirements **Then:** System applies weather exemption, accepts minimal photos, flags for
+careful inspection
 
 ### Scenario 8: Customer Dispute Resolution
-**Given:** Customer disputes discrepancy charges after inspection
-**When:** Customer contacts support about charges
-**Then:** System provides photo evidence, initiates dispute resolution workflow
+
+**Given:** Customer disputes discrepancy charges after inspection **When:** Customer contacts
+support about charges **Then:** System provides photo evidence, initiates dispute resolution
+workflow
 
 ## Definition of Done
 
@@ -269,6 +289,7 @@ CREATE TABLE return_discrepancies (
 - [ ] Documentation and training materials for staff created
 
 ## Dependencies
+
 - Mobile application development platform
 - Photo storage and processing service
 - GPS and mapping services
@@ -277,6 +298,7 @@ CREATE TABLE return_discrepancies (
 - Staff task management system
 
 ## Risks and Mitigation
+
 - **Risk:** Photo evidence quality insufficient for dispute resolution
   - **Mitigation:** Implement photo quality validation and retake prompts
 - **Risk:** GPS spoofing for fraudulent returns

@@ -9,20 +9,24 @@
 
 **As a** rental staff member  
 **I want to** efficiently update and track vehicle status through the complete rental lifecycle  
-**So that** fleet status is always accurate, enabling optimal vehicle utilization and preventing operational conflicts
+**So that** fleet status is always accurate, enabling optimal vehicle utilization and preventing
+operational conflicts
 
 ## Detailed Acceptance Criteria
 
 1. **Status Transition Management**
-   - System shall support defined status transitions: available → reserved → rented → returning → available
+   - System shall support defined status transitions: available → reserved → rented → returning →
+     available
    - System shall enforce valid status transition rules preventing invalid state changes
    - System shall allow emergency status overrides with management approval and audit logging
-   - System shall provide visual status flow indicators showing current state and next valid transitions
+   - System shall provide visual status flow indicators showing current state and next valid
+     transitions
 
 2. **Quick Status Lookup**
    - System shall provide instant vehicle status check by license plate number entry
    - System shall support barcode/QR code scanning for rapid vehicle identification
-   - System shall display comprehensive status information including current customer and expected return
+   - System shall display comprehensive status information including current customer and expected
+     return
    - System shall show status change history with timestamps and user information
 
 3. **Bulk Status Operations**
@@ -88,6 +92,7 @@
 ## Technical Implementation Notes
 
 ### Database Schema Requirements
+
 ```sql
 -- Vehicle status state machine configuration
 CREATE TABLE status_transitions (
@@ -161,6 +166,7 @@ CREATE TABLE bulk_status_operations (
 ```
 
 ### API Endpoints Needed
+
 - `GET /api/vehicles/{id}/status` - Get current vehicle status
 - `PUT /api/vehicles/{id}/status` - Update vehicle status
 - `POST /api/vehicles/status/bulk` - Bulk status update
@@ -174,6 +180,7 @@ CREATE TABLE bulk_status_operations (
 - `GET /api/status/analytics` - Get status analytics data
 
 ### State Machine Implementation
+
 ```javascript
 // Status state machine definition
 const statusStateMachine = {
@@ -183,36 +190,36 @@ const statusStateMachine = {
       on: {
         RESERVE: 'reserved',
         MAINTENANCE: 'maintenance',
-        OUT_OF_SERVICE: 'out_of_service'
-      }
+        OUT_OF_SERVICE: 'out_of_service',
+      },
     },
     reserved: {
       on: {
         START_RENTAL: 'rented',
         CANCEL: 'available',
-        NO_SHOW: 'available'
-      }
+        NO_SHOW: 'available',
+      },
     },
     rented: {
       on: {
         RETURN: 'returning',
         EXTEND: 'rented',
-        ACCIDENT: 'out_of_service'
-      }
+        ACCIDENT: 'out_of_service',
+      },
     },
     returning: {
       on: {
         COMPLETE_RETURN: 'cleaning',
-        DAMAGE_FOUND: 'inspection'
-      }
+        DAMAGE_FOUND: 'inspection',
+      },
     },
     cleaning: {
       on: {
         READY: 'available',
-        MAINTENANCE_NEEDED: 'maintenance'
-      }
-    }
-  }
+        MAINTENANCE_NEEDED: 'maintenance',
+      },
+    },
+  },
 };
 ```
 
@@ -336,6 +343,7 @@ const statusStateMachine = {
 ## Estimated Effort: 3 Story Points
 
 **Breakdown:**
+
 - Status state machine implementation: 1 day
 - Quick lookup and barcode integration: 0.5 days
 - Bulk operations system: 1 day

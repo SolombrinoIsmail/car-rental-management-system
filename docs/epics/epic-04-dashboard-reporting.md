@@ -1,11 +1,15 @@
 # Epic 4: Dashboard & Reporting
 
 ## Epic Goal
-Provide role-based dashboards delivering real-time operational insights for staff efficiency and comprehensive business analytics for owners to track ROI, demonstrating the 10-15% revenue improvement.
+
+Provide role-based dashboards delivering real-time operational insights for staff efficiency and
+comprehensive business analytics for owners to track ROI, demonstrating the 10-15% revenue
+improvement.
 
 ## Epic Description
 
 ### Business Value
+
 - **Operational Efficiency:** 80% reduction in status checking time
 - **Revenue Visibility:** Real-time tracking of daily revenue
 - **ROI Demonstration:** Clear metrics showing system value
@@ -13,16 +17,20 @@ Provide role-based dashboards delivering real-time operational insights for staf
 - **Proactive Management:** Alert system for issues
 
 ### Scope
-Multi-role dashboard system with real-time updates, comprehensive reporting, and ROI tracking specifically designed to prove system value to owners.
+
+Multi-role dashboard system with real-time updates, comprehensive reporting, and ROI tracking
+specifically designed to prove system value to owners.
 
 ## User Stories
 
 ### Story 1: Staff Operations Dashboard
+
 **As a** rental staff member  
 **I want to** see today's operational status at a glance  
 **So that** I can prioritize my work efficiently
 
 **Acceptance Criteria:**
+
 - Today's pickups and returns list
 - Overdue rentals with alerts
 - Available vehicle count
@@ -31,6 +39,7 @@ Multi-role dashboard system with real-time updates, comprehensive reporting, and
 - Refresh every 30 seconds
 
 **Technical Requirements:**
+
 - Dashboard layout system
 - Real-time data queries
 - Alert generation logic
@@ -38,11 +47,13 @@ Multi-role dashboard system with real-time updates, comprehensive reporting, and
 - WebSocket updates
 
 ### Story 2: Owner Business Dashboard
+
 **As an** owner  
 **I want to** monitor business performance  
 **So that** I can make informed decisions
 
 **Acceptance Criteria:**
+
 - Daily/weekly/monthly revenue
 - Fleet utilization rates
 - Payment method breakdown
@@ -51,6 +62,7 @@ Multi-role dashboard system with real-time updates, comprehensive reporting, and
 - Comparative period analysis
 
 **Technical Requirements:**
+
 - Business metrics calculation
 - Time-series data storage
 - Comparative analytics
@@ -58,11 +70,13 @@ Multi-role dashboard system with real-time updates, comprehensive reporting, and
 - Caching for performance
 
 ### Story 3: ROI Tracking Dashboard
+
 **As an** owner  
 **I want to** see concrete ROI from the system  
 **So that** I can justify the subscription cost
 
 **Acceptance Criteria:**
+
 - Time saved vs paper (hours/month)
 - Additional revenue captured
 - Reduced errors/disputes
@@ -71,6 +85,7 @@ Multi-role dashboard system with real-time updates, comprehensive reporting, and
 - Monthly ROI percentage
 
 **Technical Requirements:**
+
 - ROI calculation formulas
 - Baseline comparison data
 - Time tracking system
@@ -78,11 +93,13 @@ Multi-role dashboard system with real-time updates, comprehensive reporting, and
 - Historical trending
 
 ### Story 4: Revenue Analytics
+
 **As an** owner  
 **I want to** analyze revenue in detail  
 **So that** I can optimize pricing and fleet
 
 **Acceptance Criteria:**
+
 - Revenue by vehicle class
 - Revenue by rate type (hourly/daily/etc)
 - Additional charges breakdown
@@ -91,6 +108,7 @@ Multi-role dashboard system with real-time updates, comprehensive reporting, and
 - Export to Excel/CSV
 
 **Technical Requirements:**
+
 - Revenue categorization
 - Trend analysis algorithms
 - Customer segmentation
@@ -98,11 +116,13 @@ Multi-role dashboard system with real-time updates, comprehensive reporting, and
 - Chart generation library
 
 ### Story 5: Operational Reports
+
 **As a** staff supervisor  
 **I want to** generate operational reports  
 **So that** I can manage staff and resources
 
 **Acceptance Criteria:**
+
 - Daily closing report
 - Shift handover summary
 - Vehicle status report
@@ -111,6 +131,7 @@ Multi-role dashboard system with real-time updates, comprehensive reporting, and
 - Print-friendly format
 
 **Technical Requirements:**
+
 - Report templates
 - PDF generation
 - Scheduled report runs
@@ -118,11 +139,13 @@ Multi-role dashboard system with real-time updates, comprehensive reporting, and
 - Print optimization
 
 ### Story 6: Alert & Notification System
+
 **As a** staff member  
 **I want to** receive relevant alerts  
 **So that** I can respond to issues quickly
 
 **Acceptance Criteria:**
+
 - Overdue return alerts
 - Maintenance due notifications
 - Low availability warnings
@@ -131,6 +154,7 @@ Multi-role dashboard system with real-time updates, comprehensive reporting, and
 - Customizable alert preferences
 
 **Technical Requirements:**
+
 - Alert rule engine
 - Notification delivery system
 - User preference storage
@@ -138,11 +162,13 @@ Multi-role dashboard system with real-time updates, comprehensive reporting, and
 - Escalation logic
 
 ### Story 7: Custom Report Builder
+
 **As an** owner  
 **I want to** create custom reports  
 **So that** I can analyze specific metrics
 
 **Acceptance Criteria:**
+
 - Select date ranges
 - Choose metrics to include
 - Filter by various criteria
@@ -151,6 +177,7 @@ Multi-role dashboard system with real-time updates, comprehensive reporting, and
 - Export in multiple formats
 
 **Technical Requirements:**
+
 - Report builder interface
 - Query builder system
 - Template storage
@@ -158,6 +185,7 @@ Multi-role dashboard system with real-time updates, comprehensive reporting, and
 - Multi-format export
 
 ## Dependencies
+
 - Data warehouse structure
 - Analytics framework selection
 - Charting library choice
@@ -165,6 +193,7 @@ Multi-role dashboard system with real-time updates, comprehensive reporting, and
 - Export format specifications
 
 ## Definition of Done
+
 - [ ] All dashboards load in <3 seconds
 - [ ] Real-time updates working
 - [ ] ROI metrics validated with real data
@@ -176,6 +205,7 @@ Multi-role dashboard system with real-time updates, comprehensive reporting, and
 - [ ] 30 days of dashboard usage data
 
 ## Success Metrics
+
 - Dashboard load time: <3 seconds
 - Report generation: <10 seconds
 - Alert delivery time: <1 minute
@@ -183,6 +213,7 @@ Multi-role dashboard system with real-time updates, comprehensive reporting, and
 - Report accuracy: 100%
 
 ## Risk Mitigation
+
 - **Risk:** Performance with large datasets
   - **Mitigation:** Data aggregation and caching
   - **Contingency:** Pagination and date limiting
@@ -196,20 +227,25 @@ Multi-role dashboard system with real-time updates, comprehensive reporting, and
   - **Contingency:** Customizable thresholds
 
 ## Implementation Priority
+
 **Phase 2 (Weeks 5-6):** Core Dashboards
+
 - Staff dashboard (Story 1)
 - Basic owner dashboard (Story 2)
 - Alert system (Story 6)
 
 **Phase 2 (Weeks 7-8):** Analytics
+
 - ROI tracking (Story 3)
 - Revenue analytics (Story 4)
 - Operational reports (Story 5)
 
 **Phase 3 (Week 9):** Advanced
+
 - Custom reports (Story 7)
 
 ## Estimated Effort
+
 - **Total:** 18-22 developer days
 - **Story 1:** 3 days
 - **Story 2:** 3 days

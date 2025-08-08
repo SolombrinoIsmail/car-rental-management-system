@@ -1,19 +1,23 @@
 # Story 1: Lost Key Process
 
 ## Story Information
+
 - **Story ID:** CRMS-E9-S1
 - **Epic:** 9 - Operational Edge Cases
 - **Story Points:** 3
 
 ## User Story
+
 **As a** rental staff member  
 **I want to** handle lost key situations efficiently  
-**So that** operations continue smoothly, costs are recovered, and customers receive appropriate support
+**So that** operations continue smoothly, costs are recovered, and customers receive appropriate
+support
 
 ## Detailed Acceptance Criteria
 
 1. **Incident Documentation**
-   - System captures complete lost key incident details (customer, vehicle, date/time, circumstances)
+   - System captures complete lost key incident details (customer, vehicle, date/time,
+     circumstances)
    - Staff can select from predefined loss scenarios (customer lost, staff lost, stolen, etc.)
    - System generates unique incident reference number
 
@@ -75,6 +79,7 @@
 ## Technical Implementation Notes
 
 ### Backend Services
+
 - `IncidentService`: Manages lost key incident lifecycle
 - `KeyOrderingService`: Handles replacement key procurement
 - `CostCalculationService`: Determines replacement costs
@@ -82,6 +87,7 @@
 - `PaymentService`: Processes lost key charges
 
 ### Data Models
+
 ```sql
 lost_key_incidents (
   id, vehicle_id, customer_id, rental_id,
@@ -98,11 +104,13 @@ key_replacement_orders (
 ```
 
 ### State Machine
+
 Lost → Documented → Charged → Ordered → In Transit → Received → Programmed → Resolved
 
 ## API Endpoints
 
 ### Core Endpoints
+
 - `POST /api/incidents/lost-keys` - Create lost key incident
 - `GET /api/incidents/lost-keys/{id}` - Get incident details
 - `PUT /api/incidents/lost-keys/{id}/status` - Update incident status
@@ -111,6 +119,7 @@ Lost → Documented → Charged → Ordered → In Transit → Received → Prog
 - `POST /api/incidents/lost-keys/{id}/charges` - Process customer charges
 
 ### Integration Endpoints
+
 - `POST /api/external/key-suppliers/orders` - Submit order to supplier
 - `GET /api/external/key-suppliers/orders/{id}` - Check supplier order status
 - `POST /api/notifications/lost-key-alerts` - Send notifications
@@ -118,6 +127,7 @@ Lost → Documented → Charged → Ordered → In Transit → Received → Prog
 ## Database Schema Requirements
 
 ### New Tables
+
 ```sql
 CREATE TABLE lost_key_incidents (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -157,28 +167,34 @@ CREATE TABLE key_replacement_orders (
 ```
 
 ### Schema Updates
-- Add `key_status` enum to vehicles table: 'available', 'lost', 'replacement_ordered', 'replacement_pending'
+
+- Add `key_status` enum to vehicles table: 'available', 'lost', 'replacement_ordered',
+  'replacement_pending'
 - Add `lost_key_incidents_count` to customer profiles for risk assessment
 
 ## UI/UX Considerations
 
 ### Incident Reporting Interface
+
 - Quick-access "Lost Key" button in main navigation
 - Step-by-step wizard for incident documentation
 - Pre-populated vehicle and customer information from current context
 - Photo upload capability for any available key remnants
 
 ### Cost Transparency
+
 - Clear cost breakdown before customer charging
 - Visual progress indicator for replacement process
 - Estimated timeline display with key milestones
 
 ### Dashboard Integration
+
 - Lost key incidents widget on main dashboard
 - Color-coded status indicators (Red: Lost, Orange: Ordered, Green: Resolved)
 - Quick action buttons for common tasks
 
 ### Mobile Responsiveness
+
 - Touch-friendly interface for tablet use in field
 - Offline capability for initial incident reporting
 - Camera integration for incident documentation
@@ -186,43 +202,44 @@ CREATE TABLE key_replacement_orders (
 ## Testing Scenarios
 
 ### Scenario 1: Standard Lost Key Process
-**Given:** Customer reports lost key for Economy vehicle
-**When:** Staff documents incident and processes replacement
-**Then:** System calculates $150 cost, charges customer, orders replacement, updates vehicle status
+
+**Given:** Customer reports lost key for Economy vehicle **When:** Staff documents incident and
+processes replacement **Then:** System calculates $150 cost, charges customer, orders replacement,
+updates vehicle status
 
 ### Scenario 2: High-Value Key Replacement
-**Given:** Customer loses key for Luxury vehicle ($800 replacement cost)
-**When:** Staff attempts to process incident
-**Then:** System requires manager approval before proceeding with charges
+
+**Given:** Customer loses key for Luxury vehicle ($800 replacement cost) **When:** Staff attempts to
+process incident **Then:** System requires manager approval before proceeding with charges
 
 ### Scenario 3: Customer with Key Coverage
-**Given:** Customer with comprehensive insurance loses key
-**When:** Staff processes lost key incident
-**Then:** System initiates insurance claim and reduces customer charge to deductible
+
+**Given:** Customer with comprehensive insurance loses key **When:** Staff processes lost key
+incident **Then:** System initiates insurance claim and reduces customer charge to deductible
 
 ### Scenario 4: Failed Payment Processing
-**Given:** Customer's payment method fails for lost key charge
-**When:** System attempts to process payment
-**Then:** Staff receives alert, incident remains open, follow-up task created
+
+**Given:** Customer's payment method fails for lost key charge **When:** System attempts to process
+payment **Then:** Staff receives alert, incident remains open, follow-up task created
 
 ### Scenario 5: Supplier Order Tracking
-**Given:** Replacement key ordered from supplier
-**When:** Supplier provides tracking updates
+
+**Given:** Replacement key ordered from supplier **When:** Supplier provides tracking updates
 **Then:** System updates status, notifies relevant staff, adjusts estimated delivery
 
 ### Scenario 6: Emergency Key Replacement
-**Given:** Customer stranded with urgent travel needs
-**When:** Staff marks incident as emergency priority
-**Then:** System suggests expedited shipping options, flags for manager attention
+
+**Given:** Customer stranded with urgent travel needs **When:** Staff marks incident as emergency
+priority **Then:** System suggests expedited shipping options, flags for manager attention
 
 ### Scenario 7: Recurring Lost Key Customer
-**Given:** Customer with 3 previous lost key incidents
-**When:** New incident is reported
-**Then:** System flags customer for review, suggests key deposit requirement
+
+**Given:** Customer with 3 previous lost key incidents **When:** New incident is reported **Then:**
+System flags customer for review, suggests key deposit requirement
 
 ### Scenario 8: Key Found After Replacement Ordered
-**Given:** Replacement key ordered and original key is found
-**When:** Staff updates incident status
+
+**Given:** Replacement key ordered and original key is found **When:** Staff updates incident status
 **Then:** System provides options to cancel order or proceed with backup key
 
 ## Definition of Done
@@ -245,6 +262,7 @@ CREATE TABLE key_replacement_orders (
 - [ ] User acceptance testing completed with operations team
 
 ## Dependencies
+
 - Payment processing system integration
 - Vehicle status management system
 - Customer notification service
@@ -252,6 +270,7 @@ CREATE TABLE key_replacement_orders (
 - Manager approval workflow system
 
 ## Risks and Mitigation
+
 - **Risk:** Key supplier API unavailability
   - **Mitigation:** Manual order fallback process
 - **Risk:** Customer disputes charges

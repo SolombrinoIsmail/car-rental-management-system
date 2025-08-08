@@ -5,6 +5,7 @@
 ### Code Organization Standards
 
 #### Directory Structure & Naming Conventions
+
 ```
 src/
 ├── app/                              # Next.js App Router
@@ -78,46 +79,48 @@ src/
 ```
 
 #### File Naming Conventions
+
 ```typescript
 // ✅ CORRECT Naming Patterns
 
 // Components - PascalCase
-ContractForm.tsx
-CustomerDetails.tsx
-SwissPhoneInput.tsx
+ContractForm.tsx;
+CustomerDetails.tsx;
+SwissPhoneInput.tsx;
 
 // Hooks - camelCase starting with 'use'
-useAuth.ts
-useContracts.ts
-useDebounce.ts
+useAuth.ts;
+useContracts.ts;
+useDebounce.ts;
 
 // Utilities - camelCase
-formatCurrency.ts
-validateSwissPhone.ts
-calculateTax.ts
+formatCurrency.ts;
+validateSwissPhone.ts;
+calculateTax.ts;
 
 // Types - PascalCase with descriptive suffix
-Customer.types.ts
-Contract.types.ts
-ApiResponse.types.ts
+Customer.types.ts;
+Contract.types.ts;
+ApiResponse.types.ts;
 
 // Constants - SCREAMING_SNAKE_CASE or camelCase for objects
-API_ENDPOINTS.ts
-defaultSettings.ts
+API_ENDPOINTS.ts;
+defaultSettings.ts;
 
 // Test files - match source file + .test/.spec
-ContractForm.test.tsx
-useAuth.test.ts
-contract-calculator.spec.ts
+ContractForm.test.tsx;
+useAuth.test.ts;
+contract - calculator.spec.ts;
 
 // ❌ INCORRECT Naming
-contractform.tsx           // Should be PascalCase
-use-auth.ts               // Should be camelCase
-CONTRACT_FORM.tsx         // Components are not constants
-customer.types.ts         // Should be PascalCase for types
+contractform.tsx; // Should be PascalCase
+use - auth.ts; // Should be camelCase
+CONTRACT_FORM.tsx; // Components are not constants
+customer.types.ts; // Should be PascalCase for types
 ```
 
 #### Import/Export Standards
+
 ```typescript
 // ✅ CORRECT Import Organization
 // 1. External libraries (React, third-party)
@@ -136,11 +139,17 @@ import { FormField } from '../FormField';
 
 // ✅ CORRECT Export Patterns
 // Named exports for utilities and hooks
-export const formatCHF = (amount: number) => { /* */ };
-export const useContracts = () => { /* */ };
+export const formatCHF = (amount: number) => {
+  /* */
+};
+export const useContracts = () => {
+  /* */
+};
 
 // Default exports for React components
-export default function ContractForm() { /* */ }
+export default function ContractForm() {
+  /* */
+}
 
 // Re-exports from index files (barrel exports)
 export { ContractForm } from './ContractForm';
@@ -154,6 +163,7 @@ export type { Customer, Contract, Payment } from './types';
 ### Code Quality Standards
 
 #### TypeScript Configuration
+
 ```json
 // tsconfig.json
 {
@@ -172,43 +182,45 @@ export type { Customer, Contract, Payment } from './types';
 ```
 
 #### ESLint Configuration
+
 ```javascript
 // .eslintrc.js
 module.exports = {
   extends: [
     'next/core-web-vitals',
     '@typescript-eslint/recommended',
-    '@typescript-eslint/recommended-requiring-type-checking'
+    '@typescript-eslint/recommended-requiring-type-checking',
   ],
   rules: {
     // Code Quality
     'prefer-const': 'error',
     'no-var': 'error',
     'no-console': 'warn',
-    
+
     // TypeScript Specific
     '@typescript-eslint/no-unused-vars': 'error',
     '@typescript-eslint/explicit-function-return-type': 'warn',
     '@typescript-eslint/no-explicit-any': 'error',
     '@typescript-eslint/prefer-nullish-coalescing': 'error',
     '@typescript-eslint/prefer-optional-chain': 'error',
-    
+
     // React Specific
     'react/prop-types': 'off', // Using TypeScript
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
-    
+
     // Swiss-specific business rules
     'crms/no-hardcoded-currency': 'error',
     'crms/require-swiss-phone-validation': 'error',
-    'crms/no-sensitive-data-logging': 'error'
+    'crms/no-sensitive-data-logging': 'error',
   },
   // Custom rules for Swiss compliance
-  plugins: ['crms-custom-rules']
+  plugins: ['crms-custom-rules'],
 };
 ```
 
 #### Prettier Configuration
+
 ```json
 // .prettierrc
 {
@@ -226,33 +238,34 @@ module.exports = {
 ```
 
 #### Code Documentation Standards
-```typescript
+
+````typescript
 /**
  * Calculates the total amount for a rental contract including VAT
- * 
+ *
  * @param contract - The contract data to calculate for
  * @param vatRate - Swiss VAT rate (default: 7.7%)
  * @returns Calculated totals with breakdown
- * 
+ *
  * @example
  * ```typescript
  * const totals = calculateContractTotal(contract, 7.7);
  * console.log(totals.totalAmount); // CHF 287.56
  * ```
- * 
+ *
  * @throws {ValidationError} When contract data is invalid
  * @throws {BusinessRuleError} When business rules are violated
  */
 export function calculateContractTotal(
   contract: ContractData,
-  vatRate: number = 7.7
+  vatRate: number = 7.7,
 ): ContractTotals {
   // Implementation with inline comments for complex logic
   const subtotal = contract.baseRate * contract.totalDays;
-  
+
   // Swiss VAT calculation - rate is percentage (7.7% = 7.7)
   const vatAmount = subtotal * (vatRate / 100);
-  
+
   return {
     subtotal,
     vatAmount,
@@ -261,20 +274,20 @@ export function calculateContractTotal(
       baseRate: contract.baseRate,
       days: contract.totalDays,
       vatRate,
-    }
+    },
   };
 }
 
 // ✅ CORRECT: Component documentation
 /**
  * Contract creation form with Swiss market validation
- * 
+ *
  * Features:
  * - Real-time total calculation
- * - Swiss phone number validation  
+ * - Swiss phone number validation
  * - CHF currency formatting
  * - Driver license validation
- * 
+ *
  * @param customers - Available customers for selection
  * @param vehicles - Available vehicles for selection
  * @param onSubmit - Callback when form is successfully submitted
@@ -284,17 +297,18 @@ export default function ContractForm({
   customers,
   vehicles,
   onSubmit,
-  onCancel
+  onCancel,
 }: ContractFormProps): JSX.Element {
   // Component implementation
 }
-```
+````
 
 ## Development Workflow
 
 ### Git Workflow & Branching Strategy
 
 #### Branch Naming Convention
+
 ```bash
 # Feature branches
 feature/contract-quick-create
@@ -321,10 +335,11 @@ release/v1.2.1-hotfix
 ```
 
 #### Commit Message Standards
+
 ```bash
 # ✅ CORRECT Commit Messages (Conventional Commits)
 feat(contracts): add quick create workflow for 2-minute goal
-fix(payments): resolve Swiss QR bill generation encoding issue  
+fix(payments): resolve Swiss QR bill generation encoding issue
 docs(api): update contract endpoint documentation
 test(components): add comprehensive ContractForm test suite
 refactor(validation): extract Swiss-specific validation rules
@@ -342,19 +357,23 @@ chore(deps): update Supabase client to v2.39.1
 ```
 
 #### Pull Request Template
+
 ```markdown
 ## 📋 PR Description
+
 Brief description of changes and why they were made.
 
 ## 🎯 Type of Change
+
 - [ ] 🆕 New feature
-- [ ] 🐛 Bug fix  
+- [ ] 🐛 Bug fix
 - [ ] 📚 Documentation update
 - [ ] 🔧 Refactoring
 - [ ] ⚡ Performance improvement
 - [ ] 🧪 Test additions/updates
 
 ## 🧪 Testing
+
 - [ ] Unit tests pass
 - [ ] Integration tests pass
 - [ ] E2E tests pass
@@ -362,6 +381,7 @@ Brief description of changes and why they were made.
 - [ ] Swiss-specific validation tested
 
 ## 🔍 Swiss Compliance Checklist
+
 - [ ] Data residency requirements met
 - [ ] GDPR compliance maintained
 - [ ] VAT calculations accurate (7.7%)
@@ -369,20 +389,22 @@ Brief description of changes and why they were made.
 - [ ] Currency formatting correct (CHF)
 
 ## 📝 Documentation
+
 - [ ] Code comments updated
-- [ ] API documentation updated  
+- [ ] API documentation updated
 - [ ] Architecture docs updated (if needed)
 - [ ] README updated (if needed)
 
 ## 🔗 Related Issues
-Closes #XXX
-Fixes #XXX
-Related to #XXX
+
+Closes #XXX Fixes #XXX Related to #XXX
 
 ## 📸 Screenshots (if UI changes)
+
 [Add screenshots or GIFs demonstrating the changes]
 
 ## ✅ Pre-merge Checklist
+
 - [ ] Branch is up to date with main
 - [ ] All CI checks pass
 - [ ] Code review completed
@@ -394,13 +416,14 @@ Related to #XXX
 ### Code Review Process
 
 #### Review Guidelines
+
 ```typescript
 // ✅ CORRECT: What reviewers should look for
 
 // 1. Business Logic Accuracy
 // Check Swiss-specific calculations
 const vatAmount = subtotal * 0.077; // ✅ Correct Swiss VAT rate
-const vatAmount = subtotal * 0.08;  // ❌ Incorrect rate
+const vatAmount = subtotal * 0.08; // ❌ Incorrect rate
 
 // 2. Type Safety
 // Prefer strict typing
@@ -426,7 +449,7 @@ try {
 
 // 4. Security Considerations
 // No sensitive data in logs
-logger.info('Contract created', { 
+logger.info('Contract created', {
   contractId: contract.id,
   // ❌ customerId: customer.id, - Don't log customer ID
   // ❌ amount: contract.total_amount, - Don't log financial data
@@ -445,10 +468,12 @@ const totalRevenue = useMemo(() => {
 ```
 
 #### Review Checklist Template
+
 ```markdown
 ## Code Review Checklist
 
 ### 🔍 Code Quality
+
 - [ ] Code follows established patterns and conventions
 - [ ] TypeScript types are accurate and strict
 - [ ] Error handling is comprehensive
@@ -456,6 +481,7 @@ const totalRevenue = useMemo(() => {
 - [ ] No code duplication
 
 ### 🇨🇭 Swiss Market Compliance
+
 - [ ] VAT rate is correct (7.7%)
 - [ ] Phone numbers use Swiss format (+41)
 - [ ] Currency formatting uses CHF
@@ -463,6 +489,7 @@ const totalRevenue = useMemo(() => {
 - [ ] Date/time handling considers Swiss timezone
 
 ### 🔒 Security & Privacy
+
 - [ ] No sensitive data in logs
 - [ ] Input validation is comprehensive
 - [ ] Authentication/authorization correct
@@ -470,18 +497,21 @@ const totalRevenue = useMemo(() => {
 - [ ] No hardcoded secrets
 
 ### 🧪 Testing
+
 - [ ] Unit tests added/updated
 - [ ] Edge cases covered
 - [ ] Swiss-specific scenarios tested
 - [ ] Error cases tested
 
 ### 📋 Business Logic
+
 - [ ] Contract calculations accurate
 - [ ] Pricing logic correct
 - [ ] Validation rules appropriate
 - [ ] Workflow states handled properly
 
 ### 🎨 UI/UX (if applicable)
+
 - [ ] Responsive design maintained
 - [ ] Accessibility considerations
 - [ ] Swiss UI patterns followed
@@ -494,6 +524,7 @@ const totalRevenue = useMemo(() => {
 ### Team Structure & Roles
 
 #### Development Team Roles
+
 ```yaml
 # Team Structure
 Product Owner:
@@ -540,6 +571,7 @@ QA Engineer:
 ```
 
 #### Pair Programming Guidelines
+
 ```typescript
 // Pair Programming Sessions - Recommended Pairings
 
@@ -549,7 +581,7 @@ QA Engineer:
 function calculateSwissVAT(amount: number, rate: number = 7.7): number {
   // Navigator checks: Is 7.7% still current Swiss VAT rate?
   // Navigator verifies: Are we handling Rappen (0.05 rounding) correctly?
-  return Math.round((amount * rate / 100) * 20) / 20; // Swiss Rappen rounding
+  return Math.round(((amount * rate) / 100) * 20) / 20; // Swiss Rappen rounding
 }
 
 // 2. Critical Features (Senior + Junior)
@@ -570,28 +602,33 @@ function calculateSwissVAT(amount: number, rate: number = 7.7): number {
 #### Knowledge Sharing Sessions
 
 ##### Weekly Tech Talks (30 minutes)
+
 ```markdown
 # Tech Talk Schedule
 
 Week 1: "Swiss Market Deep Dive"
+
 - VAT rates and calculations
-- Phone number formats and validation  
+- Phone number formats and validation
 - Address formats and postal codes
 - Cultural considerations for UI/UX
 
 Week 2: "Architecture Deep Dive"
+
 - Supabase patterns and best practices
 - Row Level Security implementation
 - Real-time subscriptions
 - Performance optimization techniques
 
 Week 3: "Testing Strategies"
+
 - Swiss-specific test scenarios
 - E2E testing for critical workflows
 - Performance testing methods
 - Security testing approaches
 
 Week 4: "Security & Compliance"
+
 - GDPR implementation details
 - Data anonymization strategies
 - Audit logging best practices
@@ -599,6 +636,7 @@ Week 4: "Security & Compliance"
 ```
 
 ##### Code Review Learning Sessions
+
 ```typescript
 // Monthly "Code Review Retrospective" Sessions
 
@@ -609,18 +647,18 @@ const commonIssues = {
   swissFormatting: [
     'Phone numbers not using +41 format',
     'Currency not showing CHF symbol',
-    'VAT rate hardcoded incorrectly'
+    'VAT rate hardcoded incorrectly',
   ],
   typeScript: [
     'Using "any" type instead of proper interfaces',
     'Missing null checks for optional fields',
-    'Not leveraging discriminated unions'
+    'Not leveraging discriminated unions',
   ],
   performance: [
     'Missing React.memo on expensive components',
     'Unnecessary re-renders in forms',
-    'Not using proper keys in lists'
-  ]
+    'Not using proper keys in lists',
+  ],
 };
 
 // 2. Best Practices Discovered
@@ -628,25 +666,26 @@ const bestPractices = {
   businessLogic: 'Extract Swiss-specific calculations to separate utilities',
   errorHandling: 'Always provide user-friendly error messages in German/French',
   testing: 'Test Swiss edge cases (Rappen rounding, canton validation)',
-  accessibility: 'Consider multilingual support for screen readers'
+  accessibility: 'Consider multilingual support for screen readers',
 };
 ```
 
 ### Documentation Standards
 
 #### API Documentation
+
 ```typescript
 /**
  * @api {post} /api/contracts Create New Contract
- * @apiName CreateContract  
+ * @apiName CreateContract
  * @apiGroup Contracts
  * @apiVersion 1.0.0
- * 
+ *
  * @apiDescription Creates a new rental contract with Swiss market validation
- * 
+ *
  * @apiHeader {String} Authorization Bearer JWT token
  * @apiHeader {String} Content-Type application/json
- * 
+ *
  * @apiParam {String} customer_id UUID of the customer
  * @apiParam {String} vehicle_id UUID of the vehicle
  * @apiParam {String} start_date ISO 8601 date string
@@ -656,7 +695,7 @@ const bestPractices = {
  * @apiParam {String="daily","weekly","monthly"} rate_type Pricing period
  * @apiParam {Number} base_rate Rate per period in CHF
  * @apiParam {Number} deposit_amount Security deposit in CHF
- * 
+ *
  * @apiSuccess {Boolean} success Request success status
  * @apiSuccess {Object} data Response data
  * @apiSuccess {String} data.id Contract UUID
@@ -664,12 +703,12 @@ const bestPractices = {
  * @apiSuccess {String} data.status Contract status ("draft", "confirmed", etc.)
  * @apiSuccess {Number} data.total_amount Total amount including 7.7% Swiss VAT
  * @apiSuccess {String} data.contract_pdf_url URL to generated PDF contract
- * 
+ *
  * @apiError (400) ValidationError Invalid input data
  * @apiError (401) Unauthorized Missing or invalid JWT token
  * @apiError (403) Forbidden Insufficient permissions
  * @apiError (409) Conflict Vehicle not available for selected dates
- * 
+ *
  * @apiExample {javascript} Request Example
  * const response = await fetch('/api/contracts', {
  *   method: 'POST',
@@ -689,7 +728,7 @@ const bestPractices = {
  *     deposit_amount: 500.00
  *   })
  * });
- * 
+ *
  * @apiSuccessExample {json} Success Response
  * HTTP/1.1 201 Created
  * {
@@ -697,7 +736,7 @@ const bestPractices = {
  *   "data": {
  *     "id": "123e4567-e89b-12d3-a456-426614174011",
  *     "contract_number": "CR-2025-00002",
- *     "status": "draft", 
+ *     "status": "draft",
  *     "total_amount": 479.27,
  *     "contract_pdf_url": "https://storage.supabase.co/contracts/CR-2025-00002.pdf"
  *   }
@@ -705,8 +744,9 @@ const bestPractices = {
  */
 ```
 
-#### Component Documentation  
-```typescript
+#### Component Documentation
+
+````typescript
 // README.md for component directories
 # Contract Components
 
@@ -728,19 +768,21 @@ Main contract creation and editing form with Swiss market validation.
 ```typescript
 import { ContractForm } from '@/components/contracts/ContractForm';
 
-<ContractForm 
+<ContractForm
   customers={customers}
   vehicles={vehicles}
   onSubmit={handleSubmit}
   onCancel={handleCancel}
   initialData={existingContract} // Optional for editing
 />
-```
+````
 
-### `QuickCreateWizard.tsx`  
+### `QuickCreateWizard.tsx`
+
 Streamlined contract creation for the 2-minute target workflow.
 
 **Workflow Steps:**
+
 1. Customer selection/creation
 2. Vehicle selection with availability check
 3. Rental period and pricing
@@ -750,13 +792,16 @@ Streamlined contract creation for the 2-minute target workflow.
 7. Confirmation
 
 ### Swiss Market Considerations
+
 All contract components handle:
+
 - VAT rate: 7.7% (configurable per company)
 - Currency: CHF with Rappen rounding (0.05 increments)
 - Phone format: +41 XX XXX XX XX
 - Date format: DD.MM.YYYY (Swiss standard)
 - Language: German/French UI text support
-```
+
+````
 
 #### Decision Records (ADR)
 ```markdown
@@ -765,7 +810,7 @@ All contract components handle:
 ## Status
 Accepted
 
-## Context  
+## Context
 Swiss VAT rate is currently 7.7% but may change. We need flexible handling while ensuring accuracy in financial calculations.
 
 ## Decision
@@ -803,16 +848,19 @@ function calculateWithVAT(amount: number, vatRate: number) {
   const vatAmount = multiply(base, { amount: vatRate, scale: 2 });
   return add(base, vatAmount);
 }
-```
+````
 
 ## Alternatives Considered
+
 1. Hardcode 7.7% - Rejected due to inflexibility
 2. External tax API - Rejected as overkill for Swiss-only system
 3. Configuration file - Rejected as less flexible than database storage
+
 ```
 
 ---
 
-**Document Version:** 3.0 - Development & Team Architecture  
+**Document Version:** 3.0 - Development & Team Architecture
 **Last Updated:** 2025-08-06
 **Status:** Ready for Implementation
+```

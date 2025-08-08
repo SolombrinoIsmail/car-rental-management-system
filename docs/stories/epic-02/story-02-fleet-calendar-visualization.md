@@ -8,13 +8,16 @@
 ## User Story Statement
 
 **As a** rental staff member  
-**I want to** see vehicle availability and booking status in an intuitive visual calendar interface  
-**So that** I can quickly identify available vehicles, understand booking patterns, and efficiently schedule new rentals
+**I want to** see vehicle availability and booking status in an intuitive visual calendar
+interface  
+**So that** I can quickly identify available vehicles, understand booking patterns, and efficiently
+schedule new rentals
 
 ## Detailed Acceptance Criteria
 
 1. **Calendar Layout**
-   - System shall display a monthly calendar view with vehicles listed vertically and dates horizontally
+   - System shall display a monthly calendar view with vehicles listed vertically and dates
+     horizontally
    - System shall show vehicle names/plates in the left column for easy identification
    - System shall provide week and day view options for detailed scheduling
    - System shall support navigation between months/weeks with smooth transitions
@@ -89,10 +92,11 @@
 ## Technical Implementation Notes
 
 ### Database Schema Requirements
+
 ```sql
 -- Calendar views table for optimized queries
 CREATE MATERIALIZED VIEW fleet_calendar_view AS
-SELECT 
+SELECT
     v.id as vehicle_id,
     v.license_plate,
     v.make || ' ' || v.model as vehicle_name,
@@ -106,7 +110,7 @@ SELECT
     c.status as rental_status,
     c.reference_number
 FROM vehicles v
-LEFT JOIN contracts c ON v.id = c.vehicle_id 
+LEFT JOIN contracts c ON v.id = c.vehicle_id
     AND c.status IN ('confirmed', 'active', 'reserved')
 LEFT JOIN customers cust ON c.customer_id = cust.id
 WHERE v.status != 'retired'
@@ -137,6 +141,7 @@ CREATE TABLE calendar_preferences (
 ```
 
 ### API Endpoints Needed
+
 - `GET /api/calendar/fleet` - Get fleet calendar data for date range
 - `GET /api/calendar/fleet/{date}` - Get specific date calendar data
 - `PUT /api/calendar/booking/{id}/extend` - Extend booking via drag operation
@@ -264,8 +269,9 @@ CREATE TABLE calendar_preferences (
 ## Estimated Effort: 8 Story Points
 
 **Breakdown:**
+
 - Calendar component setup and configuration: 1 day
-- Vehicle timeline and booking visualization: 2 days  
+- Vehicle timeline and booking visualization: 2 days
 - Drag-and-drop functionality: 1.5 days
 - Real-time updates integration: 1.5 days
 - Filtering and search features: 1 day

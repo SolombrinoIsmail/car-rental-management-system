@@ -5,18 +5,19 @@
 ### Overview
 
 The CRMS API follows RESTful principles and combines:
+
 1. **Supabase Auto-generated APIs** - Direct CRUD operations with Row Level Security (RLS)
 2. **Custom Next.js API Routes** - Complex business logic and integrations
 3. **Real-time Subscriptions** - WebSocket connections for live updates
 
 **Base URLs:**
+
 - Production: `https://crms.swiss/api/v1`
 - Staging: `https://staging.crms.swiss/api/v1`
 - Supabase: `https://[project-id].supabase.co/rest/v1`
 
-**Authentication:** JWT Bearer tokens from Supabase Auth
-**Rate Limiting:** 100 requests per minute per authenticated user
-**Swiss Compliance:** All endpoints support Swiss data residency and GDPR
+**Authentication:** JWT Bearer tokens from Supabase Auth **Rate Limiting:** 100 requests per minute
+per authenticated user **Swiss Compliance:** All endpoints support Swiss data residency and GDPR
 
 ### Global Response Format
 
@@ -42,24 +43,26 @@ interface APIResponse<T> {
 
 ### Error Codes
 
-| Code | HTTP Status | Description |
-|------|-------------|-------------|
-| `UNAUTHORIZED` | 401 | Invalid or missing JWT token |
-| `FORBIDDEN` | 403 | Insufficient permissions |
-| `NOT_FOUND` | 404 | Resource not found |
-| `VALIDATION_ERROR` | 422 | Request validation failed |
-| `RATE_LIMIT_EXCEEDED` | 429 | Too many requests |
-| `INTERNAL_ERROR` | 500 | Server error |
-| `MAINTENANCE_MODE` | 503 | System maintenance |
+| Code                  | HTTP Status | Description                  |
+| --------------------- | ----------- | ---------------------------- |
+| `UNAUTHORIZED`        | 401         | Invalid or missing JWT token |
+| `FORBIDDEN`           | 403         | Insufficient permissions     |
+| `NOT_FOUND`           | 404         | Resource not found           |
+| `VALIDATION_ERROR`    | 422         | Request validation failed    |
+| `RATE_LIMIT_EXCEEDED` | 429         | Too many requests            |
+| `INTERNAL_ERROR`      | 500         | Server error                 |
+| `MAINTENANCE_MODE`    | 503         | System maintenance           |
 
 ## Core API Endpoints
 
 ### Authentication Endpoints
 
 #### POST /auth/login
+
 **Purpose:** Authenticate user with email/password
 
 **Request:**
+
 ```json
 {
   "email": "user@example.ch",
@@ -69,6 +72,7 @@ interface APIResponse<T> {
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -96,9 +100,11 @@ interface APIResponse<T> {
 ### Contract Management
 
 #### GET /contracts
+
 **Purpose:** List contracts with advanced filtering
 
 **Query Parameters:**
+
 - `page` (number): Page number
 - `limit` (number): Items per page
 - `status` (string): Filter by status
@@ -110,9 +116,11 @@ interface APIResponse<T> {
 - `search` (string): Search contract number or customer name
 
 #### POST /contracts
+
 **Purpose:** Create new rental contract
 
 **Request:**
+
 ```json
 {
   "customer_id": "123e4567-e89b-12d3-a456-426614174004",
@@ -122,15 +130,17 @@ interface APIResponse<T> {
   "pickup_km": 15432,
   "pickup_fuel": 85,
   "rate_type": "daily",
-  "base_rate": 89.00,
-  "deposit_amount": 500.00
+  "base_rate": 89.0,
+  "deposit_amount": 500.0
 }
 ```
 
 #### POST /contracts/quick-create
+
 **Purpose:** Streamlined contract creation for 2-minute goal
 
 **Request:**
+
 ```json
 {
   "customer": {
@@ -154,15 +164,18 @@ interface APIResponse<T> {
 ### Vehicle Management
 
 #### GET /vehicles/availability
+
 **Purpose:** Check vehicle availability for date range
 
 **Query Parameters:**
+
 - `start_date` (date): Required start date
 - `end_date` (date): Required end date
 - `vehicle_type` (string): Filter by type
 - `exclude_contract` (string): Exclude specific contract from check
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -174,7 +187,7 @@ interface APIResponse<T> {
         "make": "Volkswagen",
         "model": "Golf",
         "vehicle_type": "economy",
-        "daily_rate": 89.00,
+        "daily_rate": 89.0,
         "is_available": true
       }
     ],
@@ -196,9 +209,11 @@ interface APIResponse<T> {
 ### Payment Management
 
 #### POST /payments
+
 **Purpose:** Process payment
 
 **Request:**
+
 ```json
 {
   "contract_id": "123e4567-e89b-12d3-a456-426614174010",
@@ -210,9 +225,11 @@ interface APIResponse<T> {
 ```
 
 #### GET /payments/{payment_id}/qr-bill
+
 **Purpose:** Generate Swiss QR bill
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -228,19 +245,22 @@ interface APIResponse<T> {
 ### Dashboard & Analytics
 
 #### GET /dashboard/overview
+
 **Purpose:** Dashboard overview data
 
 **Query Parameters:**
+
 - `period` (string): today|week|month|year
 
 **Response:**
+
 ```json
 {
   "success": true,
   "data": {
     "period": "month",
     "revenue": {
-      "total": 45780.50,
+      "total": 45780.5,
       "previous_period": 38940.25,
       "growth_percentage": 17.6
     },
@@ -272,15 +292,18 @@ interface APIResponse<T> {
 ## File Upload Endpoints
 
 #### POST /upload/photos
+
 **Purpose:** Upload contract photos with compression
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 Content-Type: multipart/form-data
 ```
 
 **Request:**
+
 ```
 files[]: [image files]
 contract_id: "123e4567-e89b-12d3-a456-426614174010"
@@ -291,11 +314,13 @@ compress: true
 ## Real-time Subscription Endpoints
 
 ### WebSocket: /realtime/fleet-status
+
 **Purpose:** Real-time fleet status updates
 
 **Authentication:** JWT token via query parameter or header
 
 **Subscription Message:**
+
 ```json
 {
   "action": "subscribe",
@@ -305,6 +330,7 @@ compress: true
 ```
 
 **Server Messages:**
+
 ```json
 {
   "event": "vehicle_status_changed",
@@ -321,13 +347,16 @@ compress: true
 ## Rate Limiting and Security
 
 ### Rate Limits
+
 - **Authentication endpoints:** 5 requests per minute per IP
 - **File upload endpoints:** 20 files per minute per user
 - **General API endpoints:** 100 requests per minute per user
 - **Real-time subscriptions:** 10 connections per user
 
 ### Security Headers
+
 All API responses include security headers:
+
 ```
 X-Frame-Options: DENY
 X-Content-Type-Options: nosniff
@@ -336,6 +365,7 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains
 ```
 
 ### Swiss Data Compliance
+
 - All data stored in Swiss AWS regions
 - GDPR-compliant data processing
 - Customer data anonymization on request
@@ -345,6 +375,7 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains
 ### Error Response Examples
 
 **401 Unauthorized:**
+
 ```json
 {
   "success": false,
@@ -357,6 +388,7 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains
 ```
 
 **422 Validation Error:**
+
 ```json
 {
   "success": false,
@@ -375,6 +407,5 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains
 
 ---
 
-**Document Version:** 3.0 - API Architecture
-**Last Updated:** 2025-08-06
-**Status:** Ready for Implementation
+**Document Version:** 3.0 - API Architecture **Last Updated:** 2025-08-06 **Status:** Ready for
+Implementation

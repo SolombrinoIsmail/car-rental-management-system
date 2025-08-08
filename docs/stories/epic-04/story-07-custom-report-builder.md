@@ -9,7 +9,8 @@
 
 **As an** owner  
 **I want to** create custom reports with flexible data selection and filtering options  
-**So that** I can analyze specific business metrics tailored to my unique operational needs and decision-making requirements
+**So that** I can analyze specific business metrics tailored to my unique operational needs and
+decision-making requirements
 
 ## Detailed Acceptance Criteria
 
@@ -100,6 +101,7 @@
 ## Technical Implementation Notes
 
 ### Report Builder Architecture
+
 - React-based drag-and-drop interface using libraries like React-DnD
 - Query builder component with visual query construction
 - Chart rendering using advanced libraries (D3.js, Chart.js, or Recharts)
@@ -107,6 +109,7 @@
 - Background job processing for large report generation
 
 ### Data Processing Engine
+
 - SQL query generation from visual query builder selections
 - Dynamic query optimization based on selected metrics and filters
 - Caching layer for frequently accessed data combinations
@@ -114,6 +117,7 @@
 - Real-time data validation and accuracy checking
 
 ### Export and Scheduling Systems
+
 - Multi-format export pipeline with format-specific optimization
 - Scheduled job system with robust error handling and retry logic
 - Email delivery system with professional template formatting
@@ -123,8 +127,10 @@
 ## API Endpoints Needed
 
 ### POST /api/v1/reports/custom/build
+
 **Purpose:** Generate custom report based on user specifications  
 **Payload:**
+
 ```json
 {
   "report_name": "Q1 Fleet Performance Analysis",
@@ -132,12 +138,7 @@
     "start": "2024-01-01",
     "end": "2024-03-31"
   },
-  "metrics": [
-    "total_revenue",
-    "fleet_utilization",
-    "vehicle_performance",
-    "customer_satisfaction"
-  ],
+  "metrics": ["total_revenue", "fleet_utilization", "vehicle_performance", "customer_satisfaction"],
   "filters": {
     "vehicle_categories": ["economy", "compact"],
     "customer_segments": ["business", "leisure"],
@@ -156,8 +157,10 @@
 ```
 
 ### GET /api/v1/reports/custom/templates
+
 **Purpose:** Retrieve saved report templates  
 **Response:**
+
 ```json
 {
   "templates": [
@@ -175,12 +178,15 @@
 ```
 
 ### POST /api/v1/reports/custom/templates
+
 **Purpose:** Save report configuration as template  
 **Payload:** Report configuration with template metadata
 
 ### POST /api/v1/reports/custom/schedule
+
 **Purpose:** Schedule recurring custom report generation  
 **Payload:**
+
 ```json
 {
   "template_id": "template_123",
@@ -199,11 +205,13 @@
 ```
 
 ### GET /api/v1/reports/custom/preview
+
 **Purpose:** Preview data based on current filter selections  
 **Parameters:** Query parameters matching report builder selections  
 **Response:** Sample data set with row count and column information
 
 ### GET /api/v1/reports/custom/export/{report_id}
+
 **Purpose:** Download generated custom report  
 **Parameters:** format (pdf, excel, csv, json)  
 **Response:** File download with appropriate MIME type
@@ -211,6 +219,7 @@
 ## Database Schema Requirements
 
 ### custom_report_templates Table
+
 ```sql
 CREATE TABLE custom_report_templates (
   id SERIAL PRIMARY KEY,
@@ -227,6 +236,7 @@ CREATE TABLE custom_report_templates (
 ```
 
 ### custom_report_schedules Table
+
 ```sql
 CREATE TABLE custom_report_schedules (
   id SERIAL PRIMARY KEY,
@@ -244,6 +254,7 @@ CREATE TABLE custom_report_schedules (
 ```
 
 ### custom_report_executions Table
+
 ```sql
 CREATE TABLE custom_report_executions (
   id SERIAL PRIMARY KEY,
@@ -261,6 +272,7 @@ CREATE TABLE custom_report_executions (
 ```
 
 ### report_sharing Table
+
 ```sql
 CREATE TABLE report_sharing (
   id SERIAL PRIMARY KEY,
@@ -277,6 +289,7 @@ CREATE TABLE report_sharing (
 ## UI/UX Considerations
 
 ### Report Builder Interface
+
 - **Left Panel:** Drag-and-drop metrics and dimensions library
 - **Center Canvas:** Visual query builder with connected components
 - **Right Panel:** Filter configuration and preview controls
@@ -284,6 +297,7 @@ CREATE TABLE report_sharing (
 - **Header:** Save, schedule, and export controls
 
 ### User Experience Design
+
 - **Progressive Disclosure:** Start simple, reveal advanced options as needed
 - **Visual Feedback:** Real-time preview updates as selections change
 - **Guided Experience:** Tooltips and help text for complex features
@@ -291,6 +305,7 @@ CREATE TABLE report_sharing (
 - **Keyboard Shortcuts:** Power user features for efficient report building
 
 ### Template Management
+
 - **Template Gallery:** Visual library of saved templates with previews
 - **Search and Filter:** Find templates by name, creator, or usage frequency
 - **Template Sharing:** Easy sharing interface with permission controls
@@ -300,6 +315,7 @@ CREATE TABLE report_sharing (
 ## Testing Scenarios
 
 ### Report Builder Functionality
+
 1. **Query Builder Testing**
    - Test drag-and-drop interface responsiveness and accuracy
    - Verify complex query construction with multiple filters and conditions
@@ -351,6 +367,7 @@ CREATE TABLE report_sharing (
 ## Definition of Done
 
 ### Functional Requirements
+
 - [ ] All 12 acceptance criteria implemented and tested
 - [ ] Visual query builder fully functional with drag-and-drop interface
 - [ ] Template management system operational
@@ -359,6 +376,7 @@ CREATE TABLE report_sharing (
 - [ ] Report sharing and collaboration features working
 
 ### Technical Requirements
+
 - [ ] Report builder architecture scalable and performant
 - [ ] Database schema supporting all custom report functionality
 - [ ] API endpoints documented and performance tested
@@ -367,6 +385,7 @@ CREATE TABLE report_sharing (
 - [ ] Security measures for data access and sharing
 
 ### Performance Requirements
+
 - [ ] Report generation completes within 30 seconds for typical datasets
 - [ ] UI remains responsive during complex query building
 - [ ] Export functionality handles datasets up to 100K records
@@ -374,6 +393,7 @@ CREATE TABLE report_sharing (
 - [ ] Mobile interface provides acceptable user experience
 
 ### Quality Assurance
+
 - [ ] All 8 testing scenarios passed comprehensively
 - [ ] Report accuracy verified against known data sets
 - [ ] Cross-browser compatibility confirmed
@@ -382,6 +402,7 @@ CREATE TABLE report_sharing (
 - [ ] User experience validated with target user groups
 
 ### Business Requirements
+
 - [ ] Owner user acceptance testing completed successfully
 - [ ] Custom report capabilities meet diverse business analysis needs
 - [ ] Template sharing enables organizational knowledge sharing
@@ -389,6 +410,7 @@ CREATE TABLE report_sharing (
 - [ ] Advanced users can create complex analytical reports independently
 
 ### Documentation and Training
+
 - [ ] Comprehensive user guide for custom report builder
 - [ ] Video tutorials for common report building scenarios
 - [ ] Technical documentation for API integration
@@ -400,12 +422,14 @@ CREATE TABLE report_sharing (
 **Story Points:** 13
 
 **Breakdown:**
+
 - Visual query builder and interface development: 5 points
 - Template management and versioning system: 3 points
 - Multi-format export and scheduling system: 3 points
 - Advanced features and testing: 2 points
 
 **Dependencies:**
+
 - Complete data warehouse with all business metrics
 - User management system for sharing and permissions (Epic 6)
 - All operational data sources (Epics 1, 2, 3)
@@ -413,12 +437,14 @@ CREATE TABLE report_sharing (
 - File storage system for generated reports
 
 **Risks:**
+
 - Complex UI requirements may need iterative development and user feedback
 - Performance optimization for large datasets could require advanced database tuning
 - Multi-format export reliability depends on various third-party libraries
 - Advanced query builder complexity may extend development timeline significantly
 
 **Success Metrics:**
+
 - Custom reports created and used regularly by business stakeholders
 - Template library grows organically through user contributions
 - Advanced analytics insights lead to measurable business improvements

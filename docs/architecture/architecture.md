@@ -2,44 +2,59 @@
 
 ## Introduction
 
-This document outlines the complete fullstack architecture for the Car Rental Management System (CRMS), including backend systems, frontend implementation, and their integration. It serves as the single source of truth for AI-driven development, ensuring consistency across the entire technology stack.
+This document outlines the complete fullstack architecture for the Car Rental Management System
+(CRMS), including backend systems, frontend implementation, and their integration. It serves as the
+single source of truth for AI-driven development, ensuring consistency across the entire technology
+stack.
 
-This unified approach combines what would traditionally be separate backend and frontend architecture documents, streamlining the development process for modern fullstack applications where these concerns are increasingly intertwined.
+This unified approach combines what would traditionally be separate backend and frontend
+architecture documents, streamlining the development process for modern fullstack applications where
+these concerns are increasingly intertwined.
 
 ### Starter Template or Existing Project
+
 **N/A - Greenfield project**
 
-This is a new greenfield project without any existing codebase or starter template constraints. The architecture decisions will be made based on the PRD requirements and Swiss market needs.
+This is a new greenfield project without any existing codebase or starter template constraints. The
+architecture decisions will be made based on the PRD requirements and Swiss market needs.
 
 ### Change Log
-| Date | Version | Description | Author |
-|------|---------|-------------|--------|
-| 2025-08-06 | 1.0 | Initial fullstack architecture document | Winston (Architect) |
-| 2025-08-06 | 1.1 | Simplified to Supabase-first approach for MVP | Winston (Architect) |
+
+| Date       | Version | Description                                   | Author              |
+| ---------- | ------- | --------------------------------------------- | ------------------- |
+| 2025-08-06 | 1.0     | Initial fullstack architecture document       | Winston (Architect) |
+| 2025-08-06 | 1.1     | Simplified to Supabase-first approach for MVP | Winston (Architect) |
 
 ## High Level Architecture
 
 ### Technical Summary
-CRMS employs a simplified Supabase-first architecture with Next.js as the frontend framework. The system leverages Supabase's integrated platform features (database, auth, storage, realtime) to achieve rapid MVP development within the 6-8 week timeline. Infrastructure is hosted on Vercel's European regions with Supabase's Swiss data residency, ensuring GDPR compliance and low-latency access. This architecture achieves the 2-minute contract goal through optimized workflows and intelligent use of platform-native features.
+
+CRMS employs a simplified Supabase-first architecture with Next.js as the frontend framework. The
+system leverages Supabase's integrated platform features (database, auth, storage, realtime) to
+achieve rapid MVP development within the 6-8 week timeline. Infrastructure is hosted on Vercel's
+European regions with Supabase's Swiss data residency, ensuring GDPR compliance and low-latency
+access. This architecture achieves the 2-minute contract goal through optimized workflows and
+intelligent use of platform-native features.
 
 ### Platform and Infrastructure Choice
 
-**Selected Platform:** Vercel + Supabase (Simplified MVP Approach)
-**Key Services:** 
+**Selected Platform:** Vercel + Supabase (Simplified MVP Approach) **Key Services:**
+
 - Vercel (Frontend hosting, Edge Functions)
 - Supabase (PostgreSQL, Auth, Storage, Real-time)
 - Stripe (Payment processing)
 - Resend (Email delivery)
 
-**Deployment Host and Regions:** 
+**Deployment Host and Regions:**
+
 - Vercel: Frankfurt (eu-central-1) - Primary
 - Supabase: Zurich (AWS eu-central-2) - Swiss data residency
 
 ### Repository Structure
 
-**Structure:** Monorepo
-**Monorepo Tool:** npm workspaces (simpler for MVP)
-**Package Organization:** 
+**Structure:** Monorepo **Monorepo Tool:** npm workspaces (simpler for MVP) **Package
+Organization:**
+
 - apps/web (Next.js frontend)
 - packages/database (Supabase types & migrations)
 - packages/shared (business logic, types, utils)
@@ -53,30 +68,30 @@ graph TB
         Browser[Web Browser<br/>Desktop/Tablet]
         Mobile[Mobile Browser<br/>Responsive Web]
     end
-    
+
     subgraph "Edge Network"
         CDN[Vercel CDN<br/>Frankfurt]
     end
-    
+
     subgraph "Application Layer - Vercel"
         NextJS[Next.js App<br/>SSR + React]
         API[API Routes<br/>Server Actions]
     end
-    
+
     subgraph "Backend Platform - Supabase"
         Auth[Supabase Auth<br/>JWT + RLS]
         Realtime[Realtime<br/>Subscriptions]
         Storage[Storage<br/>Photos/PDFs]
         PG[(PostgreSQL<br/>Zurich)]
     end
-    
+
     subgraph "External Services"
         Stripe[Stripe<br/>Payments]
         QR[Swiss QR-Bill<br/>Generator]
         Email[Resend Email]
         PDF[PDF Generator<br/>react-pdf]
     end
-    
+
     Browser --> CDN
     Mobile --> CDN
     CDN --> NextJS
@@ -93,73 +108,80 @@ graph TB
 
 ### Architectural Patterns
 
-- **Simplified Backend:** Supabase handles all backend complexity - _Rationale:_ Focus on business logic, not infrastructure
-- **Database-First Design:** Leverage Supabase RLS for authorization - _Rationale:_ Centralized security model reduces auth complexity
-- **Optimistic UI Updates:** React Query with optimistic mutations - _Rationale:_ Critical for achieving sub-2-minute contract flow perception
-- **Server Components:** Next.js App Router with RSC - _Rationale:_ Reduce client bundle size and improve initial load for tablet devices
-- **Component-Driven UI:** Atomic design with Shadcn/ui - _Rationale:_ Rapid UI development with consistent Swiss-professional aesthetic
-- **Real-time Updates:** Supabase Realtime for fleet status - _Rationale:_ Prevent double-bookings without polling overhead
-- **Progressive Enhancement:** Start simple, add complexity based on metrics - _Rationale:_ Avoid over-engineering before product-market fit
+- **Simplified Backend:** Supabase handles all backend complexity - _Rationale:_ Focus on business
+  logic, not infrastructure
+- **Database-First Design:** Leverage Supabase RLS for authorization - _Rationale:_ Centralized
+  security model reduces auth complexity
+- **Optimistic UI Updates:** React Query with optimistic mutations - _Rationale:_ Critical for
+  achieving sub-2-minute contract flow perception
+- **Server Components:** Next.js App Router with RSC - _Rationale:_ Reduce client bundle size and
+  improve initial load for tablet devices
+- **Component-Driven UI:** Atomic design with Shadcn/ui - _Rationale:_ Rapid UI development with
+  consistent Swiss-professional aesthetic
+- **Real-time Updates:** Supabase Realtime for fleet status - _Rationale:_ Prevent double-bookings
+  without polling overhead
+- **Progressive Enhancement:** Start simple, add complexity based on metrics - _Rationale:_ Avoid
+  over-engineering before product-market fit
 
 ## Tech Stack
 
 ### Technology Stack Table - Complete MVP Stack
 
-| Category | Technology | Version | Purpose | Rationale |
-|----------|------------|---------|----------|-----------|
-| **Core Framework** |||||
-| Frontend Language | TypeScript | 5.3+ | Type-safe development | Prevents runtime errors in financial calculations |
-| Frontend Framework | Next.js | 14.2+ | Full-stack React framework | App Router for RSC, optimal for complex workflows |
-| Backend Platform | Supabase | 2.39+ | Complete backend solution | Auth, database, storage, realtime in one |
-| Database | PostgreSQL | 15+ | Primary datastore | Supabase-hosted in Zurich, ACID compliance |
-| **UI/UX Libraries** |||||
-| UI Component Library | Shadcn/ui + Radix | Latest | Professional components | Swiss-clean aesthetic, fully customizable |
-| CSS Framework | Tailwind CSS | 3.4+ | Utility-first CSS | Rapid development, consistent styling |
-| Calendar Component | FullCalendar | 6.1+ | Fleet availability view | Interactive drag-drop calendar for reservations |
-| Date Picker | react-day-picker | 8.0+ | Date selection | Lightweight, accessible date picking |
-| Charts | Recharts | 2.10+ | Dashboard visualizations | ROI metrics and analytics display |
-| **Document & Media** |||||
-| PDF Generation | @react-pdf/renderer | 3.1+ | Contract generation | Server-side PDF with embedded images |
-| Swiss QR Bills | swissqrbill | 3.2+ | Payment QR codes | ISO 20022 compliant Swiss payment slips |
-| Digital Signatures | react-signature-canvas | 1.0+ | Touch signatures | Capture legally-binding signatures |
-| Camera Access | react-webcam | 7.2+ | Photo capture | Tablet/desktop camera integration |
-| Image Compression | browser-image-compression | 2.0+ | Photo optimization | Reduce size before upload (1MB max) |
-| Image Annotation | Konva | 9.3+ | Damage marking | Draw on photos to mark damage |
-| **State & Data** |||||
-| State Management | Zustand | 4.5+ | Client state | Simple store for UI state |
-| Server State | React Query (TanStack) | 5.0+ | Server cache | Data fetching, caching, synchronization |
-| Form Handling | React Hook Form | 7.48+ | Form management | Performance-optimized forms |
-| Validation | Zod | 3.22+ | Schema validation | Type-safe validation |
-| **Financial & Utilities** |||||
-| Money Calculations | Dinero.js | 1.9+ | Currency handling | Accurate CHF calculations with Rappen |
-| Date Handling | date-fns | 3.0+ | Date manipulation | Tree-shakeable, timezone-aware |
-| Phone Input | react-phone-number-input | 3.3+ | Swiss phone numbers | +41 format validation |
-| Unique IDs | uuid | 9.0+ | ID generation | Database record identifiers |
-| **Infrastructure** |||||
-| Hosting | Vercel | Latest | Frontend hosting | Free tier, automatic deploys |
-| File Storage | Supabase Storage | 2.39+ | Photos/PDFs | Integrated with auth, RLS |
-| Authentication | Supabase Auth | 2.39+ | User management | Built-in 2FA, magic links |
-| Realtime | Supabase Realtime | 2.39+ | Live updates | WebSocket for fleet status |
-| **Payments** |||||
-| Payment Processing | Stripe | Latest | Credit card payments | PCI compliant, Swiss market support |
-| QR Bill Generation | swissqrbill | 3.2+ | Swiss payments | Generate only, manual reconciliation |
-| **Development Tools** |||||
-| Package Manager | pnpm | 8.14+ | Dependency management | Faster, efficient monorepo support |
-| Build Tool | Vite | 5.0+ | Development server | Fast HMR for development |
-| Bundler | Turbopack | Beta | Production builds | Faster Next.js builds |
-| Linting | ESLint | 8.56+ | Code quality | Enforce coding standards |
-| Formatting | Prettier | 3.2+ | Code formatting | Consistent code style |
-| Git Hooks | Husky | 8.0+ | Pre-commit checks | Ensure quality before commits |
-| **Testing** |||||
-| Unit Testing | Vitest | 1.2+ | Unit/integration tests | Fast, ESM-native |
-| Component Testing | Testing Library | 14+ | React component tests | User-centric testing |
-| E2E Testing | Playwright | 1.41+ | End-to-end tests | Cross-browser testing |
-| **Monitoring** |||||
-| Error Tracking | Sentry | 7.99+ | Error monitoring | Real-time error alerts |
-| Analytics | PostHog | 1.0+ | User analytics | Self-hosted option, privacy-first |
-| **Email & Support** |||||
-| Email Service | Resend | 2.1+ | Transactional email | Great DX, Swiss-friendly |
-| Customer Support | Crisp.chat | Free | Live chat support | Optional for customer help |
+| Category                  | Technology                | Version | Purpose                    | Rationale                                         |
+| ------------------------- | ------------------------- | ------- | -------------------------- | ------------------------------------------------- |
+| **Core Framework**        |                           |         |                            |                                                   |
+| Frontend Language         | TypeScript                | 5.3+    | Type-safe development      | Prevents runtime errors in financial calculations |
+| Frontend Framework        | Next.js                   | 14.2+   | Full-stack React framework | App Router for RSC, optimal for complex workflows |
+| Backend Platform          | Supabase                  | 2.39+   | Complete backend solution  | Auth, database, storage, realtime in one          |
+| Database                  | PostgreSQL                | 15+     | Primary datastore          | Supabase-hosted in Zurich, ACID compliance        |
+| **UI/UX Libraries**       |                           |         |                            |                                                   |
+| UI Component Library      | Shadcn/ui + Radix         | Latest  | Professional components    | Swiss-clean aesthetic, fully customizable         |
+| CSS Framework             | Tailwind CSS              | 3.4+    | Utility-first CSS          | Rapid development, consistent styling             |
+| Calendar Component        | FullCalendar              | 6.1+    | Fleet availability view    | Interactive drag-drop calendar for reservations   |
+| Date Picker               | react-day-picker          | 8.0+    | Date selection             | Lightweight, accessible date picking              |
+| Charts                    | Recharts                  | 2.10+   | Dashboard visualizations   | ROI metrics and analytics display                 |
+| **Document & Media**      |                           |         |                            |                                                   |
+| PDF Generation            | @react-pdf/renderer       | 3.1+    | Contract generation        | Server-side PDF with embedded images              |
+| Swiss QR Bills            | swissqrbill               | 3.2+    | Payment QR codes           | ISO 20022 compliant Swiss payment slips           |
+| Digital Signatures        | react-signature-canvas    | 1.0+    | Touch signatures           | Capture legally-binding signatures                |
+| Camera Access             | react-webcam              | 7.2+    | Photo capture              | Tablet/desktop camera integration                 |
+| Image Compression         | browser-image-compression | 2.0+    | Photo optimization         | Reduce size before upload (1MB max)               |
+| Image Annotation          | Konva                     | 9.3+    | Damage marking             | Draw on photos to mark damage                     |
+| **State & Data**          |                           |         |                            |                                                   |
+| State Management          | Zustand                   | 4.5+    | Client state               | Simple store for UI state                         |
+| Server State              | React Query (TanStack)    | 5.0+    | Server cache               | Data fetching, caching, synchronization           |
+| Form Handling             | React Hook Form           | 7.48+   | Form management            | Performance-optimized forms                       |
+| Validation                | Zod                       | 3.22+   | Schema validation          | Type-safe validation                              |
+| **Financial & Utilities** |                           |         |                            |                                                   |
+| Money Calculations        | Dinero.js                 | 1.9+    | Currency handling          | Accurate CHF calculations with Rappen             |
+| Date Handling             | date-fns                  | 3.0+    | Date manipulation          | Tree-shakeable, timezone-aware                    |
+| Phone Input               | react-phone-number-input  | 3.3+    | Swiss phone numbers        | +41 format validation                             |
+| Unique IDs                | uuid                      | 9.0+    | ID generation              | Database record identifiers                       |
+| **Infrastructure**        |                           |         |                            |                                                   |
+| Hosting                   | Vercel                    | Latest  | Frontend hosting           | Free tier, automatic deploys                      |
+| File Storage              | Supabase Storage          | 2.39+   | Photos/PDFs                | Integrated with auth, RLS                         |
+| Authentication            | Supabase Auth             | 2.39+   | User management            | Built-in 2FA, magic links                         |
+| Realtime                  | Supabase Realtime         | 2.39+   | Live updates               | WebSocket for fleet status                        |
+| **Payments**              |                           |         |                            |                                                   |
+| Payment Processing        | Stripe                    | Latest  | Credit card payments       | PCI compliant, Swiss market support               |
+| QR Bill Generation        | swissqrbill               | 3.2+    | Swiss payments             | Generate only, manual reconciliation              |
+| **Development Tools**     |                           |         |                            |                                                   |
+| Package Manager           | pnpm                      | 8.14+   | Dependency management      | Faster, efficient monorepo support                |
+| Build Tool                | Vite                      | 5.0+    | Development server         | Fast HMR for development                          |
+| Bundler                   | Turbopack                 | Beta    | Production builds          | Faster Next.js builds                             |
+| Linting                   | ESLint                    | 8.56+   | Code quality               | Enforce coding standards                          |
+| Formatting                | Prettier                  | 3.2+    | Code formatting            | Consistent code style                             |
+| Git Hooks                 | Husky                     | 8.0+    | Pre-commit checks          | Ensure quality before commits                     |
+| **Testing**               |                           |         |                            |                                                   |
+| Unit Testing              | Vitest                    | 1.2+    | Unit/integration tests     | Fast, ESM-native                                  |
+| Component Testing         | Testing Library           | 14+     | React component tests      | User-centric testing                              |
+| E2E Testing               | Playwright                | 1.41+   | End-to-end tests           | Cross-browser testing                             |
+| **Monitoring**            |                           |         |                            |                                                   |
+| Error Tracking            | Sentry                    | 7.99+   | Error monitoring           | Real-time error alerts                            |
+| Analytics                 | PostHog                   | 1.0+    | User analytics             | Self-hosted option, privacy-first                 |
+| **Email & Support**       |                           |         |                            |                                                   |
+| Email Service             | Resend                    | 2.1+    | Transactional email        | Great DX, Swiss-friendly                          |
+| Customer Support          | Crisp.chat                | Free    | Live chat support          | Optional for customer help                        |
 
 ## Data Models
 
@@ -168,14 +190,16 @@ graph TB
 The system uses 8 core entities designed for multi-tenant SaaS with Swiss compliance requirements.
 
 ### 1. Companies (Multi-tenant isolation)
-**Purpose:** Isolates data per rental company for SaaS multi-tenancy
-**Key Attributes:**
+
+**Purpose:** Isolates data per rental company for SaaS multi-tenancy **Key Attributes:**
+
 - id: UUID - Unique identifier
 - name: string - Company name
 - subscription_tier: enum - Pricing tier (starter/professional/business)
 - settings: JSON - Company-specific configuration
 
 **TypeScript Interface:**
+
 ```typescript
 interface Company {
   id: string;
@@ -202,17 +226,20 @@ interface Company {
 ```
 
 **Relationships:**
+
 - Owns vehicles, contracts, staff users
 
 ### 2. Users (Staff and Owners)
-**Purpose:** Authentication and authorization for system access
-**Key Attributes:**
+
+**Purpose:** Authentication and authorization for system access **Key Attributes:**
+
 - id: UUID - From Supabase Auth
 - company_id: UUID - Links to company
 - role: enum - Access level (owner/staff/admin)
 - permissions: JSON - Granular permissions
 
 **TypeScript Interface:**
+
 ```typescript
 interface User {
   id: string;
@@ -234,17 +261,20 @@ interface User {
 ```
 
 **Relationships:**
+
 - Belongs to company, creates contracts/actions
 
 ### 3. Customers (Rental customers)
-**Purpose:** Store customer information for quick contract creation
-**Key Attributes:**
+
+**Purpose:** Store customer information for quick contract creation **Key Attributes:**
+
 - id: UUID - Unique identifier
 - Personal info: name, DOB, contact details
 - Documents: ID type/number, driver license
 - Status: blacklist flag, verification status
 
 **TypeScript Interface:**
+
 ```typescript
 interface Customer {
   id: string;
@@ -275,17 +305,20 @@ interface Customer {
 ```
 
 **Relationships:**
+
 - Has many contracts, rental history
 
 ### 4. Vehicles (Fleet inventory)
-**Purpose:** Track fleet inventory and availability
-**Key Attributes:**
+
+**Purpose:** Track fleet inventory and availability **Key Attributes:**
+
 - License plate, VIN, make/model
 - Rental rates: daily/weekly/monthly
 - Current status and state (km, fuel)
 - Maintenance tracking
 
 **TypeScript Interface:**
+
 ```typescript
 interface Vehicle {
   id: string;
@@ -314,17 +347,20 @@ interface Vehicle {
 ```
 
 **Relationships:**
+
 - Has many contracts, maintenance records
 
 ### 5. Contracts (Core rental agreements)
-**Purpose:** Complete rental contract lifecycle management
-**Key Attributes:**
+
+**Purpose:** Complete rental contract lifecycle management **Key Attributes:**
+
 - Contract parties and vehicle
 - Rental period and pricing
 - Vehicle state at pickup/return
 - Payment tracking and status
 
 **TypeScript Interface:**
+
 ```typescript
 interface Contract {
   id: string;
@@ -360,17 +396,20 @@ interface Contract {
 ```
 
 **Relationships:**
+
 - Belongs to customer/vehicle, has photos/payments
 
 ### 6. Contract Photos (Evidence documentation)
-**Purpose:** Visual evidence for contract disputes
-**Key Attributes:**
+
+**Purpose:** Visual evidence for contract disputes **Key Attributes:**
+
 - Photo type and category
 - Storage path and URLs
 - Damage annotations
 - Upload metadata
 
 **TypeScript Interface:**
+
 ```typescript
 interface ContractPhoto {
   id: string;
@@ -398,17 +437,20 @@ interface ContractPhoto {
 ```
 
 **Relationships:**
+
 - Belongs to contract
 
 ### 7. Payments (Financial transactions)
-**Purpose:** Track all financial transactions
-**Key Attributes:**
+
+**Purpose:** Track all financial transactions **Key Attributes:**
+
 - Amount and currency
 - Payment type and method
 - Status and references
 - QR bill generation
 
 **TypeScript Interface:**
+
 ```typescript
 interface Payment {
   id: string;
@@ -431,17 +473,20 @@ interface Payment {
 ```
 
 **Relationships:**
+
 - Belongs to contract
 
 ### 8. Reservations (Future bookings)
-**Purpose:** Manage future vehicle bookings
-**Key Attributes:**
+
+**Purpose:** Manage future vehicle bookings **Key Attributes:**
+
 - Customer and vehicle
 - Reservation dates
 - Status tracking
 - Conversion to contract
 
 **TypeScript Interface:**
+
 ```typescript
 interface Reservation {
   id: string;
@@ -462,6 +507,7 @@ interface Reservation {
 ```
 
 **Relationships:**
+
 - Can convert to contract
 
 ## Storage Architecture
@@ -471,12 +517,14 @@ interface Reservation {
 For MVP, we use Supabase Storage for everything with a clear migration path for future optimization.
 
 **Current Storage Strategy:**
+
 - **Photos:** Supabase Storage with public bucket
 - **PDFs:** Supabase Storage with RLS protection
 - **Temp files:** Supabase Storage with auto-cleanup policies
 - **Backups:** Supabase automatic daily backups
 
 **Future Migration Path (Month 3+):**
+
 - Add CDN when photo loading exceeds 2 seconds
 - Move to R2/B2 when storage costs exceed CHF 50/month
 - Implement Redis caching when search slows down
@@ -486,18 +534,19 @@ For MVP, we use Supabase Storage for everything with a clear migration path for 
 ### Overview
 
 The CRMS API follows RESTful principles and combines:
+
 1. **Supabase Auto-generated APIs** - Direct CRUD operations with Row Level Security (RLS)
 2. **Custom Next.js API Routes** - Complex business logic and integrations
 3. **Real-time Subscriptions** - WebSocket connections for live updates
 
 **Base URLs:**
+
 - Production: `https://crms.swiss/api/v1`
 - Staging: `https://staging.crms.swiss/api/v1`
 - Supabase: `https://[project-id].supabase.co/rest/v1`
 
-**Authentication:** JWT Bearer tokens from Supabase Auth
-**Rate Limiting:** 100 requests per minute per authenticated user
-**Swiss Compliance:** All endpoints support Swiss data residency and GDPR
+**Authentication:** JWT Bearer tokens from Supabase Auth **Rate Limiting:** 100 requests per minute
+per authenticated user **Swiss Compliance:** All endpoints support Swiss data residency and GDPR
 
 ### Global Response Format
 
@@ -523,22 +572,24 @@ interface APIResponse<T> {
 
 ### Error Codes
 
-| Code | HTTP Status | Description |
-|------|-------------|-------------|
-| `UNAUTHORIZED` | 401 | Invalid or missing JWT token |
-| `FORBIDDEN` | 403 | Insufficient permissions |
-| `NOT_FOUND` | 404 | Resource not found |
-| `VALIDATION_ERROR` | 422 | Request validation failed |
-| `RATE_LIMIT_EXCEEDED` | 429 | Too many requests |
-| `INTERNAL_ERROR` | 500 | Server error |
-| `MAINTENANCE_MODE` | 503 | System maintenance |
+| Code                  | HTTP Status | Description                  |
+| --------------------- | ----------- | ---------------------------- |
+| `UNAUTHORIZED`        | 401         | Invalid or missing JWT token |
+| `FORBIDDEN`           | 403         | Insufficient permissions     |
+| `NOT_FOUND`           | 404         | Resource not found           |
+| `VALIDATION_ERROR`    | 422         | Request validation failed    |
+| `RATE_LIMIT_EXCEEDED` | 429         | Too many requests            |
+| `INTERNAL_ERROR`      | 500         | Server error                 |
+| `MAINTENANCE_MODE`    | 503         | System maintenance           |
 
 ## Authentication Endpoints
 
 ### POST /auth/login
+
 **Purpose:** Authenticate user with email/password
 
 **Request:**
+
 ```json
 {
   "email": "user@example.ch",
@@ -548,6 +599,7 @@ interface APIResponse<T> {
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -573,9 +625,11 @@ interface APIResponse<T> {
 ```
 
 ### POST /auth/magic-link
+
 **Purpose:** Send magic link for passwordless login
 
 **Request:**
+
 ```json
 {
   "email": "user@example.ch",
@@ -584,6 +638,7 @@ interface APIResponse<T> {
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -594,14 +649,17 @@ interface APIResponse<T> {
 ```
 
 ### POST /auth/refresh
+
 **Purpose:** Refresh access token
 
 **Headers:**
+
 ```
 Authorization: Bearer [refresh_token]
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -613,14 +671,17 @@ Authorization: Bearer [refresh_token]
 ```
 
 ### POST /auth/logout
+
 **Purpose:** Invalidate user session
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -631,9 +692,11 @@ Authorization: Bearer [access_token]
 ```
 
 ### POST /auth/password-reset
+
 **Purpose:** Send password reset email
 
 **Request:**
+
 ```json
 {
   "email": "user@example.ch"
@@ -641,6 +704,7 @@ Authorization: Bearer [access_token]
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -651,14 +715,17 @@ Authorization: Bearer [access_token]
 ```
 
 ### POST /auth/password-update
+
 **Purpose:** Update user password
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Request:**
+
 ```json
 {
   "current_password": "oldPassword123",
@@ -667,6 +734,7 @@ Authorization: Bearer [access_token]
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -679,14 +747,17 @@ Authorization: Bearer [access_token]
 ## Company Management
 
 ### GET /companies/current
+
 **Purpose:** Get current user's company details
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -716,14 +787,17 @@ Authorization: Bearer [access_token]
 ```
 
 ### PUT /companies/current
+
 **Purpose:** Update company information
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Request:**
+
 ```json
 {
   "name": "Swiss Rental AG",
@@ -731,13 +805,14 @@ Authorization: Bearer [access_token]
   "email": "info@swissrental.ch",
   "settings": {
     "vat_rate": 7.7,
-    "default_fuel_price": 1.70,
-    "km_price": 0.30
+    "default_fuel_price": 1.7,
+    "km_price": 0.3
   }
 }
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -750,14 +825,17 @@ Authorization: Bearer [access_token]
 ## User Management
 
 ### GET /users
+
 **Purpose:** List company users with pagination
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Query Parameters:**
+
 - `page` (number): Page number (default: 1)
 - `limit` (number): Items per page (max: 100, default: 25)
 - `role` (string): Filter by role
@@ -765,6 +843,7 @@ Authorization: Bearer [access_token]
 - `search` (string): Search by name or email
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -797,14 +876,17 @@ Authorization: Bearer [access_token]
 ```
 
 ### POST /users
+
 **Purpose:** Create new user
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Request:**
+
 ```json
 {
   "email": "newuser@swissrental.ch",
@@ -821,6 +903,7 @@ Authorization: Bearer [access_token]
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -832,17 +915,21 @@ Authorization: Bearer [access_token]
 ```
 
 ### PUT /users/{user_id}
+
 **Purpose:** Update user information
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Path Parameters:**
+
 - `user_id` (string): User UUID
 
 **Request:**
+
 ```json
 {
   "full_name": "Updated Name",
@@ -858,6 +945,7 @@ Authorization: Bearer [access_token]
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -868,14 +956,17 @@ Authorization: Bearer [access_token]
 ```
 
 ### DELETE /users/{user_id}
+
 **Purpose:** Deactivate user (soft delete)
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -888,14 +979,17 @@ Authorization: Bearer [access_token]
 ## Customer Management
 
 ### GET /customers
+
 **Purpose:** List customers with advanced filtering
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Query Parameters:**
+
 - `page` (number): Page number
 - `limit` (number): Items per page
 - `search` (string): Search name, email, phone, or ID number
@@ -905,6 +999,7 @@ Authorization: Bearer [access_token]
 - `order` (string): Sort order (asc, desc)
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -943,14 +1038,17 @@ Authorization: Bearer [access_token]
 ```
 
 ### GET /customers/{customer_id}
+
 **Purpose:** Get customer details with rental history
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -982,7 +1080,7 @@ Authorization: Bearer [access_token]
         "start_date": "2025-07-15",
         "end_date": "2025-07-18",
         "status": "completed",
-        "total_amount": 450.00
+        "total_amount": 450.0
       }
     ]
   }
@@ -990,14 +1088,17 @@ Authorization: Bearer [access_token]
 ```
 
 ### POST /customers
+
 **Purpose:** Create new customer
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Request:**
+
 ```json
 {
   "first_name": "Anna",
@@ -1019,6 +1120,7 @@ Authorization: Bearer [access_token]
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1030,14 +1132,17 @@ Authorization: Bearer [access_token]
 ```
 
 ### PUT /customers/{customer_id}
+
 **Purpose:** Update customer information
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Request:**
+
 ```json
 {
   "phone": "+41 76 987 65 44",
@@ -1048,6 +1153,7 @@ Authorization: Bearer [access_token]
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1058,14 +1164,17 @@ Authorization: Bearer [access_token]
 ```
 
 ### POST /customers/{customer_id}/blacklist
+
 **Purpose:** Add customer to blacklist
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Request:**
+
 ```json
 {
   "reason": "Damaged vehicle and refused to pay"
@@ -1073,6 +1182,7 @@ Authorization: Bearer [access_token]
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1083,14 +1193,17 @@ Authorization: Bearer [access_token]
 ```
 
 ### DELETE /customers/{customer_id}/blacklist
+
 **Purpose:** Remove customer from blacklist
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1103,14 +1216,17 @@ Authorization: Bearer [access_token]
 ## Vehicle Management
 
 ### GET /vehicles
+
 **Purpose:** List vehicles with availability status
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Query Parameters:**
+
 - `page` (number): Page number
 - `limit` (number): Items per page
 - `status` (string): Filter by status
@@ -1122,6 +1238,7 @@ Authorization: Bearer [access_token]
 - `order` (string): Sort order
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1136,10 +1253,10 @@ Authorization: Bearer [access_token]
       "year": 2023,
       "color": "Silver",
       "vehicle_type": "economy",
-      "daily_rate": 89.00,
-      "weekly_rate": 500.00,
-      "monthly_rate": 1800.00,
-      "deposit_amount": 500.00,
+      "daily_rate": 89.0,
+      "weekly_rate": 500.0,
+      "monthly_rate": 1800.0,
+      "deposit_amount": 500.0,
       "status": "available",
       "current_km": 15432,
       "fuel_level": 85,
@@ -1164,14 +1281,17 @@ Authorization: Bearer [access_token]
 ```
 
 ### GET /vehicles/{vehicle_id}
+
 **Purpose:** Get vehicle details with rental history
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1183,10 +1303,10 @@ Authorization: Bearer [access_token]
     "year": 2023,
     "color": "Silver",
     "vehicle_type": "economy",
-    "daily_rate": 89.00,
-    "weekly_rate": 500.00,
-    "monthly_rate": 1800.00,
-    "deposit_amount": 500.00,
+    "daily_rate": 89.0,
+    "weekly_rate": 500.0,
+    "monthly_rate": 1800.0,
+    "deposit_amount": 500.0,
     "status": "available",
     "current_km": 15432,
     "fuel_level": 85,
@@ -1206,7 +1326,7 @@ Authorization: Bearer [access_token]
         "date": "2025-06-01",
         "type": "Service",
         "description": "Regular service at 10,000 km",
-        "cost": 350.00
+        "cost": 350.0
       }
     ]
   }
@@ -1214,14 +1334,17 @@ Authorization: Bearer [access_token]
 ```
 
 ### POST /vehicles
+
 **Purpose:** Add new vehicle to fleet
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Request:**
+
 ```json
 {
   "license_plate": "ZH-789012",
@@ -1231,10 +1354,10 @@ Authorization: Bearer [access_token]
   "year": 2024,
   "color": "Blue",
   "vehicle_type": "sedan",
-  "daily_rate": 120.00,
-  "weekly_rate": 750.00,
-  "monthly_rate": 2500.00,
-  "deposit_amount": 800.00,
+  "daily_rate": 120.0,
+  "weekly_rate": 750.0,
+  "monthly_rate": 2500.0,
+  "deposit_amount": 800.0,
   "current_km": 0,
   "fuel_level": 100,
   "features": ["GPS", "Bluetooth", "Air Conditioning", "Leather Seats"]
@@ -1242,6 +1365,7 @@ Authorization: Bearer [access_token]
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1253,17 +1377,20 @@ Authorization: Bearer [access_token]
 ```
 
 ### PUT /vehicles/{vehicle_id}
+
 **Purpose:** Update vehicle information
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Request:**
+
 ```json
 {
-  "daily_rate": 95.00,
+  "daily_rate": 95.0,
   "status": "maintenance",
   "current_km": 15650,
   "fuel_level": 45,
@@ -1272,6 +1399,7 @@ Authorization: Bearer [access_token]
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1282,20 +1410,24 @@ Authorization: Bearer [access_token]
 ```
 
 ### GET /vehicles/availability
+
 **Purpose:** Check vehicle availability for date range
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Query Parameters:**
+
 - `start_date` (date): Required start date
 - `end_date` (date): Required end date
 - `vehicle_type` (string): Filter by type
 - `exclude_contract` (string): Exclude specific contract from check
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1307,7 +1439,7 @@ Authorization: Bearer [access_token]
         "make": "Volkswagen",
         "model": "Golf",
         "vehicle_type": "economy",
-        "daily_rate": 89.00,
+        "daily_rate": 89.0,
         "is_available": true
       }
     ],
@@ -1329,14 +1461,17 @@ Authorization: Bearer [access_token]
 ## Contract Management
 
 ### GET /contracts
+
 **Purpose:** List contracts with advanced filtering
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Query Parameters:**
+
 - `page` (number): Page number
 - `limit` (number): Items per page
 - `status` (string): Filter by status
@@ -1350,6 +1485,7 @@ Authorization: Bearer [access_token]
 - `order` (string): Sort order
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1371,8 +1507,8 @@ Authorization: Bearer [access_token]
       "start_date": "2025-08-10T10:00:00Z",
       "end_date": "2025-08-15T10:00:00Z",
       "total_days": 5,
-      "total_amount": 525.00,
-      "deposit_amount": 500.00,
+      "total_amount": 525.0,
+      "deposit_amount": 500.0,
       "status": "confirmed",
       "payment_status": "paid",
       "created_at": "2025-08-05T14:30:00Z",
@@ -1389,14 +1525,17 @@ Authorization: Bearer [access_token]
 ```
 
 ### GET /contracts/{contract_id}
+
 **Purpose:** Get complete contract details
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1425,14 +1564,14 @@ Authorization: Bearer [access_token]
     "pickup_fuel": 85,
     "return_km": null,
     "return_fuel": null,
-    "base_rate": 89.00,
+    "base_rate": 89.0,
     "rate_type": "daily",
     "total_days": 5,
-    "subtotal": 445.00,
+    "subtotal": 445.0,
     "vat_rate": 7.7,
     "vat_amount": 34.27,
     "total_amount": 479.27,
-    "deposit_amount": 500.00,
+    "deposit_amount": 500.0,
     "deposit_status": "held",
     "payment_status": "paid",
     "status": "confirmed",
@@ -1464,14 +1603,17 @@ Authorization: Bearer [access_token]
 ```
 
 ### POST /contracts
+
 **Purpose:** Create new rental contract
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Request:**
+
 ```json
 {
   "customer_id": "123e4567-e89b-12d3-a456-426614174004",
@@ -1481,12 +1623,13 @@ Authorization: Bearer [access_token]
   "pickup_km": 15432,
   "pickup_fuel": 85,
   "rate_type": "daily",
-  "base_rate": 89.00,
-  "deposit_amount": 500.00
+  "base_rate": 89.0,
+  "deposit_amount": 500.0
 }
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1501,14 +1644,17 @@ Authorization: Bearer [access_token]
 ```
 
 ### PUT /contracts/{contract_id}
+
 **Purpose:** Update contract details
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Request:**
+
 ```json
 {
   "end_date": "2025-08-16T10:00:00Z",
@@ -1518,6 +1664,7 @@ Authorization: Bearer [access_token]
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1530,14 +1677,17 @@ Authorization: Bearer [access_token]
 ```
 
 ### POST /contracts/{contract_id}/confirm
+
 **Purpose:** Confirm contract and make it active
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Request:**
+
 ```json
 {
   "signature_url": "https://storage.supabase.co/signatures/CR-2025-002.png"
@@ -1545,6 +1695,7 @@ Authorization: Bearer [access_token]
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1556,14 +1707,17 @@ Authorization: Bearer [access_token]
 ```
 
 ### POST /contracts/{contract_id}/return
+
 **Purpose:** Process vehicle return
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Request:**
+
 ```json
 {
   "return_km": 15987,
@@ -1572,54 +1726,59 @@ Authorization: Bearer [access_token]
   "extra_charges": [
     {
       "description": "Fuel refill",
-      "amount": 45.00
+      "amount": 45.0
     },
     {
       "description": "Cleaning fee",
-      "amount": 50.00
+      "amount": 50.0
     }
   ]
 }
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
   "data": {
     "status": "completed",
     "total_km": 555,
-    "extra_charges_total": 95.00,
+    "extra_charges_total": 95.0,
     "final_amount": 574.27,
-    "deposit_returned": 405.00,
+    "deposit_returned": 405.0,
     "message": "Vehicle returned successfully"
   }
 }
 ```
 
 ### POST /contracts/{contract_id}/cancel
+
 **Purpose:** Cancel contract
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Request:**
+
 ```json
 {
   "reason": "Customer requested cancellation",
-  "refund_amount": 400.00
+  "refund_amount": 400.0
 }
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
   "data": {
     "status": "cancelled",
-    "refund_amount": 400.00,
+    "refund_amount": 400.0,
     "message": "Contract cancelled successfully"
   }
 }
@@ -1628,15 +1787,18 @@ Authorization: Bearer [access_token]
 ## Photo Management
 
 ### POST /contracts/{contract_id}/photos
+
 **Purpose:** Upload contract photos
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 Content-Type: multipart/form-data
 ```
 
 **Request:**
+
 ```
 file: [image file]
 photo_type: pickup|return|damage|id|license
@@ -1647,6 +1809,7 @@ damage_description: "Small scratch visible" (for damage photos)
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1659,14 +1822,17 @@ damage_description: "Small scratch visible" (for damage photos)
 ```
 
 ### PUT /photos/{photo_id}
+
 **Purpose:** Update photo metadata
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Request:**
+
 ```json
 {
   "caption": "Updated caption",
@@ -1684,6 +1850,7 @@ Authorization: Bearer [access_token]
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1694,14 +1861,17 @@ Authorization: Bearer [access_token]
 ```
 
 ### DELETE /photos/{photo_id}
+
 **Purpose:** Delete photo
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1714,14 +1884,17 @@ Authorization: Bearer [access_token]
 ## Payment Management
 
 ### GET /payments
+
 **Purpose:** List payments with filtering
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Query Parameters:**
+
 - `page` (number): Page number
 - `limit` (number): Items per page
 - `contract_id` (string): Filter by contract
@@ -1734,6 +1907,7 @@ Authorization: Bearer [access_token]
 - `order` (string): Sort order
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1763,14 +1937,17 @@ Authorization: Bearer [access_token]
 ```
 
 ### POST /payments
+
 **Purpose:** Process payment
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Request:**
+
 ```json
 {
   "contract_id": "123e4567-e89b-12d3-a456-426614174010",
@@ -1782,6 +1959,7 @@ Authorization: Bearer [access_token]
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1795,22 +1973,26 @@ Authorization: Bearer [access_token]
 ```
 
 ### POST /payments/{payment_id}/refund
+
 **Purpose:** Process refund
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Request:**
+
 ```json
 {
-  "amount": 100.00,
+  "amount": 100.0,
   "reason": "Partial cancellation refund"
 }
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1823,14 +2005,17 @@ Authorization: Bearer [access_token]
 ```
 
 ### GET /payments/{payment_id}/qr-bill
+
 **Purpose:** Generate Swiss QR bill
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1844,14 +2029,17 @@ Authorization: Bearer [access_token]
 ## Reservation Management
 
 ### GET /reservations
+
 **Purpose:** List reservations
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Query Parameters:**
+
 - `page` (number): Page number
 - `limit` (number): Items per page
 - `status` (string): Filter by status
@@ -1861,6 +2049,7 @@ Authorization: Bearer [access_token]
 - `date_to` (date): Filter until date
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1895,14 +2084,17 @@ Authorization: Bearer [access_token]
 ```
 
 ### POST /reservations
+
 **Purpose:** Create new reservation
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Request:**
+
 ```json
 {
   "customer_id": "123e4567-e89b-12d3-a456-426614174004",
@@ -1914,6 +2106,7 @@ Authorization: Bearer [access_token]
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1926,24 +2119,28 @@ Authorization: Bearer [access_token]
 ```
 
 ### POST /reservations/{reservation_id}/convert
+
 **Purpose:** Convert reservation to contract
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Request:**
+
 ```json
 {
   "pickup_km": 15432,
   "pickup_fuel": 85,
-  "base_rate": 89.00,
-  "deposit_amount": 500.00
+  "base_rate": 89.0,
+  "deposit_amount": 500.0
 }
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1958,14 +2155,17 @@ Authorization: Bearer [access_token]
 ## Business Logic Endpoints
 
 ### POST /contracts/quick-create
+
 **Purpose:** Streamlined contract creation for 2-minute goal
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Request:**
+
 ```json
 {
   "customer": {
@@ -1987,6 +2187,7 @@ Authorization: Bearer [access_token]
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -2002,24 +2203,28 @@ Authorization: Bearer [access_token]
 ```
 
 ### GET /dashboard/overview
+
 **Purpose:** Dashboard overview data
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Query Parameters:**
+
 - `period` (string): today|week|month|year
 
 **Response:**
+
 ```json
 {
   "success": true,
   "data": {
     "period": "month",
     "revenue": {
-      "total": 45780.50,
+      "total": 45780.5,
       "previous_period": 38940.25,
       "growth_percentage": 17.6
     },
@@ -2056,20 +2261,24 @@ Authorization: Bearer [access_token]
 ```
 
 ### GET /analytics/revenue
+
 **Purpose:** Revenue analytics
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Query Parameters:**
+
 - `period` (string): daily|weekly|monthly|yearly
 - `start_date` (date): Analysis start date
 - `end_date` (date): Analysis end date
 - `vehicle_type` (string): Filter by vehicle type
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -2078,13 +2287,13 @@ Authorization: Bearer [access_token]
     "total_revenue": 125340.75,
     "breakdown": {
       "rental_revenue": 98450.25,
-      "deposit_revenue": 12340.50,
-      "extra_charges": 14550.00
+      "deposit_revenue": 12340.5,
+      "extra_charges": 14550.0
     },
     "by_vehicle_type": [
       {
         "type": "economy",
-        "revenue": 45678.90,
+        "revenue": 45678.9,
         "contracts": 45,
         "average_value": 1015.09
       }
@@ -2100,7 +2309,7 @@ Authorization: Bearer [access_token]
         {
           "vehicle_id": "123e4567-e89b-12d3-a456-426614174006",
           "license_plate": "ZH-123456",
-          "revenue": 5670.50,
+          "revenue": 5670.5,
           "rentals": 8
         }
       ]
@@ -2110,18 +2319,22 @@ Authorization: Bearer [access_token]
 ```
 
 ### GET /analytics/fleet-utilization
+
 **Purpose:** Fleet utilization analytics
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 ```
 
 **Query Parameters:**
+
 - `start_date` (date): Analysis start date
 - `end_date` (date): Analysis end date
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -2134,7 +2347,7 @@ Authorization: Bearer [access_token]
         "utilization_rate": 85.2,
         "total_days": 31,
         "rented_days": 26,
-        "revenue": 2340.50
+        "revenue": 2340.5
       }
     ],
     "by_type": [
@@ -2142,7 +2355,7 @@ Authorization: Bearer [access_token]
         "vehicle_type": "economy",
         "utilization_rate": 72.3,
         "vehicle_count": 8,
-        "average_revenue_per_day": 89.50
+        "average_revenue_per_day": 89.5
       }
     ],
     "trends": [
@@ -2158,15 +2371,18 @@ Authorization: Bearer [access_token]
 ## File Upload Endpoints
 
 ### POST /upload/photos
+
 **Purpose:** Upload contract photos with compression
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 Content-Type: multipart/form-data
 ```
 
 **Request:**
+
 ```
 files[]: [image files]
 contract_id: "123e4567-e89b-12d3-a456-426614174010"
@@ -2175,6 +2391,7 @@ compress: true
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -2194,15 +2411,18 @@ compress: true
 ```
 
 ### POST /upload/documents
+
 **Purpose:** Upload contract documents and IDs
 
 **Headers:**
+
 ```
 Authorization: Bearer [access_token]
 Content-Type: multipart/form-data
 ```
 
 **Request:**
+
 ```
 file: [PDF/image file]
 document_type: "id_document|license|contract|other"
@@ -2211,6 +2431,7 @@ contract_id: "123e4567-e89b-12d3-a456-426614174010" (optional)
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -2226,9 +2447,11 @@ contract_id: "123e4567-e89b-12d3-a456-426614174010" (optional)
 ## Webhook Endpoints
 
 ### POST /webhooks/stripe
+
 **Purpose:** Handle Stripe webhook events
 
 **Headers:**
+
 ```
 Stripe-Signature: [webhook signature]
 ```
@@ -2236,6 +2459,7 @@ Stripe-Signature: [webhook signature]
 **Request:** Stripe event payload
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -2247,9 +2471,11 @@ Stripe-Signature: [webhook signature]
 ```
 
 ### POST /webhooks/supabase-auth
+
 **Purpose:** Handle Supabase auth webhook events
 
 **Headers:**
+
 ```
 X-Supabase-Signature: [webhook signature]
 ```
@@ -2257,6 +2483,7 @@ X-Supabase-Signature: [webhook signature]
 **Request:** Supabase auth event payload
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -2270,11 +2497,13 @@ X-Supabase-Signature: [webhook signature]
 ## Real-time Subscription Endpoints
 
 ### WebSocket: /realtime/fleet-status
+
 **Purpose:** Real-time fleet status updates
 
 **Authentication:** JWT token via query parameter or header
 
 **Subscription Message:**
+
 ```json
 {
   "action": "subscribe",
@@ -2284,6 +2513,7 @@ X-Supabase-Signature: [webhook signature]
 ```
 
 **Server Messages:**
+
 ```json
 {
   "event": "vehicle_status_changed",
@@ -2298,9 +2528,11 @@ X-Supabase-Signature: [webhook signature]
 ```
 
 ### WebSocket: /realtime/contract-updates
+
 **Purpose:** Real-time contract status updates
 
 **Subscription Message:**
+
 ```json
 {
   "action": "subscribe",
@@ -2310,6 +2542,7 @@ X-Supabase-Signature: [webhook signature]
 ```
 
 **Server Messages:**
+
 ```json
 {
   "event": "contract_created",
@@ -2328,13 +2561,16 @@ X-Supabase-Signature: [webhook signature]
 ## Rate Limiting and Security
 
 ### Rate Limits
+
 - **Authentication endpoints:** 5 requests per minute per IP
 - **File upload endpoints:** 20 files per minute per user
 - **General API endpoints:** 100 requests per minute per user
 - **Real-time subscriptions:** 10 connections per user
 
 ### Security Headers
+
 All API responses include security headers:
+
 ```
 X-Frame-Options: DENY
 X-Content-Type-Options: nosniff
@@ -2343,6 +2579,7 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains
 ```
 
 ### Swiss Data Compliance
+
 - All data stored in Swiss AWS regions
 - GDPR-compliant data processing
 - Customer data anonymization on request
@@ -2352,6 +2589,7 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains
 ### Error Response Examples
 
 **401 Unauthorized:**
+
 ```json
 {
   "success": false,
@@ -2364,6 +2602,7 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains
 ```
 
 **422 Validation Error:**
+
 ```json
 {
   "success": false,
@@ -2381,6 +2620,7 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains
 ```
 
 **429 Rate Limit:**
+
 ```json
 {
   "success": false,
@@ -2395,7 +2635,10 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains
 }
 ```
 
-This comprehensive API specification covers all major endpoints for the Car Rental Management System, following OpenAPI 3.0 standards and Swiss market requirements. The specification includes proper authentication, error handling, pagination, filtering, sorting, and real-time capabilities needed for the Swiss car rental market.
+This comprehensive API specification covers all major endpoints for the Car Rental Management
+System, following OpenAPI 3.0 standards and Swiss market requirements. The specification includes
+proper authentication, error handling, pagination, filtering, sorting, and real-time capabilities
+needed for the Swiss car rental market.
 
 ## Database Schema Design
 
@@ -2739,18 +2982,18 @@ BEGIN
     INTO company_prefix
     FROM companies
     WHERE id = company_id;
-    
+
     year_prefix := TO_CHAR(CURRENT_DATE, 'YYYY');
-    
+
     -- Get next sequential number for this company and year
     SELECT COALESCE(MAX(CAST(REGEXP_REPLACE(c.contract_number, '^[A-Z]+-\d{4}-', '') AS INT)), 0) + 1
     INTO sequential_number
     FROM contracts c
     WHERE c.company_id = generate_contract_number.company_id
     AND c.contract_number LIKE company_prefix || '-' || year_prefix || '-%';
-    
+
     contract_number := company_prefix || '-' || year_prefix || '-' || LPAD(sequential_number::TEXT, 5, '0');
-    
+
     RETURN contract_number;
 END;
 $$ LANGUAGE plpgsql;
@@ -2939,6 +3182,7 @@ apps/web/
 ### Component Design Patterns
 
 #### 1. Server Components (Default)
+
 ```tsx
 // app/(dashboard)/contracts/page.tsx
 import { createServerClient } from '@/lib/supabase/server';
@@ -2955,6 +3199,7 @@ export default async function ContractsPage() {
 ```
 
 #### 2. Client Components (Interactive)
+
 ```tsx
 // components/contracts/QuickCreateWizard.tsx
 'use client';
@@ -2968,12 +3213,13 @@ export function QuickCreateWizard() {
   const form = useForm({
     resolver: zodResolver(contractSchema),
   });
-  
+
   // Interactive multi-step form
 }
 ```
 
 #### 3. Hybrid Patterns (Streaming)
+
 ```tsx
 // app/(dashboard)/page.tsx
 import { Suspense } from 'react';
@@ -2996,6 +3242,7 @@ export default function DashboardPage() {
 ### State Management Architecture
 
 #### 1. Server State (React Query/TanStack Query)
+
 ```tsx
 // hooks/useContracts.ts
 export function useContracts(filters: ContractFilters) {
@@ -3009,6 +3256,7 @@ export function useContracts(filters: ContractFilters) {
 ```
 
 #### 2. Client State (Zustand)
+
 ```tsx
 // stores/ui.store.ts
 interface UIStore {
@@ -3021,9 +3269,10 @@ interface UIStore {
 
 export const useUIStore = create<UIStore>((set) => ({
   sidebarOpen: true,
-  toggleSidebar: () => set((state) => ({ 
-    sidebarOpen: !state.sidebarOpen 
-  })),
+  toggleSidebar: () =>
+    set((state) => ({
+      sidebarOpen: !state.sidebarOpen,
+    })),
   activeModal: null,
   openModal: (modal) => set({ activeModal: modal }),
   closeModal: () => set({ activeModal: null }),
@@ -3031,6 +3280,7 @@ export const useUIStore = create<UIStore>((set) => ({
 ```
 
 #### 3. Form State (React Hook Form + Zod)
+
 ```tsx
 // schemas/contract.schema.ts
 export const contractSchema = z.object({
@@ -3056,19 +3306,21 @@ const form = useForm<ContractFormData>({
 ### Authentication & Authorization
 
 #### Multi-Layer Security Model
+
 1. **Supabase Auth**: JWT-based authentication
 2. **Row Level Security**: Database-level access control
 3. **Application Middleware**: Route protection
 4. **API Validation**: Request validation
 
 #### Authentication Flow
+
 ```mermaid
 sequenceDiagram
     participant User
     participant NextJS
     participant Supabase Auth
     participant Database
-    
+
     User->>NextJS: Login Request
     NextJS->>Supabase Auth: Authenticate
     Supabase Auth-->>NextJS: JWT Token
@@ -3082,6 +3334,7 @@ sequenceDiagram
 ```
 
 #### Role-Based Access Control (RBAC)
+
 ```typescript
 // lib/permissions.ts
 export const permissions = {
@@ -3115,12 +3368,14 @@ export const permissions = {
 ### Data Protection
 
 #### Encryption Strategy
+
 - **At Rest**: Supabase handles with AES-256
 - **In Transit**: TLS 1.3 minimum
 - **Application Level**: Sensitive field encryption
 - **Backups**: Encrypted with separate keys
 
 #### GDPR Compliance Implementation
+
 ```typescript
 // lib/gdpr.ts
 export async function anonymizeCustomer(customerId: string) {
@@ -3142,11 +3397,12 @@ export async function anonymizeCustomer(customerId: string) {
 ```
 
 ### Security Headers Configuration
+
 ```typescript
 // middleware.ts
 export function middleware(request: NextRequest) {
   const response = NextResponse.next();
-  
+
   // Security headers
   response.headers.set('X-Frame-Options', 'DENY');
   response.headers.set('X-Content-Type-Options', 'nosniff');
@@ -3154,17 +3410,14 @@ export function middleware(request: NextRequest) {
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   response.headers.set(
     'Content-Security-Policy',
-    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline';"
+    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline';",
   );
-  response.headers.set(
-    'Strict-Transport-Security',
-    'max-age=31536000; includeSubDomains'
-  );
+  response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
   response.headers.set(
     'Permissions-Policy',
-    'camera=(self), microphone=(), geolocation=(), interest-cohort=()'
+    'camera=(self), microphone=(), geolocation=(), interest-cohort=()',
   );
-  
+
   return response;
 }
 ```
@@ -3174,6 +3427,7 @@ export function middleware(request: NextRequest) {
 ### Error Handling Strategy
 
 #### Error Classes
+
 ```typescript
 // lib/errors.ts
 export class AppError extends Error {
@@ -3182,7 +3436,7 @@ export class AppError extends Error {
     public message: string,
     public statusCode: number,
     public details?: any,
-    public isOperational = true
+    public isOperational = true,
   ) {
     super(message);
     Error.captureStackTrace(this, this.constructor);
@@ -3215,12 +3469,10 @@ export class NotFoundError extends AppError {
 ```
 
 #### Global Error Handler
+
 ```typescript
 // app/api/middleware/errorHandler.ts
-export async function errorHandler(
-  error: Error,
-  request: Request
-): Promise<Response> {
+export async function errorHandler(error: Error, request: Request): Promise<Response> {
   // Log error
   logger.error({
     error: error.message,
@@ -3247,7 +3499,7 @@ export async function errorHandler(
           details: error.details,
         },
       },
-      { status: error.statusCode }
+      { status: error.statusCode },
     );
   }
 
@@ -3260,7 +3512,7 @@ export async function errorHandler(
         message: 'An unexpected error occurred',
       },
     },
-    { status: 500 }
+    { status: 500 },
   );
 }
 ```
@@ -3268,6 +3520,7 @@ export async function errorHandler(
 ### Logging Architecture
 
 #### Structured Logging
+
 ```typescript
 // lib/logger.ts
 import pino from 'pino';
@@ -3307,19 +3560,21 @@ logger.info({
 ### Performance Targets
 
 #### Response Time SLAs
-| Operation | Target | Maximum |
-|-----------|--------|---------|
-| Page Load (Initial) | < 1s | 3s |
-| Page Load (Cached) | < 500ms | 1s |
-| API Response | < 200ms | 500ms |
-| Search | < 300ms | 1s |
-| Contract Creation | < 2s | 5s |
-| PDF Generation | < 3s | 10s |
-| Photo Upload (5MB) | < 3s | 10s |
-| Dashboard Load | < 1s | 3s |
-| Report Generation | < 5s | 30s |
+
+| Operation           | Target  | Maximum |
+| ------------------- | ------- | ------- |
+| Page Load (Initial) | < 1s    | 3s      |
+| Page Load (Cached)  | < 500ms | 1s      |
+| API Response        | < 200ms | 500ms   |
+| Search              | < 300ms | 1s      |
+| Contract Creation   | < 2s    | 5s      |
+| PDF Generation      | < 3s    | 10s     |
+| Photo Upload (5MB)  | < 3s    | 10s     |
+| Dashboard Load      | < 1s    | 3s      |
+| Report Generation   | < 5s    | 30s     |
 
 #### Capacity Planning
+
 - **Concurrent Users**: 100 per company
 - **Total Users**: 10,000 system-wide
 - **API Requests/Second**: 1,000 peak
@@ -3330,6 +3585,7 @@ logger.info({
 ### Optimization Strategies
 
 #### Frontend Optimization
+
 ```typescript
 // next.config.js
 module.exports = {
@@ -3347,10 +3603,11 @@ module.exports = {
 ```
 
 #### Database Optimization
+
 ```sql
 -- Materialized view for dashboard metrics
 CREATE MATERIALIZED VIEW dashboard_metrics AS
-SELECT 
+SELECT
   company_id,
   DATE(created_at) as date,
   COUNT(*) as total_contracts,
@@ -3365,6 +3622,7 @@ CREATE INDEX idx_dashboard_metrics ON dashboard_metrics(company_id, date);
 ```
 
 #### Caching Strategy
+
 ```typescript
 // lib/cache.ts
 import { Redis } from '@upstash/redis';
@@ -3377,11 +3635,11 @@ const redis = new Redis({
 export async function getCachedData<T>(
   key: string,
   fetcher: () => Promise<T>,
-  ttl = 300 // 5 minutes default
+  ttl = 300, // 5 minutes default
 ): Promise<T> {
   const cached = await redis.get(key);
   if (cached) return cached as T;
-  
+
   const fresh = await fetcher();
   await redis.set(key, fresh, { ex: ttl });
   return fresh;
@@ -3393,17 +3651,19 @@ export async function getCachedData<T>(
 ### Testing Strategy
 
 #### Test Pyramid
+
 ```
             /\
            /E2E\         5%  - Critical user journeys
           /------\
-         /Integr. \     20%  - API & component integration  
+         /Integr. \     20%  - API & component integration
         /----------\
        /  Unit      \   75%  - Business logic & utilities
       /--------------\
 ```
 
 #### Testing Stack
+
 ```json
 {
   "devDependencies": {
@@ -3420,6 +3680,7 @@ export async function getCachedData<T>(
 ### Test Examples
 
 #### Unit Test
+
 ```typescript
 // lib/utils/money.test.ts
 import { describe, it, expect } from 'vitest';
@@ -3434,7 +3695,7 @@ describe('Money Utilities', () => {
       expect(result.total).toBe(107.7);
     });
   });
-  
+
   describe('formatCHF', () => {
     it('formats Swiss Francs correctly', () => {
       expect(formatCHF(1234.56)).toBe('CHF 1,234.56');
@@ -3444,6 +3705,7 @@ describe('Money Utilities', () => {
 ```
 
 #### Integration Test
+
 ```typescript
 // app/api/contracts/route.test.ts
 import { describe, it, expect, beforeAll } from 'vitest';
@@ -3460,7 +3722,7 @@ describe('POST /api/contracts', () => {
         end_date: '2025-08-15',
       }),
     });
-    
+
     expect(response.status).toBe(201);
     const data = await response.json();
     expect(data.success).toBe(true);
@@ -3470,30 +3732,31 @@ describe('POST /api/contracts', () => {
 ```
 
 #### E2E Test
+
 ```typescript
 // tests/e2e/contract-creation.spec.ts
 import { test, expect } from '@playwright/test';
 
 test('2-minute contract creation flow', async ({ page }) => {
   await page.goto('/contracts/quick-create');
-  
+
   // Step 1: Customer
   await page.fill('[name="customer.phone"]', '+41 79 123 45 67');
   await page.click('text=Search Customer');
-  
+
   // Step 2: Vehicle
   await page.click('[data-vehicle="ZH-123456"]');
-  
+
   // Step 3: Details
   await page.fill('[name="start_date"]', '2025-08-10');
   await page.fill('[name="end_date"]', '2025-08-15');
-  
+
   // Step 4: Signature
   await page.locator('#signature-pad').click();
-  
+
   // Submit
   await page.click('text=Create Contract');
-  
+
   // Verify
   await expect(page).toHaveURL(/\/contracts\/[a-z0-9-]+/);
   await expect(page.locator('text=Contract created')).toBeVisible();
@@ -3505,6 +3768,7 @@ test('2-minute contract creation flow', async ({ page }) => {
 ### CI/CD Pipeline
 
 #### GitHub Actions Workflow
+
 ```yaml
 # .github/workflows/main.yml
 name: CI/CD Pipeline
@@ -3527,13 +3791,13 @@ jobs:
         with:
           node-version: '20'
           cache: 'pnpm'
-      
+
       - run: pnpm install
       - run: pnpm lint
       - run: pnpm type-check
       - run: pnpm test:unit
       - run: pnpm test:integration
-      
+
   e2e:
     runs-on: ubuntu-latest
     steps:
@@ -3542,7 +3806,7 @@ jobs:
       - run: pnpm install
       - run: pnpm exec playwright install
       - run: pnpm test:e2e
-      
+
   deploy-preview:
     if: github.event_name == 'pull_request'
     needs: [test]
@@ -3555,7 +3819,7 @@ jobs:
           vercel-args: '--prod'
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          
+
   deploy-production:
     if: github.ref == 'refs/heads/main'
     needs: [test, e2e]
@@ -3573,6 +3837,7 @@ jobs:
 ### Environment Configuration
 
 #### Environment Variables
+
 ```bash
 # .env.local
 NEXT_PUBLIC_SUPABASE_URL=https://[project].supabase.co
@@ -3589,6 +3854,7 @@ UPSTASH_REDIS_TOKEN=...
 ### Infrastructure as Code
 
 #### Terraform Configuration
+
 ```hcl
 # infrastructure/main.tf
 terraform {
@@ -3605,7 +3871,7 @@ terraform {
 resource "vercel_project" "crms" {
   name      = "crms-production"
   framework = "nextjs"
-  
+
   environment = [
     {
       key    = "NEXT_PUBLIC_SUPABASE_URL"
@@ -3628,6 +3894,7 @@ resource "supabase_project" "crms" {
 ### Monitoring Stack
 
 #### Application Monitoring
+
 ```typescript
 // lib/monitoring.ts
 import * as Sentry from '@sentry/nextjs';
@@ -3655,13 +3922,10 @@ Sentry.init({
 ```
 
 #### Custom Metrics
+
 ```typescript
 // lib/metrics.ts
-export function trackMetric(
-  name: string,
-  value: number,
-  tags?: Record<string, string>
-) {
+export function trackMetric(name: string, value: number, tags?: Record<string, string>) {
   // Send to monitoring service
   fetch('/api/metrics', {
     method: 'POST',
@@ -3691,19 +3955,19 @@ alerts:
     duration: 5m
     severity: critical
     notify: ['oncall@crms.ch']
-    
+
   - name: slow_contract_creation
     condition: p95_contract_creation > 5s
     duration: 10m
     severity: warning
     notify: ['dev-team@crms.ch']
-    
+
   - name: low_disk_space
     condition: disk_usage > 80%
     duration: 15m
     severity: warning
     notify: ['ops@crms.ch']
-    
+
   - name: payment_failures
     condition: payment_failure_rate > 5%
     duration: 5m
@@ -3714,6 +3978,7 @@ alerts:
 ## Integration Specifications
 
 ### Stripe Integration
+
 ```typescript
 // lib/stripe.ts
 import Stripe from 'stripe';
@@ -3724,7 +3989,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function createPaymentIntent(
   amount: number,
-  contractId: string
+  contractId: string,
 ): Promise<Stripe.PaymentIntent> {
   return await stripe.paymentIntents.create({
     amount: Math.round(amount * 100), // Convert to cents
@@ -3739,16 +4004,13 @@ export async function createPaymentIntent(
   });
 }
 
-export async function handleWebhook(
-  payload: string,
-  signature: string
-): Promise<void> {
+export async function handleWebhook(payload: string, signature: string): Promise<void> {
   const event = stripe.webhooks.constructEvent(
     payload,
     signature,
-    process.env.STRIPE_WEBHOOK_SECRET!
+    process.env.STRIPE_WEBHOOK_SECRET!,
   );
-  
+
   switch (event.type) {
     case 'payment_intent.succeeded':
       await markPaymentComplete(event.data.object);
@@ -3761,6 +4023,7 @@ export async function handleWebhook(
 ```
 
 ### Swiss QR Bill Integration
+
 ```typescript
 // lib/qr-bill.ts
 import { SwissQRBill } from 'swissqrbill';
@@ -3786,12 +4049,13 @@ export function generateQRBill(payment: Payment): Buffer {
       country: 'CH',
     },
   };
-  
+
   return SwissQRBill.PDF(data);
 }
 ```
 
 ### Email Integration (Resend)
+
 ```typescript
 // lib/email.ts
 import { Resend } from 'resend';
@@ -3799,10 +4063,7 @@ import ContractConfirmationEmail from '@/emails/contract-confirmation';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-export async function sendContractEmail(
-  contract: Contract,
-  customer: Customer
-): Promise<void> {
+export async function sendContractEmail(contract: Contract, customer: Customer): Promise<void> {
   await resend.emails.send({
     from: 'CRMS <noreply@crms.ch>',
     to: customer.email,
@@ -3821,16 +4082,19 @@ export async function sendContractEmail(
 ## Disaster Recovery
 
 ### Backup Strategy
+
 - **Database**: Point-in-time recovery (Supabase managed)
 - **Files**: Cross-region replication
 - **Configuration**: Git version control
 
 ### Recovery Procedures
+
 1. **Database Recovery**: Restore from Supabase dashboard
 2. **Application Recovery**: Redeploy from Git
 3. **Data Verification**: Run integrity checks
 
 ### RTO/RPO Targets
+
 - **RPO (Recovery Point Objective)**: 1 hour
 - **RTO (Recovery Time Objective)**: 4 hours
 - **Backup Retention**: 30 days
@@ -3839,18 +4103,21 @@ export async function sendContractEmail(
 ## Compliance & Certifications
 
 ### Swiss Data Protection
+
 - **Data Residency**: Zurich AWS region (eu-central-2)
 - **Encryption**: AES-256 at rest, TLS 1.3 in transit
 - **Access Logs**: 90-day retention
 - **Data Portability**: Export in JSON/CSV
 
 ### GDPR Compliance
+
 - **Consent Management**: Explicit consent tracking
 - **Right to Erasure**: Soft delete with anonymization
 - **Data Minimization**: Only required fields
 - **Privacy by Design**: RLS and encryption
 
 ### Industry Standards
+
 - **PCI DSS**: Level 4 via Stripe
 - **ISO 27001**: Security best practices
 - **OWASP Top 10**: Security vulnerability prevention
@@ -3859,24 +4126,28 @@ export async function sendContractEmail(
 ## Future Roadmap
 
 ### Phase 1 (Months 1-3): MVP Launch
+
 - Core contract management
 - Basic reporting
 - Swiss QR bills
 - Multi-tenant isolation
 
 ### Phase 2 (Months 4-6): Enhancement
+
 - Advanced analytics
 - Mobile optimization
 - API marketplace
 - White-label options
 
 ### Phase 3 (Months 7-12): Scale
+
 - Multi-language support
 - Advanced automation
 - AI-powered insights
 - International expansion
 
 ### Phase 4 (Year 2): Enterprise
+
 - Enterprise features
 - Custom integrations
 - Advanced security
@@ -3884,7 +4155,5 @@ export async function sendContractEmail(
 
 ---
 
-**Document Version:** 3.0 - Complete Fullstack Architecture
-**Last Updated:** 2025-08-06
-**Status:** Ready for Implementation
-**Next Review:** Sprint 1 Completion
+**Document Version:** 3.0 - Complete Fullstack Architecture **Last Updated:** 2025-08-06 **Status:**
+Ready for Implementation **Next Review:** Sprint 1 Completion

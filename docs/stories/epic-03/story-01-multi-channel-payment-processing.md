@@ -9,7 +9,8 @@
 
 **As a** rental staff member  
 **I want to** accept payments via card, Twint, and cash  
-**So that** customers can pay using their preferred method and we can serve all Swiss payment preferences
+**So that** customers can pay using their preferred method and we can serve all Swiss payment
+preferences
 
 ## Detailed Acceptance Criteria
 
@@ -88,24 +89,28 @@
 ## Technical Implementation Notes
 
 ### Payment Gateway Integration
+
 - **Primary:** Stripe Connect for card processing
 - **Secondary:** Datatrans as backup Swiss processor
 - **Requirements:** PCI DSS compliance, webhook support
 - **Fallback:** Manual card authorization numbers
 
 ### Twint Integration
+
 - **API:** Twint Merchant API v2.1
 - **QR Code:** Dynamic QR generation with payment reference
 - **Status Polling:** Real-time payment confirmation via webhooks
 - **Timeout:** 5-minute payment window with retry option
 
 ### Cash Handling System
+
 - **Denomination Tracking:** Support for all Swiss denominations
 - **Change Calculator:** Automated change calculation with coin optimization
 - **Till Management:** Cash drawer integration with daily reconciliation
 - **Audit Trail:** Complete cash transaction logging
 
 ### Database Design
+
 ```sql
 -- Payment transactions table
 CREATE TABLE payment_transactions (
@@ -126,6 +131,7 @@ CREATE TABLE payment_transactions (
 ## API Endpoints Needed
 
 ### Payment Processing
+
 ```
 POST /api/v1/payments/process
 - Body: { method, amount, currency, contract_id, metadata }
@@ -140,6 +146,7 @@ POST /api/v1/payments/cash/calculate-change
 ```
 
 ### Payment Status
+
 ```
 GET /api/v1/payments/{transaction_id}/status
 - Response: { status, last_updated, gateway_response }
@@ -149,6 +156,7 @@ POST /api/v1/payments/{transaction_id}/retry
 ```
 
 ### Payment History
+
 ```
 GET /api/v1/payments/history
 - Query: contract_id, date_range, status
@@ -158,17 +166,20 @@ GET /api/v1/payments/history
 ## Database Schema Requirements
 
 ### Core Tables
+
 - `payment_transactions` - Main payment records
 - `payment_methods` - Configured payment methods per location
 - `cash_denominations` - Cash handling records
 - `payment_receipts` - Generated receipt records
 
 ### Indexes Required
+
 - `payment_transactions(rental_contract_id, status)`
 - `payment_transactions(created_at DESC)`
 - `payment_transactions(gateway_transaction_id)` (unique)
 
 ### Constraints
+
 - Amount must be positive
 - Currency must be CHF or EUR
 - Payment method must be valid enum value
@@ -177,21 +188,25 @@ GET /api/v1/payments/history
 ## UI/UX Considerations
 
 ### Payment Selection Interface
+
 - **Layout:** Large, clearly labeled payment method buttons
 - **Accessibility:** High contrast, keyboard navigation support
 - **Multilingual:** Support for German, French, Italian, English
 
 ### Twint Payment Flow
+
 - **QR Display:** Large, clear QR code with instructions
 - **Status Indicator:** Real-time payment status with countdown timer
 - **Fallback Options:** Clear alternative payment methods if Twint fails
 
 ### Cash Payment Interface
+
 - **Calculator:** Built-in calculator for amount entry
 - **Change Display:** Large, clear change amount with denomination breakdown
 - **Validation:** Real-time validation of entered amounts
 
 ### Mobile Responsiveness
+
 - **Touch Targets:** Minimum 44px touch targets
 - **Screen Rotation:** Support for both portrait and landscape modes
 - **Offline Indicators:** Clear offline mode indicators
@@ -199,6 +214,7 @@ GET /api/v1/payments/history
 ## Testing Scenarios
 
 ### Happy Path Testing
+
 1. **Card Payment Success**
    - Process valid card payment for full invoice amount
    - Verify transaction recorded correctly
@@ -215,6 +231,7 @@ GET /api/v1/payments/history
    - Confirm cash transaction recording
 
 ### Error Handling Testing
+
 4. **Card Payment Failure**
    - Simulate declined card
    - Verify error message display
@@ -226,6 +243,7 @@ GET /api/v1/payments/history
    - Test retry mechanism when connection restored
 
 ### Edge Case Testing
+
 6. **Partial Payment Processing**
    - Process multiple partial payments for single invoice
    - Verify balance tracking accuracy
@@ -263,6 +281,7 @@ GET /api/v1/payments/history
 ## Estimated Effort: 8 Story Points
 
 ### Breakdown
+
 - **Payment Gateway Integration:** 3 points
 - **Twint API Integration:** 2 points
 - **Cash Handling System:** 1 point
@@ -270,12 +289,14 @@ GET /api/v1/payments/history
 - **Testing & Security:** 1 point
 
 ### Dependencies
+
 - Payment gateway merchant accounts established
 - Twint merchant registration completed
 - PCI compliance audit scheduled
 - Cash handling hardware (if required) procured
 
 ### Risks
+
 - **High:** Payment gateway approval delays
 - **Medium:** Twint API rate limiting
 - **Low:** Cash handling calculation accuracy

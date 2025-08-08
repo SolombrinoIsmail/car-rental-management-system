@@ -1,14 +1,17 @@
 # Story 5: Shift Handover Process
 
 ## Story Information
+
 - **Story ID:** CRMS-E9-S5
 - **Epic:** 9 - Operational Edge Cases
 - **Story Points:** 3
 
 ## User Story
+
 **As a** rental staff member ending my shift  
 **I want to** hand over operations to the next shift systematically  
-**So that** continuity is maintained, outstanding issues are communicated, and accountability is clear
+**So that** continuity is maintained, outstanding issues are communicated, and accountability is
+clear
 
 ## Detailed Acceptance Criteria
 
@@ -87,6 +90,7 @@
 ## Technical Implementation Notes
 
 ### Backend Services
+
 - `ShiftHandoverService`: Manages the complete handover workflow
 - `CashReconciliationService`: Handles cash counting and variance reporting
 - `TaskTransferService`: Manages outstanding task assignments
@@ -94,6 +98,7 @@
 - `NotificationService`: Sends alerts and updates to relevant parties
 
 ### Data Models
+
 ```sql
 shift_handovers (
   id, outgoing_user_id, incoming_user_id, shift_date,
@@ -110,11 +115,14 @@ handover_items (
 ```
 
 ### State Machine
-Started → Cash Counted → Tasks Reviewed → Notes Documented → Report Generated → Confirmed → Completed
+
+Started → Cash Counted → Tasks Reviewed → Notes Documented → Report Generated → Confirmed →
+Completed
 
 ## API Endpoints
 
 ### Handover Management
+
 - `POST /api/shifts/handover/start` - Initiate shift handover process
 - `GET /api/shifts/handover/outstanding-items` - Get list of pending tasks
 - `POST /api/shifts/handover/cash-reconciliation` - Submit cash count
@@ -123,12 +131,14 @@ Started → Cash Counted → Tasks Reviewed → Notes Documented → Report Gene
 - `GET /api/shifts/handover/{id}/report` - Get shift summary report
 
 ### Task Management
+
 - `GET /api/tasks/pending` - Get outstanding tasks for current shift
 - `POST /api/tasks/{id}/transfer` - Transfer task to next shift
 - `PUT /api/tasks/{id}/priority` - Update task priority
 - `POST /api/tasks/{id}/notes` - Add task-specific notes
 
 ### Reporting and Analytics
+
 - `GET /api/shifts/performance-metrics` - Get shift performance data
 - `GET /api/shifts/cash-variances` - Cash handling variance reports
 - `POST /api/shifts/manager-notifications` - Send management alerts
@@ -136,6 +146,7 @@ Started → Cash Counted → Tasks Reviewed → Notes Documented → Report Gene
 ## Database Schema Requirements
 
 ### New Tables
+
 ```sql
 CREATE TABLE shift_handovers (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -203,6 +214,7 @@ CREATE TABLE shift_notes (
 ```
 
 ### Schema Updates
+
 - Add `current_shift_handover_id` to users table to track active handovers
 - Add `handover_count` to users table for performance tracking
 - Add `last_handover_variance` to users for cash handling performance
@@ -210,24 +222,28 @@ CREATE TABLE shift_notes (
 ## UI/UX Considerations
 
 ### Handover Checklist Interface
+
 - Step-by-step wizard with progress indicator
 - Clear visual completion status for each section
 - Required field validation with helpful error messages
 - Quick action buttons for common handover tasks
 
 ### Cash Reconciliation Interface
+
 - Calculator-style denomination entry with visual cash images
 - Real-time total calculation with variance highlighting
 - Photo capture capability for cash drop documentation
 - Quick reconciliation for exact matches
 
 ### Task Transfer Interface
+
 - Drag-and-drop task assignment to incoming staff
 - Priority color coding (red for urgent, yellow for high priority)
 - Expandable task details with customer contact information
 - Bulk task assignment capabilities
 
 ### Mobile-Optimized Design
+
 - Touch-friendly interface for tablet use during handovers
 - Offline capability for completing documentation
 - Voice-to-text for quick note entry
@@ -236,44 +252,48 @@ CREATE TABLE shift_notes (
 ## Testing Scenarios
 
 ### Scenario 1: Standard End-of-Day Handover
-**Given:** Day shift ending with normal operations
-**When:** Staff initiates handover with accurate cash count and no outstanding issues
-**Then:** Handover completed in <10 minutes, all documentation generated, night shift briefed
+
+**Given:** Day shift ending with normal operations **When:** Staff initiates handover with accurate
+cash count and no outstanding issues **Then:** Handover completed in <10 minutes, all documentation
+generated, night shift briefed
 
 ### Scenario 2: Cash Variance Resolution
-**Given:** Cash count shows $50 shortage from expected amount
-**When:** Staff documents variance with explanation
-**Then:** Manager notification sent, variance tracking updated, investigation workflow triggered
+
+**Given:** Cash count shows $50 shortage from expected amount **When:** Staff documents variance
+with explanation **Then:** Manager notification sent, variance tracking updated, investigation
+workflow triggered
 
 ### Scenario 3: Multiple Outstanding Returns
-**Given:** 5 rentals overdue at end of shift
-**When:** Staff transfers pending returns to next shift
+
+**Given:** 5 rentals overdue at end of shift **When:** Staff transfers pending returns to next shift
 **Then:** Customer contact history preserved, priority assigned, follow-up tasks created
 
 ### Scenario 4: Emergency Handover Mid-Shift
-**Given:** Staff member needs to leave due to emergency
-**When:** Abbreviated handover process initiated
-**Then:** Critical items transferred, manager notified, replacement staff briefed
+
+**Given:** Staff member needs to leave due to emergency **When:** Abbreviated handover process
+initiated **Then:** Critical items transferred, manager notified, replacement staff briefed
 
 ### Scenario 5: System Downtime During Handover
-**Given:** Network connectivity lost during handover process
-**When:** Staff continues handover using offline mode
-**Then:** All data captured locally, synced when connection restored
+
+**Given:** Network connectivity lost during handover process **When:** Staff continues handover
+using offline mode **Then:** All data captured locally, synced when connection restored
 
 ### Scenario 6: Weekend to Monday Handover
-**Given:** Weekend shift ending with accumulated issues
-**When:** Staff documents weekend incidents and resolutions
-**Then:** Comprehensive summary provided, priority items flagged for Monday morning
+
+**Given:** Weekend shift ending with accumulated issues **When:** Staff documents weekend incidents
+and resolutions **Then:** Comprehensive summary provided, priority items flagged for Monday morning
 
 ### Scenario 7: New Staff Receiving Handover
-**Given:** Inexperienced staff member starting shift
-**When:** Handover includes training notes and support contacts
-**Then:** Additional guidance provided, manager notification of new staff, support available
+
+**Given:** Inexperienced staff member starting shift **When:** Handover includes training notes and
+support contacts **Then:** Additional guidance provided, manager notification of new staff, support
+available
 
 ### Scenario 8: High-Priority Customer Issue Transfer
-**Given:** VIP customer with unresolved complaint from day shift
-**When:** Issue transferred with full context and urgency
-**Then:** Next shift alerted immediately, manager notified, customer contact priority set
+
+**Given:** VIP customer with unresolved complaint from day shift **When:** Issue transferred with
+full context and urgency **Then:** Next shift alerted immediately, manager notified, customer
+contact priority set
 
 ## Definition of Done
 
@@ -295,6 +315,7 @@ CREATE TABLE shift_notes (
 - [ ] Training documentation and procedures created
 
 ## Dependencies
+
 - User management and authentication system
 - Task and workflow management system
 - Cash handling and payment processing integration
@@ -303,6 +324,7 @@ CREATE TABLE shift_notes (
 - Reporting and analytics platform
 
 ## Risks and Mitigation
+
 - **Risk:** Critical information lost during handover process
   - **Mitigation:** Required field validation and completeness checks
 - **Risk:** Cash handling errors and theft concerns

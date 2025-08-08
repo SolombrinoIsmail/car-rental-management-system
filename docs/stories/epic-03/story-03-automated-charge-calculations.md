@@ -9,14 +9,16 @@
 
 **As a** rental staff member  
 **I want to** automatically calculate all charges  
-**So that** nothing is missed, pricing is consistent, and we capture the 10-15% additional revenue through accurate tracking
+**So that** nothing is missed, pricing is consistent, and we capture the 10-15% additional revenue
+through accurate tracking
 
 ## Detailed Acceptance Criteria
 
 1. **Base Rental Calculation**
    - GIVEN a rental contract with start and end times
    - WHEN calculating charges
-   - THEN the base rental is calculated using appropriate rate structure (hourly/daily/weekly/monthly)
+   - THEN the base rental is calculated using appropriate rate structure
+     (hourly/daily/weekly/monthly)
    - AND the most cost-effective rate combination is automatically selected
 
 2. **Time-Based Rate Optimization**
@@ -24,53 +26,70 @@
    - WHEN calculating the base charge within 3 seconds
    - THEN the system SHALL compare all applicable rate combinations (hourly, daily, weekly, monthly)
    - AND SHALL select the option that provides the lowest total cost for the customer
-   - AND SHALL complete rate comparison calculations for up to 10 possible combinations within 2 seconds
+   - AND SHALL complete rate comparison calculations for up to 10 possible combinations within 2
+     seconds
    - AND SHALL log the selected rate structure and savings amount for audit purposes
 
 3. **Fuel Difference Calculation**
    - GIVEN fuel levels recorded at pickup and return with accuracy to 0.1 liter
    - WHEN processing the return within 30 seconds of data entry
-   - THEN fuel difference SHALL be calculated to 0.01 liter precision using fuel prices updated within the last 24 hours
-   - AND fuel charges SHALL be itemized showing exact quantity (liters), price per liter (CHF to 3 decimal places), and total amount
+   - THEN fuel difference SHALL be calculated to 0.01 liter precision using fuel prices updated
+     within the last 24 hours
+   - AND fuel charges SHALL be itemized showing exact quantity (liters), price per liter (CHF to 3
+     decimal places), and total amount
    - AND SHALL handle fuel price fluctuations by using the price effective at time of return
-   - AND SHALL validate fuel level readings are within physically possible range (0-80 liters for standard vehicles)
+   - AND SHALL validate fuel level readings are within physically possible range (0-80 liters for
+     standard vehicles)
 
 4. **Excess Kilometer Charges**
    - GIVEN odometer readings at pickup and return with integer precision
    - WHEN calculating final charges within 10 seconds
    - THEN excess kilometers beyond included allowance SHALL be calculated with 1 km accuracy
-   - AND per-kilometer rates SHALL be applied based on vehicle category (economy: CHF 0.25/km, compact: CHF 0.30/km, SUV: CHF 0.40/km)
-   - AND SHALL validate odometer readings are sequential and within reasonable daily driving limits (maximum 2000 km per day)
-   - AND SHALL handle cases where odometer reading decreases (maintenance reset) with manual review flag
+   - AND per-kilometer rates SHALL be applied based on vehicle category (economy: CHF 0.25/km,
+     compact: CHF 0.30/km, SUV: CHF 0.40/km)
+   - AND SHALL validate odometer readings are sequential and within reasonable daily driving limits
+     (maximum 2000 km per day)
+   - AND SHALL handle cases where odometer reading decreases (maintenance reset) with manual review
+     flag
 
 5. **Swiss VAT Application**
    - GIVEN any chargeable amount greater than CHF 0.01
    - WHEN calculating final totals within 5 seconds
-   - THEN Swiss VAT (7.7%) SHALL be automatically applied to all applicable charges with CHF 0.01 precision
-   - AND VAT amounts SHALL be itemized separately showing VAT-inclusive amount, VAT rate (7.7%), and VAT amount
-   - AND SHALL handle VAT-exempt services (certain insurance products) according to Swiss tax regulations
+   - THEN Swiss VAT (7.7%) SHALL be automatically applied to all applicable charges with CHF 0.01
+     precision
+   - AND VAT amounts SHALL be itemized separately showing VAT-inclusive amount, VAT rate (7.7%), and
+     VAT amount
+   - AND SHALL handle VAT-exempt services (certain insurance products) according to Swiss tax
+     regulations
    - AND SHALL round VAT calculations to nearest CHF 0.05 (5 Rappen) as per Swiss rounding rules
 
 6. **Itemized Breakdown Generation**
    - GIVEN all calculated charges totaling more than CHF 0.00
    - WHEN presenting the final bill within 2 seconds of calculation completion
-   - THEN each charge category SHALL be itemized with: description, quantity (to 2 decimal places), unit rate (CHF), subtotal (CHF), VAT rate (%), VAT amount (CHF), and line total (CHF)
-   - AND SHALL ensure mathematical accuracy where sum of line totals equals grand total within CHF 0.01
+   - THEN each charge category SHALL be itemized with: description, quantity (to 2 decimal places),
+     unit rate (CHF), subtotal (CHF), VAT rate (%), VAT amount (CHF), and line total (CHF)
+   - AND SHALL ensure mathematical accuracy where sum of line totals equals grand total within CHF
+     0.01
    - AND SHALL support up to 50 line items per invoice
-   - AND SHALL generate line items in consistent order: base rental, additional services, penalties, taxes
+   - AND SHALL generate line items in consistent order: base rental, additional services, penalties,
+     taxes
 
 7. **Additional Service Charges**
    - GIVEN optional services selected during rental (GPS, child seats, insurance, cleaning kits)
    - WHEN calculating total charges within 5 seconds
-   - THEN all selected services SHALL be included with correct pricing: GPS (CHF 5/day), child seats (CHF 8/day), insurance upgrade (15% of base rental)
-   - AND service duration SHALL be calculated in full day increments (minimum 1 day, partial days rounded up)
-   - AND SHALL validate service compatibility with vehicle type (child seats not available for 2-door vehicles)
+   - THEN all selected services SHALL be included with correct pricing: GPS (CHF 5/day), child seats
+     (CHF 8/day), insurance upgrade (15% of base rental)
+   - AND service duration SHALL be calculated in full day increments (minimum 1 day, partial days
+     rounded up)
+   - AND SHALL validate service compatibility with vehicle type (child seats not available for
+     2-door vehicles)
    - AND SHALL apply quantity limits (maximum 2 child seats per vehicle, 1 GPS per rental)
 
 8. **Late Return Penalties**
    - GIVEN a rental returned after the agreed time plus 15-minute grace period
    - WHEN calculating charges within 30 seconds of return processing
-   - THEN late return penalties SHALL be automatically applied as follows: 1-2 hours late (CHF 25), 2-6 hours late (CHF 50 + CHF 15/hour), >6 hours late (additional full day rate)
+   - THEN late return penalties SHALL be automatically applied as follows: 1-2 hours late (CHF 25),
+     2-6 hours late (CHF 50 + CHF 15/hour), >6 hours late (additional full day rate)
    - AND SHALL calculate delay duration in minutes with 1-minute precision
    - AND SHALL apply maximum late penalty of 200% of original rental rate
    - AND SHALL provide penalty waiver capability for staff with supervisor approval
@@ -79,8 +98,10 @@
 9. **Cleaning and Damage Charges**
    - GIVEN vehicle condition assessment at return with photographic evidence
    - WHEN additional charges are required within 10 minutes of assessment
-   - THEN cleaning fees SHALL be applied per predefined schedule: light cleaning (CHF 50), deep cleaning (CHF 120), odor removal (CHF 200)
-   - AND damage charges SHALL be calculated based on repair estimates with minimum CHF 100 deductible
+   - THEN cleaning fees SHALL be applied per predefined schedule: light cleaning (CHF 50), deep
+     cleaning (CHF 120), odor removal (CHF 200)
+   - AND damage charges SHALL be calculated based on repair estimates with minimum CHF 100
+     deductible
    - AND SHALL require supervisor approval for damage charges exceeding CHF 500
    - AND SHALL generate itemized repair estimates within 24 hours for damages over CHF 200
    - AND SHALL maintain photographic evidence linked to each charge for dispute resolution
@@ -88,38 +109,49 @@
 10. **Multi-Day Rate Calculations**
     - GIVEN rentals spanning multiple calendar days (minimum 2 days)
     - WHEN calculating charges within 5 seconds
-    - THEN daily rate breaks SHALL be correctly applied: 2-6 days (daily rate), 7-13 days (weekly rate discount of 15%), 14+ days (monthly rate discount of 25%)
+    - THEN daily rate breaks SHALL be correctly applied: 2-6 days (daily rate), 7-13 days (weekly
+      rate discount of 15%), 14+ days (monthly rate discount of 25%)
     - AND weekend surcharges (Friday-Sunday: +20%) SHALL be applied to applicable days
-    - AND holiday surcharges (+30%) SHALL be applied for Swiss federal holidays: New Year's Day, Good Friday, Easter Monday, Labour Day, Ascension Day, Whit Monday, Swiss National Day, Christmas Day, St. Stephen's Day
+    - AND holiday surcharges (+30%) SHALL be applied for Swiss federal holidays: New Year's Day,
+      Good Friday, Easter Monday, Labour Day, Ascension Day, Whit Monday, Swiss National Day,
+      Christmas Day, St. Stephen's Day
     - AND SHALL handle partial days at end of rental using hourly rates up to daily maximum
 
 11. **Promotional Discount Application**
     - GIVEN valid promotional codes verified within 3 seconds
     - WHEN calculating final charges
-    - THEN discounts SHALL be applied correctly: percentage discounts (5%-50% range), fixed amount discounts (CHF 10-500 range), free service upgrades
-    - AND SHALL validate discount eligibility rules: minimum rental duration, vehicle category restrictions, customer type restrictions, valid date ranges
-    - AND discount details SHALL be shown as separate line items with negative amounts in itemized breakdown
+    - THEN discounts SHALL be applied correctly: percentage discounts (5%-50% range), fixed amount
+      discounts (CHF 10-500 range), free service upgrades
+    - AND SHALL validate discount eligibility rules: minimum rental duration, vehicle category
+      restrictions, customer type restrictions, valid date ranges
+    - AND discount details SHALL be shown as separate line items with negative amounts in itemized
+      breakdown
     - AND SHALL prevent stacking of promotional codes (maximum 1 promotional discount per rental)
-    - AND SHALL apply discounts only to eligible charges (base rental and services, not penalties or taxes)
+    - AND SHALL apply discounts only to eligible charges (base rental and services, not penalties or
+      taxes)
 
 12. **Currency Conversion Handling**
     - GIVEN customers paying in EUR with rates updated within 24 hours
     - WHEN calculating charges within 2 seconds
-    - THEN conversion rates SHALL be obtained from Swiss National Bank or equivalent financial service with timestamp
+    - THEN conversion rates SHALL be obtained from Swiss National Bank or equivalent financial
+      service with timestamp
     - AND both CHF (base currency) and EUR amounts SHALL be displayed with 2 decimal precision
     - AND exchange rate and conversion timestamp SHALL be shown on invoice for transparency
     - AND SHALL apply 2% currency conversion fee for EUR transactions
-    - AND SHALL handle rate volatility by fixing conversion rate at time of contract creation for rentals >7 days
+    - AND SHALL handle rate volatility by fixing conversion rate at time of contract creation for
+      rentals >7 days
 
 ## Technical Implementation Notes
 
 ### Calculation Engine Architecture
+
 - **Rate Engine:** Pluggable rate calculation system supporting multiple pricing models
 - **Rule-Based System:** Configurable business rules for charge calculations
 - **Validation Layer:** Ensure all calculations are mathematically correct and complete
 - **Audit Trail:** Track all calculation inputs and results for debugging
 
 ### Pricing Rules Framework
+
 ```typescript
 interface PricingRule {
   id: string;
@@ -144,6 +176,7 @@ interface ChargeLineItem {
 ```
 
 ### Rate Optimization Algorithm
+
 ```typescript
 function optimizeRateStructure(duration: Duration, rates: RateStructure[]): OptimizedRate {
   // Calculate all possible rate combinations
@@ -153,6 +186,7 @@ function optimizeRateStructure(duration: Duration, rates: RateStructure[]): Opti
 ```
 
 ### Database Design
+
 ```sql
 -- Rate structures
 CREATE TABLE rate_structures (
@@ -203,6 +237,7 @@ CREATE TABLE charge_line_items (
 ## API Endpoints Needed
 
 ### Calculation Services
+
 ```
 POST /api/v1/charges/calculate
 - Body: { contract_id, calculation_params }
@@ -218,6 +253,7 @@ POST /api/v1/charges/recalculate/{calculation_id}
 ```
 
 ### Rate Management
+
 ```
 GET /api/v1/rates/current
 - Query: vehicle_category?, effective_date?
@@ -229,6 +265,7 @@ POST /api/v1/rates/test-calculation
 ```
 
 ### Pricing Rules
+
 ```
 GET /api/v1/pricing-rules/active
 - Response: { rules[], categories[], vat_rates }
@@ -241,6 +278,7 @@ POST /api/v1/pricing-rules/validate
 ## Database Schema Requirements
 
 ### Core Tables
+
 - `rate_structures` - All pricing rates with validity periods
 - `charge_calculations` - Complete calculation records with audit trail
 - `charge_line_items` - Detailed breakdown of all charges
@@ -249,12 +287,14 @@ POST /api/v1/pricing-rules/validate
 - `surcharge_schedules` - Late fees, cleaning costs, damage rates
 
 ### Indexes Required
+
 - `rate_structures(vehicle_category_id, valid_from, valid_until)`
 - `charge_calculations(rental_contract_id, calculation_timestamp DESC)`
 - `charge_line_items(calculation_id, category)`
 - `pricing_rules(category, priority, active)`
 
 ### Constraints
+
 - All monetary amounts must be non-negative
 - VAT rates must be between 0 and 1
 - Rate validity periods cannot overlap for same category
@@ -263,24 +303,28 @@ POST /api/v1/pricing-rules/validate
 ## UI/UX Considerations
 
 ### Calculation Display Interface
+
 - **Real-time Preview:** Show estimated charges as parameters change
 - **Breakdown Visualization:** Clear hierarchical display of charge categories
 - **Comparison View:** Show rate optimization choices made by system
 - **Highlight Changes:** Clearly show when calculations update
 
 ### Itemized Invoice Layout
+
 - **Professional Format:** Clean, printable invoice format
 - **Line Item Detail:** Each charge clearly explained with quantities
 - **VAT Breakdown:** Separate section for VAT calculations
 - **Multi-language:** Support German, French, Italian invoice formats
 
 ### Mobile Calculation Interface
+
 - **Quick Calculator:** Simplified interface for field calculations
 - **Voice Input:** Allow voice input for odometer and fuel readings
 - **Photo Integration:** Attach fuel gauge and odometer photos
 - **Offline Mode:** Basic calculations work without internet
 
 ### Administrative Interface
+
 - **Rate Management:** Easy interface for updating pricing structures
 - **Rule Testing:** Test pricing rules against historical data
 - **Calculation Review:** Review and adjust calculations when needed
@@ -289,6 +333,7 @@ POST /api/v1/pricing-rules/validate
 ## Testing Scenarios
 
 ### Basic Calculation Scenarios
+
 1. **Standard Daily Rental**
    - Create 3-day rental with standard vehicle
    - Return on time with same fuel level and within km limit
@@ -305,6 +350,7 @@ POST /api/v1/pricing-rules/validate
    - Confirm excess km charges with correct per-km rate
 
 ### Complex Calculation Scenarios
+
 4. **Late Return with Multiple Penalties**
    - Return vehicle 1.5 days late
    - Apply grace period, then hourly and daily late fees
@@ -316,6 +362,7 @@ POST /api/v1/pricing-rules/validate
    - Confirm all services included in final calculation
 
 ### Edge Case Testing
+
 6. **Cross-Month Rental**
    - Start rental in one month, end in next
    - Change fuel prices during rental period
@@ -355,18 +402,21 @@ POST /api/v1/pricing-rules/validate
 ## Estimated Effort: 5 Story Points
 
 ### Breakdown
+
 - **Rate Engine Implementation:** 2 points
 - **Business Rules Framework:** 1 point
 - **VAT and Currency Handling:** 1 point
 - **UI/UX and Reporting:** 1 point
 
 ### Dependencies
+
 - Vehicle category and pricing data setup
 - Fuel price feed integration
 - VAT rate configuration
 - Rate structure data migration
 
 ### Risks
+
 - **Medium:** Rate calculation complexity causing errors
 - **Medium:** VAT compliance requirements changes
 - **Low:** Currency conversion rate feed reliability
