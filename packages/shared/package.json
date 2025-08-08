@@ -18,6 +18,10 @@
     "lint": "eslint src/",
     "typecheck": "tsc --noEmit"
   },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^2.5.4"
+  },
   "devDependencies": {
     "eslint": "^9",
     "tsup": "^8.0.0",
