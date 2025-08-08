@@ -1,21 +1,25 @@
 # Story 07: Overbooking Management
 
 ## Story Information
+
 - **Story ID:** RS-07
 - **Epic:** Epic 5 - Reservation System
 - **Priority:** Medium
 - **Story Points:** 8
 
 ## User Story
+
 **As a** rental staff member  
 **I want to** intelligently handle overbooking situations  
-**So that** all customers are served effectively while maximizing revenue and maintaining satisfaction
+**So that** all customers are served effectively while maximizing revenue and maintaining
+satisfaction
 
 ## Detailed Acceptance Criteria
 
 1. **AC-01:** System proactively detects potential overbooking scenarios before they occur
 2. **AC-02:** Automated suggestions for alternative vehicles or upgrade options when conflicts arise
-3. **AC-03:** Overbooking rules engine allows controlled overselling based on historical no-show patterns
+3. **AC-03:** Overbooking rules engine allows controlled overselling based on historical no-show
+   patterns
 4. **AC-04:** Staff receive early warning alerts for potential overbooking situations
 5. **AC-05:** Automatic upgrade offers generated with cost tracking and approval workflows
 6. **AC-06:** Customer communication templates for proactive overbooking resolution
@@ -24,31 +28,35 @@
 9. **AC-09:** Real-time availability recalculation when overbooking situations resolve
 10. **AC-10:** Escalation procedures for complex overbooking scenarios requiring management approval
 11. **AC-11:** Reporting and analytics on overbooking incidents and resolution outcomes
-12. **AC-12:** Emergency protocols for severe overbooking situations with partner network integration
+12. **AC-12:** Emergency protocols for severe overbooking situations with partner network
+    integration
 
 ## Technical Implementation Notes
 
 ### Overbooking Detection Algorithm
+
 ```
-Overbooking Risk Score = 
-    (Total Reservations + Active Rentals - Available Vehicles) 
+Overbooking Risk Score =
+    (Total Reservations + Active Rentals - Available Vehicles)
     × (1 - Historical No-Show Rate)
     × Demand Pressure Factor
     × Seasonal Adjustment Factor
 
 Thresholds:
 - Score 0.7-0.8: Early warning
-- Score 0.8-0.9: Moderate risk  
+- Score 0.8-0.9: Moderate risk
 - Score 0.9+: High risk, intervention required
 ```
 
 ### Resolution Priority Matrix
+
 1. **Upgrade within fleet** (lowest cost)
 2. **Partner network referral** (moderate cost)
 3. **Monetary compensation** (higher cost)
 4. **Reschedule with incentives** (customer service impact)
 
 ### Business Rules Engine
+
 - Maximum overbooking ratio per vehicle category
 - Automatic upgrade authorization limits by staff level
 - Compensation caps and approval workflows
@@ -57,12 +65,15 @@ Thresholds:
 ## API Endpoints Needed
 
 ### GET /api/overbooking/risk-analysis
-**Purpose:** Analyze current and forecasted overbooking risks
-**Query Parameters:**
+
+**Purpose:** Analyze current and forecasted overbooking risks **Query Parameters:**
+
 ```
 startDate, endDate, vehicleCategoryId, locationId
 ```
+
 **Response:**
+
 ```json
 {
   "riskAnalysis": {
@@ -91,8 +102,9 @@ startDate, endDate, vehicleCategoryId, locationId
 ```
 
 ### POST /api/overbooking/resolve
-**Purpose:** Execute overbooking resolution strategy
-**Request Body:**
+
+**Purpose:** Execute overbooking resolution strategy **Request Body:**
+
 ```json
 {
   "overbookingIncidentId": "uuid",
@@ -100,7 +112,7 @@ startDate, endDate, vehicleCategoryId, locationId
   "affectedReservations": ["uuid1", "uuid2"],
   "upgradeTo": {
     "vehicleCategoryId": "uuid",
-    "additionalCost": 45.00
+    "additionalCost": 45.0
   },
   "customerCommunication": {
     "template": "proactive_upgrade_offer",
@@ -111,12 +123,16 @@ startDate, endDate, vehicleCategoryId, locationId
 ```
 
 ### GET /api/overbooking/resolution-options
-**Purpose:** Get available resolution options for specific overbooking scenario
-**Query Parameters:**
+
+**Purpose:** Get available resolution options for specific overbooking scenario **Query
+Parameters:**
+
 ```
 date, vehicleCategoryId, reservationIds[]
 ```
+
 **Response:**
+
 ```json
 {
   "options": [
@@ -124,24 +140,25 @@ date, vehicleCategoryId, reservationIds[]
       "strategy": "upgrade",
       "targetCategory": "Mid-size SUV",
       "additionalCost": 0,
-      "customerBenefit": 45.00,
+      "customerBenefit": 45.0,
       "availability": 3,
       "recommendationScore": 0.95
     },
     {
       "strategy": "partner_referral",
       "partnerName": "Budget Car Rental",
-      "estimatedCost": 25.00,
+      "estimatedCost": 25.0,
       "customerInconvenience": "low",
-      "recommendationScore": 0.70
+      "recommendationScore": 0.7
     }
   ]
 }
 ```
 
 ### POST /api/overbooking/incidents
-**Purpose:** Create new overbooking incident for tracking
-**Request Body:**
+
+**Purpose:** Create new overbooking incident for tracking **Request Body:**
+
 ```json
 {
   "affectedDate": "2024-08-15",
@@ -156,6 +173,7 @@ date, vehicleCategoryId, reservationIds[]
 ## Database Schema Requirements
 
 ### New Tables
+
 ```sql
 CREATE TABLE overbooking_rules (
     id UUID PRIMARY KEY,
@@ -216,6 +234,7 @@ CREATE TABLE partner_referral_network (
 ```
 
 ### Updated Tables
+
 ```sql
 ALTER TABLE reservations ADD COLUMN overbooking_incident_id UUID REFERENCES overbooking_incidents(id);
 ALTER TABLE reservations ADD COLUMN upgraded_from_category VARCHAR(50);
@@ -223,6 +242,7 @@ ALTER TABLE reservations ADD COLUMN upgrade_value_provided DECIMAL(10,2) DEFAULT
 ```
 
 ### Indexes
+
 ```sql
 CREATE INDEX idx_overbooking_incidents_date ON overbooking_incidents(incident_date);
 CREATE INDEX idx_overbooking_incidents_status ON overbooking_incidents(status);
@@ -232,24 +252,28 @@ CREATE INDEX idx_overbooking_resolutions_incident ON overbooking_resolutions(inc
 ## UI/UX Considerations
 
 ### Overbooking Dashboard
+
 - **Risk Indicators:** Color-coded alerts for different risk levels
-- **Timeline View:** Upcoming potential conflicts with countdown timers  
+- **Timeline View:** Upcoming potential conflicts with countdown timers
 - **Resolution Workspace:** Drag-and-drop interface for customer-to-vehicle assignment
 - **Communication Center:** Templates and tracking for customer outreach
 
 ### Early Warning System
+
 - **Alert Notifications:** Push notifications for emerging overbooking risks
 - **Predictive Analytics:** Charts showing booking trends vs. availability
 - **Action Recommendations:** AI-suggested resolution strategies
 - **Escalation Pathways:** Clear escalation procedures and approval workflows
 
 ### Customer Communication Interface
+
 - **Template Library:** Pre-written messages for various scenarios
 - **Personalization Tools:** Customer history integration for tailored communication
 - **Multi-channel Options:** Email, SMS, phone call coordination
 - **Response Tracking:** Customer reply monitoring and follow-up scheduling
 
 ### Management Reporting
+
 - **Incident Analytics:** Trends in overbooking frequency and causes
 - **Cost Analysis:** Financial impact of resolution strategies
 - **Performance Metrics:** Resolution time, customer satisfaction, repeat incidents
@@ -258,41 +282,49 @@ CREATE INDEX idx_overbooking_resolutions_incident ON overbooking_resolutions(inc
 ## Testing Scenarios
 
 ### Scenario 1: Proactive Overbooking Detection
+
 **Given:** Historical 6% no-show rate and current 105% booking rate  
 **When:** Overbooking risk analysis runs  
 **Then:** System flags moderate risk and suggests allowing 1 additional reservation
 
 ### Scenario 2: Automatic Upgrade Resolution
+
 **Given:** Confirmed overbooking situation with upgrade options available  
 **When:** Staff selects automatic upgrade strategy  
 **Then:** Customer receives upgrade offer, cost tracked, vehicle reassigned
 
 ### Scenario 3: Partner Network Referral
+
 **Given:** No internal upgrade options available for overbooking  
 **When:** System evaluates resolution options  
 **Then:** Partner referral suggested with contact details and cost estimates
 
 ### Scenario 4: Customer Communication and Response
+
 **Given:** Customer offered upgrade for overbooking resolution  
 **When:** Customer accepts upgrade offer  
 **Then:** Reservation updated, confirmation sent, incident marked as resolved
 
 ### Scenario 5: Management Escalation
+
 **Given:** Severe overbooking situation exceeding staff authorization limits  
 **When:** Resolution requires high-cost compensation  
 **Then:** Automatic escalation to management with full situation briefing
 
 ### Scenario 6: Multi-customer Overbooking
+
 **Given:** 3 customers, 1 vehicle available in same category  
 **When:** Staff processes resolution for all affected customers  
 **Then:** Tiered resolution strategy applied based on customer priority scores
 
 ### Scenario 7: Last-minute Overbooking Resolution
+
 **Given:** Overbooking discovered on pickup day  
 **When:** Customer arrives for reserved vehicle  
 **Then:** Real-time resolution options presented with immediate implementation
 
 ### Scenario 8: Historical Analysis and Prevention
+
 **Given:** Recurring overbooking patterns in specific category/timeframe  
 **When:** Management reviews incident reports  
 **Then:** Overbooking rules adjusted to prevent future incidents
@@ -321,6 +353,7 @@ CREATE INDEX idx_overbooking_resolutions_incident ON overbooking_resolutions(inc
 ## Dependencies
 
 ### Internal Dependencies
+
 - Reservation system (Stories 1-6)
 - No-show management system (Story 3)
 - Fleet availability tracking (Epic 2)
@@ -329,6 +362,7 @@ CREATE INDEX idx_overbooking_resolutions_incident ON overbooking_resolutions(inc
 - Financial tracking systems (Epic 3)
 
 ### External Dependencies
+
 - Partner network agreements and integrations
 - Communication service providers (email, SMS)
 - Management approval systems
@@ -336,26 +370,32 @@ CREATE INDEX idx_overbooking_resolutions_incident ON overbooking_resolutions(inc
 ## Risk Mitigation
 
 ### Risk: Over-optimization leading to customer dissatisfaction
+
 - **Mitigation:** Conservative overbooking ratios with gradual optimization
 - **Contingency:** Quick reversal to manual-only overbooking management
 
 ### Risk: Resolution costs exceeding revenue benefits
+
 - **Mitigation:** Strict cost controls and approval limits
 - **Contingency:** Automatic cost-benefit analysis before resolution execution
 
 ### Risk: Partner network reliability issues
+
 - **Mitigation:** Multiple partner options and quality monitoring
 - **Contingency:** Internal fleet expansion or rental from competitors
 
 ### Risk: Communication failures during critical periods
+
 - **Mitigation:** Multi-channel communication and backup procedures
 - **Contingency:** Direct phone contact protocols and staff escalation
 
 ### Risk: System performance issues during high-demand periods
+
 - **Mitigation:** Optimized algorithms and scalable infrastructure
 - **Contingency:** Manual processing procedures and simplified workflows
 
 ## Success Criteria
+
 - Overbooking incident resolution time <30 minutes average
 - Customer satisfaction score >4.0/5 for overbooking situations
 - Resolution cost per incident <15% of reservation value

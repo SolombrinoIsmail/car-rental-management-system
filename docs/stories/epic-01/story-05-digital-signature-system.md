@@ -9,7 +9,8 @@
 
 **As a** rental staff member  
 **I want to** capture legally binding digital signatures from customers and staff  
-**So that** rental contracts are legally valid without requiring paper documents while maintaining full compliance with Swiss law
+**So that** rental contracts are legally valid without requiring paper documents while maintaining
+full compliance with Swiss law
 
 ## Detailed Acceptance Criteria
 
@@ -266,12 +267,14 @@ identity_verifications (
 **Story Points:** 5
 
 **Breakdown:**
+
 - Signature capture interface development (1 point)
 - Legal compliance and cryptographic implementation (2 points)
 - PDF integration and embedding (1 point)
 - Audit trail and verification systems (1 point)
 
 **Dependencies:**
+
 - Digital contract creation system (Story 02)
 - Customer management system (Story 01)
 - PDF generation service
@@ -280,6 +283,7 @@ identity_verifications (
 - Cryptographic infrastructure setup
 
 **Risks:**
+
 - Swiss legal compliance complexity
 - Cross-device signature capture consistency
 - PDF embedding technical challenges

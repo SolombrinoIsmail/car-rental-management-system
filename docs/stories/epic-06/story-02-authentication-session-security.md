@@ -328,6 +328,7 @@ CREATE INDEX idx_security_events_created ON security_events (created_at);
 **Story Points:** 11
 
 **Breakdown:**
+
 - JWT authentication system (3 points)
 - Two-factor authentication implementation (2 points)
 - Session management and security (2 points)
@@ -336,12 +337,14 @@ CREATE INDEX idx_security_events_created ON security_events (created_at);
 - Security testing and hardening (1 point)
 
 **Dependencies:**
+
 - User management system (Story 1)
 - Email service configuration
 - Redis cluster setup
 - SSL/TLS certificate configuration
 
 **Risks:**
+
 - 2FA implementation complexity may extend timeline
 - Security requirements may require additional third-party services
 - Performance impact of security measures needs careful optimization

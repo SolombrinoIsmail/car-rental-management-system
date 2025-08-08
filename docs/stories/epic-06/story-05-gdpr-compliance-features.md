@@ -14,76 +14,148 @@
 ## Detailed Acceptance Criteria
 
 1. **Data Subject Access Rights (Article 15)**
-   - SHALL provide self-service portal accessible 24/7 for customers to request personal data export with identity verification within 2 minutes
-   - SHALL generate comprehensive data export including ALL stored personal information from ALL system modules with 100% completeness verification
-   - SHALL provide machine-readable format (JSON with UTF-8 encoding) and human-readable format (PDF max 50 pages) within 4 hours of request
-   - SHALL respond within 30 calendar days (target 7 days) with ability to expedite urgent requests within 48 hours upon justification approval
+   - SHALL provide self-service portal accessible 24/7 for customers to request personal data export
+     with identity verification within 2 minutes
+   - SHALL generate comprehensive data export including ALL stored personal information from ALL
+     system modules with 100% completeness verification
+   - SHALL provide machine-readable format (JSON with UTF-8 encoding) and human-readable format (PDF
+     max 50 pages) within 4 hours of request
+   - SHALL respond within 30 calendar days (target 7 days) with ability to expedite urgent requests
+     within 48 hours upon justification approval
 
 2. **Right to Erasure Implementation (Article 17)**
-   - SHALL enable customer-initiated deletion requests through self-service portal with mandatory 72-hour cooling-off period and confirmation email
-   - SHALL support admin-initiated deletion with dual authorization (supervisor + data protection officer) and complete documentation within 24 hours
-   - SHALL execute cascading deletion across ALL related records (contracts, payments, communications) while preserving business integrity through anonymization of financial records
-   - SHALL provide anonymization for legally required retention data using k-anonymity (k≥5) and data masking techniques, completing anonymization within 30 days of request
+   - SHALL enable customer-initiated deletion requests through self-service portal with mandatory
+     72-hour cooling-off period and confirmation email
+   - SHALL support admin-initiated deletion with dual authorization (supervisor + data protection
+     officer) and complete documentation within 24 hours
+   - SHALL execute cascading deletion across ALL related records (contracts, payments,
+     communications) while preserving business integrity through anonymization of financial records
+   - SHALL provide anonymization for legally required retention data using k-anonymity (k≥5) and
+     data masking techniques, completing anonymization within 30 days of request
 
 3. **Consent Management System**
-   - SHALL implement granular consent collection for 8 specific processing purposes: marketing, analytics, third-party sharing, location tracking, automated decision-making, profiling, data transfer, research
-   - SHALL provide clear, plain language consent forms (maximum 200 words per purpose, 8th-grade reading level) with specific purpose explanations and consequences of consent/withdrawal
-   - SHALL enable consent withdrawal with immediate effect (within 15 minutes) on ALL related data processing activities and automated system notifications to affected modules
-   - SHALL maintain consent history tracking with precise timestamps (UTC), IP addresses, browser fingerprint, and withdrawal reasons for minimum 6 years audit compliance
+   - SHALL implement granular consent collection for 8 specific processing purposes: marketing,
+     analytics, third-party sharing, location tracking, automated decision-making, profiling, data
+     transfer, research
+   - SHALL provide clear, plain language consent forms (maximum 200 words per purpose, 8th-grade
+     reading level) with specific purpose explanations and consequences of consent/withdrawal
+   - SHALL enable consent withdrawal with immediate effect (within 15 minutes) on ALL related data
+     processing activities and automated system notifications to affected modules
+   - SHALL maintain consent history tracking with precise timestamps (UTC), IP addresses, browser
+     fingerprint, and withdrawal reasons for minimum 6 years audit compliance
 
 4. **Data Retention Policy Engine**
-   - SHALL automatically enforce retention periods by data category: Personal data (7 years), Financial records (10 years), Marketing data (2 years), Technical logs (1 year) based on legal basis documentation
-   - SHALL support configurable retention rules with parameters: Customer status (active/inactive), Contract history (completed/ongoing), Legal holds, with rule precedence hierarchy
-   - SHALL execute automatic data deletion within 30 days of retention period expiry with 14-day advance notification and hard deletion confirmation
-   - SHALL handle business rule exceptions for ongoing legal obligations with supervisor approval, documented justification, and automatic review every 6 months (maximum 3-year extension)
+   - SHALL automatically enforce retention periods by data category: Personal data (7 years),
+     Financial records (10 years), Marketing data (2 years), Technical logs (1 year) based on legal
+     basis documentation
+   - SHALL support configurable retention rules with parameters: Customer status (active/inactive),
+     Contract history (completed/ongoing), Legal holds, with rule precedence hierarchy
+   - SHALL execute automatic data deletion within 30 days of retention period expiry with 14-day
+     advance notification and hard deletion confirmation
+   - SHALL handle business rule exceptions for ongoing legal obligations with supervisor approval,
+     documented justification, and automatic review every 6 months (maximum 3-year extension)
 
 5. **Privacy Policy Management**
-   - SHALL maintain version-controlled privacy policy with semantic versioning (major.minor.patch), change tracking showing exact modifications, and three-tier approval workflow (legal, DPO, management) within 5 business days
-   - SHALL automatically notify ALL active customers within 48 hours of policy changes via email with clear change summary (maximum 300 words)
-   - SHALL implement consent re-collection mechanism for material changes affecting processing purposes, requiring positive opt-in within 30 days or service restriction
-   - SHALL provide multi-language support (German, French, Italian, English) with professional translation accuracy >95% and legal review for each language version
+   - SHALL maintain version-controlled privacy policy with semantic versioning (major.minor.patch),
+     change tracking showing exact modifications, and three-tier approval workflow (legal, DPO,
+     management) within 5 business days
+   - SHALL automatically notify ALL active customers within 48 hours of policy changes via email
+     with clear change summary (maximum 300 words)
+   - SHALL implement consent re-collection mechanism for material changes affecting processing
+     purposes, requiring positive opt-in within 30 days or service restriction
+   - SHALL provide multi-language support (German, French, Italian, English) with professional
+     translation accuracy >95% and legal review for each language version
 
 6. **Data Breach Response System**
-   - SHALL implement automated incident detection with classification into 4 severity levels: Critical (>1000 records), High (100-999 records), Medium (10-99 records), Low (<10 records) with real-time alerting
-   - SHALL execute automated data breach notification workflow to Swiss Federal Data Protection Authority within 72 hours including incident ID, affected data types, estimated numbers, containment measures, contact information
-   - SHALL notify affected customers within 72 hours for high-risk breaches (identity theft, financial fraud, sensitive data) via email, SMS, and postal mail with clear incident explanation and protective action recommendations
-   - SHALL provide breach impact assessment tools calculating risk scores, affected data sensitivity, and documentation templates auto-generating incident reports with legal compliance verification
+   - SHALL implement automated incident detection with classification into 4 severity levels:
+     Critical (>1000 records), High (100-999 records), Medium (10-99 records), Low (<10 records)
+     with real-time alerting
+   - SHALL execute automated data breach notification workflow to Swiss Federal Data Protection
+     Authority within 72 hours including incident ID, affected data types, estimated numbers,
+     containment measures, contact information
+   - SHALL notify affected customers within 72 hours for high-risk breaches (identity theft,
+     financial fraud, sensitive data) via email, SMS, and postal mail with clear incident
+     explanation and protective action recommendations
+   - SHALL provide breach impact assessment tools calculating risk scores, affected data
+     sensitivity, and documentation templates auto-generating incident reports with legal compliance
+     verification
 
 7. **Processing Activity Records (Article 30)**
-   - SHALL maintain comprehensive record of ALL data processing activities with mandatory fields: Processing purpose, Data categories, Data subjects, Recipients, International transfers, Retention periods, Security measures (minimum 25 activities documented)
-   - SHALL create visual mapping of data flows between ALL systems and third-party processors updated automatically with API monitoring and manual verification quarterly
-   - SHALL document legal basis for EACH processing activity with legal review (contract, consent, legitimate interest, legal obligation, vital interests, public task) and justification text (minimum 100 words)
-   - SHALL enforce quarterly review cycle for processing activities with change management workflow requiring legal approval for modifications and automated reminder notifications 14 days before review due date
+   - SHALL maintain comprehensive record of ALL data processing activities with mandatory fields:
+     Processing purpose, Data categories, Data subjects, Recipients, International transfers,
+     Retention periods, Security measures (minimum 25 activities documented)
+   - SHALL create visual mapping of data flows between ALL systems and third-party processors
+     updated automatically with API monitoring and manual verification quarterly
+   - SHALL document legal basis for EACH processing activity with legal review (contract, consent,
+     legitimate interest, legal obligation, vital interests, public task) and justification text
+     (minimum 100 words)
+   - SHALL enforce quarterly review cycle for processing activities with change management workflow
+     requiring legal approval for modifications and automated reminder notifications 14 days before
+     review due date
 
 8. **Data Protection Impact Assessment (DPIA)**
-   - SHALL implement DPIA workflow triggered automatically for high-risk processing: New technology implementation, Large-scale profiling, Public area monitoring, Sensitive data processing, with mandatory completion within 30 days
-   - SHALL provide standardized risk assessment templates with quantitative scoring (1-5 scale across 8 risk factors) and automatic risk level calculation (Low <15, Medium 15-25, High >25)
-   - SHALL track mitigation measure implementation with progress monitoring, responsible person assignment, completion deadlines, and effectiveness verification within 90 days
-   - SHALL integrate with system change management requiring DPIA completion before production deployment for data processing changes affecting >100 customers or processing sensitive data
+   - SHALL implement DPIA workflow triggered automatically for high-risk processing: New technology
+     implementation, Large-scale profiling, Public area monitoring, Sensitive data processing, with
+     mandatory completion within 30 days
+   - SHALL provide standardized risk assessment templates with quantitative scoring (1-5 scale
+     across 8 risk factors) and automatic risk level calculation (Low <15, Medium 15-25, High >25)
+   - SHALL track mitigation measure implementation with progress monitoring, responsible person
+     assignment, completion deadlines, and effectiveness verification within 90 days
+   - SHALL integrate with system change management requiring DPIA completion before production
+     deployment for data processing changes affecting >100 customers or processing sensitive data
 
 9. **Data Portability Support (Article 20)**
-   - SHALL export customer data in commonly used, machine-readable formats (JSON, XML, CSV) with structured schema documentation and data dictionary within 5 business days
-   - SHALL provide direct data transfer capabilities to other service providers using standard APIs (REST/GraphQL) where technically feasible, with secure authentication and transmission logging
-   - SHALL implement data mapping and transformation tools supporting 5 export formats with custom field mapping, data validation, and format-specific optimization (maximum 10MB per export file)
-   - SHALL include verification tools ensuring data accuracy (100% field validation) and completeness (automated cross-reference checking) with export confirmation report and data integrity checksums
+   - SHALL export customer data in commonly used, machine-readable formats (JSON, XML, CSV) with
+     structured schema documentation and data dictionary within 5 business days
+   - SHALL provide direct data transfer capabilities to other service providers using standard APIs
+     (REST/GraphQL) where technically feasible, with secure authentication and transmission logging
+   - SHALL implement data mapping and transformation tools supporting 5 export formats with custom
+     field mapping, data validation, and format-specific optimization (maximum 10MB per export file)
+   - SHALL include verification tools ensuring data accuracy (100% field validation) and
+     completeness (automated cross-reference checking) with export confirmation report and data
+     integrity checksums
 
 10. **Lawful Basis Documentation**
-    - SHALL maintain clear documentation of lawful basis for EACH category of personal data processing with legal review approval and 6-month review cycles for 15 processing categories minimum
-    - SHALL track contract performance basis for rental agreement processing with automated contract lifecycle mapping and processing necessity verification for each data element
-    - SHALL conduct legitimate interest assessments with formal balancing tests including: Purpose necessity, Less intrusive alternatives, Individual impact assessment, with documented scoring methodology and legal sign-off
-    - SHALL handle special category data (health, biometric) with explicit consent mechanisms requiring separate opt-in, purpose limitation, enhanced security, and annual consent renewal with clear withdrawal options
+    - SHALL maintain clear documentation of lawful basis for EACH category of personal data
+      processing with legal review approval and 6-month review cycles for 15 processing categories
+      minimum
+    - SHALL track contract performance basis for rental agreement processing with automated contract
+      lifecycle mapping and processing necessity verification for each data element
+    - SHALL conduct legitimate interest assessments with formal balancing tests including: Purpose
+      necessity, Less intrusive alternatives, Individual impact assessment, with documented scoring
+      methodology and legal sign-off
+    - SHALL handle special category data (health, biometric) with explicit consent mechanisms
+      requiring separate opt-in, purpose limitation, enhanced security, and annual consent renewal
+      with clear withdrawal options
 
 11. **Third-Party Data Processing Oversight**
-    - SHALL manage data processing agreements (DPA) with ALL vendors processing personal data (minimum 10 vendors) including mandatory clauses: Processing instructions, Security obligations, Sub-processor approval, Data transfer restrictions, with annual DPA review and renewal
-    - SHALL conduct regular audits of third-party processors' compliance through: Annual questionnaires, Security certifications verification (ISO 27001, SOC 2), On-site audits for high-risk processors, with compliance scoring and remediation tracking
-    - SHALL perform data transfer impact assessments for international transfers including: Adequacy decision verification, Standard contractual clauses implementation, Supplementary security measures, with approval workflow for non-EU transfers
-    - SHALL implement vendor risk assessment with continuous monitoring: Security incident tracking, Compliance score calculation, Performance metrics monitoring, with quarterly risk review and vendor rating updates
+    - SHALL manage data processing agreements (DPA) with ALL vendors processing personal data
+      (minimum 10 vendors) including mandatory clauses: Processing instructions, Security
+      obligations, Sub-processor approval, Data transfer restrictions, with annual DPA review and
+      renewal
+    - SHALL conduct regular audits of third-party processors' compliance through: Annual
+      questionnaires, Security certifications verification (ISO 27001, SOC 2), On-site audits for
+      high-risk processors, with compliance scoring and remediation tracking
+    - SHALL perform data transfer impact assessments for international transfers including: Adequacy
+      decision verification, Standard contractual clauses implementation, Supplementary security
+      measures, with approval workflow for non-EU transfers
+    - SHALL implement vendor risk assessment with continuous monitoring: Security incident tracking,
+      Compliance score calculation, Performance metrics monitoring, with quarterly risk review and
+      vendor rating updates
 
 12. **Customer Rights Management Interface**
-    - SHALL provide admin dashboard for managing customer rights requests with real-time status tracking, workload distribution across 5 staff members, and performance metrics (average response time, compliance rate >98%)
-    - SHALL implement request tracking with status updates (received, in_progress, completed, rejected) and timeline compliance monitoring with visual indicators (green <50% time elapsed, yellow 50-80%, red >80%)
-    - SHALL generate automated reminders for approaching deadline requirements: 7 days before deadline (email), 3 days before (email + SMS), 1 day before (urgent notification), with escalation to management for overdue requests
-    - SHALL integrate with customer communication systems for automated status updates: Confirmation within 1 hour, Progress updates every 7 days, Completion notification with attached results, SMS alerts for urgent communications
+    - SHALL provide admin dashboard for managing customer rights requests with real-time status
+      tracking, workload distribution across 5 staff members, and performance metrics (average
+      response time, compliance rate >98%)
+    - SHALL implement request tracking with status updates (received, in_progress, completed,
+      rejected) and timeline compliance monitoring with visual indicators (green <50% time elapsed,
+      yellow 50-80%, red >80%)
+    - SHALL generate automated reminders for approaching deadline requirements: 7 days before
+      deadline (email), 3 days before (email + SMS), 1 day before (urgent notification), with
+      escalation to management for overdue requests
+    - SHALL integrate with customer communication systems for automated status updates: Confirmation
+      within 1 hour, Progress updates every 7 days, Completion notification with attached results,
+      SMS alerts for urgent communications
 
 ## Technical Implementation Notes
 
@@ -404,6 +476,7 @@ CREATE INDEX idx_gdpr_anonymization_entity ON gdpr_anonymization_log (entity_typ
 **Story Points:** 13
 
 **Breakdown:**
+
 - Data export and portability features (3 points)
 - Right to erasure and anonymization (3 points)
 - Consent management system (2 points)
@@ -413,12 +486,14 @@ CREATE INDEX idx_gdpr_anonymization_entity ON gdpr_anonymization_log (entity_typ
 - Admin interfaces and reporting (1 point)
 
 **Dependencies:**
+
 - Legal consultation for compliance requirements
 - Data classification and mapping completion
 - User management system (Story 1)
 - Audit trail system (Story 3)
 
 **Risks:**
+
 - Complex legal requirements may require additional development
 - Data anonymization techniques may be technically challenging
 - Performance impact of retention policy enforcement

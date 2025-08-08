@@ -1,12 +1,14 @@
 # User Story: Offline/Degraded Mode Operations
 
 ## Story Information
+
 - **Story ID:** CRITICAL-02
 - **Epic:** Epic 6 - System Administration & Security (Addition)
 - **Priority:** P0 - Critical (Reliability Requirement)
 - **Story Points:** 13
 
 ## User Story Statement
+
 **As a** rental staff member  
 **I want to** continue serving customers when internet connectivity is lost  
 **So that** business operations are not disrupted by technical failures
@@ -58,6 +60,7 @@
 ## Technical Implementation Notes
 
 ### Offline Architecture
+
 ```javascript
 class OfflineManager {
   constructor() {
@@ -65,23 +68,24 @@ class OfflineManager {
     this.syncQueue = new PersistentQueue();
     this.conflictResolver = new ConflictResolver();
   }
-  
+
   strategies = {
     contracts: 'queue_and_sync',
     payments: 'priority_queue',
     updates: 'last_write_wins',
-    photos: 'store_locally'
+    photos: 'store_locally',
   };
-  
+
   cachePolicy = {
     customers: { max: 500, ttl: '30d' },
     vehicles: { max: 'all', ttl: '1d' },
-    prices: { max: 'all', ttl: '7d' }
+    prices: { max: 'all', ttl: '7d' },
   };
 }
 ```
 
 ### Progressive Web App Setup
+
 - Service Worker for offline capability
 - IndexedDB for local storage
 - Background sync API for queued operations
@@ -91,7 +95,7 @@ class OfflineManager {
 
 ```
 GET /api/v1/offline/cache-data
-  Response: { 
+  Response: {
     customers: [...],
     vehicles: [...],
     prices: [...],
@@ -99,13 +103,13 @@ GET /api/v1/offline/cache-data
   }
 
 POST /api/v1/offline/sync
-  Request: { 
+  Request: {
     transactions: [...],
     deviceId: 'xxx',
     offlineFrom: timestamp,
     offlineTo: timestamp
   }
-  Response: { 
+  Response: {
     synced: 45,
     conflicts: 2,
     failed: 1,
@@ -171,6 +175,7 @@ CREATE TABLE cache_metadata (
 ## UI/UX Considerations
 
 ### Offline Mode Indicators
+
 - Red banner: "OFFLINE MODE - Transactions will sync when connected"
 - Icon changes from cloud to local storage
 - Queue counter showing pending transactions
@@ -178,6 +183,7 @@ CREATE TABLE cache_metadata (
 - Manual sync button when connection detected
 
 ### Degraded Functionality Warnings
+
 - Payment processing: "Cash only in offline mode"
 - Customer search: "Showing cached customers only"
 - Reservations: "Cannot check future reservations offline"
@@ -249,6 +255,7 @@ CREATE TABLE cache_metadata (
 - [ ] 24-hour offline operation tested successfully
 
 ## Dependencies
+
 - PWA infrastructure setup
 - IndexedDB support in target browsers
 - Service Worker registration
@@ -256,6 +263,7 @@ CREATE TABLE cache_metadata (
 - Local storage encryption library
 
 ## Risks & Mitigation
+
 - **Risk:** Data loss during extended offline period
   - **Mitigation:** Persistent storage, multiple backup locations
 - **Risk:** Conflicts causing business disruption
@@ -264,6 +272,7 @@ CREATE TABLE cache_metadata (
   - **Mitigation:** Configurable cache limits, automatic cleanup
 
 ## Estimated Effort Breakdown
+
 - Service Worker setup: 2 points
 - Offline detection & switching: 2 points
 - Local storage implementation: 3 points
@@ -275,4 +284,5 @@ CREATE TABLE cache_metadata (
 
 ---
 
-*This story is CRITICAL for business continuity. Swiss mountain regions often have connectivity issues.*
+_This story is CRITICAL for business continuity. Swiss mountain regions often have connectivity
+issues._

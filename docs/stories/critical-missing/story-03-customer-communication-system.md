@@ -1,12 +1,14 @@
 # User Story: Customer Communication System
 
 ## Story Information
+
 - **Story ID:** CRITICAL-03
 - **Epic:** Epic 4 - Dashboard & Reporting (Addition) or New Epic 10
 - **Priority:** P0 - Critical (Customer Expectation)
 - **Story Points:** 8
 
 ## User Story Statement
+
 **As a** rental staff member  
 **I want to** automatically send communications to customers  
 **So that** they receive confirmations, reminders, and documents without manual effort
@@ -64,31 +66,33 @@
 ## Technical Implementation Notes
 
 ### Communication Service Architecture
+
 ```typescript
 interface CommunicationService {
   providers: {
-    email: 'SendGrid' | 'AWS SES',
-    sms: 'Twilio' | 'MessageBird'
+    email: 'SendGrid' | 'AWS SES';
+    sms: 'Twilio' | 'MessageBird';
   };
-  
+
   queue: {
-    processor: 'BullMQ',
-    workers: 4,
+    processor: 'BullMQ';
+    workers: 4;
     retryPolicy: {
-      attempts: 3,
-      backoff: 'exponential'
-    }
+      attempts: 3;
+      backoff: 'exponential';
+    };
   };
-  
+
   templates: {
-    storage: 'database',
-    engine: 'Handlebars',
-    cache: 'Redis'
+    storage: 'database';
+    engine: 'Handlebars';
+    cache: 'Redis';
   };
 }
 ```
 
 ### Message Queue Implementation
+
 - Use job queue for reliable delivery
 - Priority levels for different message types
 - Scheduled job support for reminders
@@ -105,7 +109,7 @@ POST /api/v1/communications/send
     data: { name: 'John', date: '2024-03-15' },
     scheduled_for: timestamp (optional)
   }
-  Response: { 
+  Response: {
     messageId: 'msg_123',
     status: 'queued|sent',
     scheduledTime: timestamp
@@ -130,7 +134,7 @@ PUT /api/v1/communications/templates/{id}
 GET /api/v1/communications/history/{customerId}
   Response: {
     communications: [
-      { 
+      {
         id: 'com_123',
         type: 'email',
         template: 'receipt',
@@ -147,7 +151,7 @@ POST /api/v1/communications/batch
     template: 'maintenance_reminder',
     data: {...}
   }
-  Response: { 
+  Response: {
     batchId: 'batch_123',
     totalRecipients: 45,
     status: 'processing'
@@ -220,6 +224,7 @@ CREATE TABLE message_queue (
 ## UI/UX Considerations
 
 ### Template Editor Interface
+
 - Rich text editor for HTML templates
 - Variable insertion toolbar
 - Live preview with sample data
@@ -228,6 +233,7 @@ CREATE TABLE message_queue (
 - Template testing interface
 
 ### Communication Dashboard
+
 - Daily sending statistics
 - Delivery rate metrics
 - Template performance
@@ -303,6 +309,7 @@ CREATE TABLE message_queue (
 - [ ] Load tested with 1000 messages/hour
 
 ## Dependencies
+
 - Email service provider account (SendGrid/SES)
 - SMS provider account (Twilio/MessageBird)
 - Message queue infrastructure
@@ -310,6 +317,7 @@ CREATE TABLE message_queue (
 - SMTP configuration
 
 ## Risks & Mitigation
+
 - **Risk:** Email deliverability issues
   - **Mitigation:** Proper SPF/DKIM setup, warming IP reputation
 - **Risk:** SMS costs exceeding budget
@@ -318,6 +326,7 @@ CREATE TABLE message_queue (
   - **Mitigation:** Thorough testing, preview capability, versioning
 
 ## Estimated Effort Breakdown
+
 - Email integration: 1 point
 - SMS integration: 1 point
 - Template management: 2 points
@@ -329,4 +338,5 @@ CREATE TABLE message_queue (
 
 ---
 
-*This story is CRITICAL for customer satisfaction and operational efficiency. Manual communication would require 2+ hours daily.*
+_This story is CRITICAL for customer satisfaction and operational efficiency. Manual communication
+would require 2+ hours daily._

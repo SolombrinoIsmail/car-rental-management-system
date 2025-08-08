@@ -1,12 +1,15 @@
 # Story 4: PDF Embedding System
 
 ## Story ID
+
 **Epic 7 - Story 4**
 
 ## User Story Statement
+
 **As a** rental staff member  
 **I want to** automatically embed photos with annotations into rental contracts and reports  
-**So that** all documentation is complete, legally compliant, and professionally presented in a single PDF document
+**So that** all documentation is complete, legally compliant, and professionally presented in a
+single PDF document
 
 ## Detailed Acceptance Criteria
 
@@ -85,75 +88,78 @@
 ## Technical Implementation Notes
 
 ### PDF Generation Architecture
+
 - **PDFGenerator.js**: Core PDF creation with photo embedding
 - **PhotoProcessor.js**: Image optimization and preparation
 - **TemplateManager.js**: Dynamic template selection and layout
 - **MetadataEmbedder.js**: Photo and document metadata handling
 
 ### PDF Library Integration
+
 ```javascript
 // Using PDF-lib for advanced PDF generation
-import { PDFDocument, rgb } from 'pdf-lib'
+import { PDFDocument, rgb } from 'pdf-lib';
 
 class ContractPDFGenerator {
   async generateWithPhotos(contractData, photos, annotations) {
-    const pdfDoc = await PDFDocument.create()
-    
+    const pdfDoc = await PDFDocument.create();
+
     // Add photos with annotations
     for (const photo of photos) {
-      const page = pdfDoc.addPage()
-      const imageBytes = await this.optimizeImage(photo)
-      const image = await pdfDoc.embedJpg(imageBytes)
-      
+      const page = pdfDoc.addPage();
+      const imageBytes = await this.optimizeImage(photo);
+      const image = await pdfDoc.embedJpg(imageBytes);
+
       // Scale image to fit page while maintaining aspect ratio
-      const { width, height } = this.calculateDimensions(image, page)
-      page.drawImage(image, { x: 50, y: 50, width, height })
-      
+      const { width, height } = this.calculateDimensions(image, page);
+      page.drawImage(image, { x: 50, y: 50, width, height });
+
       // Render annotations on top of image
-      await this.renderAnnotations(page, annotations[photo.id], image)
+      await this.renderAnnotations(page, annotations[photo.id], image);
     }
-    
-    return pdfDoc.save()
+
+    return pdfDoc.save();
   }
-  
+
   async optimizeImage(photo, targetSizeKB = 200) {
     // Smart compression based on photo content
-    const quality = photo.type === 'document' ? 0.95 : 0.85
-    return await this.compressImage(photo, quality, targetSizeKB)
+    const quality = photo.type === 'document' ? 0.95 : 0.85;
+    return await this.compressImage(photo, quality, targetSizeKB);
   }
 }
 ```
 
 ### Image Processing Pipeline
+
 ```typescript
 interface PhotoEmbeddingConfig {
-  maxWidth: number
-  maxHeight: number
-  compressionQuality: number
-  targetFileSizeKB: number
-  maintainAspectRatio: boolean
+  maxWidth: number;
+  maxHeight: number;
+  compressionQuality: number;
+  targetFileSizeKB: number;
+  maintainAspectRatio: boolean;
 }
 
 class PhotoProcessor {
   async prepareForPDF(photo: Photo, config: PhotoEmbeddingConfig): Promise<ProcessedPhoto> {
-    let processedImage = await this.loadImage(photo.path)
-    
+    let processedImage = await this.loadImage(photo.path);
+
     // Resize if needed
     if (this.needsResizing(processedImage, config)) {
-      processedImage = await this.resizeImage(processedImage, config)
+      processedImage = await this.resizeImage(processedImage, config);
     }
-    
+
     // Apply compression
-    processedImage = await this.compressImage(processedImage, config)
-    
+    processedImage = await this.compressImage(processedImage, config);
+
     // Add metadata
-    const metadata = this.extractMetadata(photo)
-    
+    const metadata = this.extractMetadata(photo);
+
     return {
       imageData: processedImage,
       metadata: metadata,
-      finalSize: processedImage.length
-    }
+      finalSize: processedImage.length,
+    };
   }
 }
 ```
@@ -161,6 +167,7 @@ class PhotoProcessor {
 ## API Endpoints Needed
 
 ### PDF Generation
+
 ```
 POST /api/v1/contracts/{contract_id}/generate-pdf
 - Generate complete contract PDF with photos
@@ -182,6 +189,7 @@ GET /api/v1/contracts/{contract_id}/pdf-versions
 ```
 
 ### Template Management
+
 ```
 GET /api/v1/pdf-templates
 - Retrieve available PDF templates
@@ -201,6 +209,7 @@ PUT /api/v1/pdf-templates/{template_id}
 ## Database Schema Requirements
 
 ### contract_pdfs Table
+
 ```sql
 CREATE TABLE contract_pdfs (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -224,11 +233,12 @@ CREATE TABLE contract_pdfs (
 
 CREATE INDEX idx_contract_pdfs_contract ON contract_pdfs(contract_id);
 CREATE INDEX idx_contract_pdfs_version ON contract_pdfs(contract_id, pdf_version);
-CREATE UNIQUE INDEX idx_contract_pdfs_current ON contract_pdfs(contract_id) 
+CREATE UNIQUE INDEX idx_contract_pdfs_current ON contract_pdfs(contract_id)
     WHERE pdf_version = (SELECT MAX(pdf_version) FROM contract_pdfs cp2 WHERE cp2.contract_id = contract_pdfs.contract_id);
 ```
 
 ### pdf_templates Table
+
 ```sql
 CREATE TABLE pdf_templates (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -251,6 +261,7 @@ CREATE INDEX idx_pdf_templates_active ON pdf_templates(is_active);
 ```
 
 ### pdf_photo_embeddings Table
+
 ```sql
 CREATE TABLE pdf_photo_embeddings (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -275,6 +286,7 @@ CREATE INDEX idx_pdf_embeddings_photo ON pdf_photo_embeddings(photo_id);
 ```
 
 ### pdf_generation_queue Table
+
 ```sql
 CREATE TABLE pdf_generation_queue (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -299,24 +311,28 @@ CREATE INDEX idx_pdf_queue_priority ON pdf_generation_queue(priority DESC, creat
 ## UI/UX Considerations
 
 ### PDF Generation Interface
+
 - Progress indicator showing generation stages
 - Real-time preview during generation process
 - Quality slider for compression vs. file size trade-off
 - Template selection with visual previews
 
 ### Embedded Photo Layout
+
 - Drag-and-drop interface for photo positioning in templates
 - Visual guides for optimal photo placement
 - Automatic layout suggestions based on photo count
 - Preview mode showing final PDF appearance
 
 ### Quality Control Dashboard
+
 - Visual quality assessment with before/after comparisons
 - File size optimization recommendations
 - Compliance status indicators
 - Batch processing status with error reporting
 
 ### Mobile Considerations
+
 - Simplified PDF generation interface for mobile
 - Quick template selection optimized for touch
 - Progress notifications for background processing
@@ -325,6 +341,7 @@ CREATE INDEX idx_pdf_queue_priority ON pdf_generation_queue(priority DESC, creat
 ## Testing Scenarios
 
 ### Scenario 1: Standard Contract PDF Generation
+
 **Given** a complete rental contract with pickup and return photos  
 **When** staff generates PDF with annotations  
 **Then** PDF is created with all photos properly embedded  
@@ -332,6 +349,7 @@ CREATE INDEX idx_pdf_queue_priority ON pdf_generation_queue(priority DESC, creat
 **And** annotations are clearly visible and readable
 
 ### Scenario 2: High-Volume Batch Processing
+
 **Given** multiple contracts need PDF generation simultaneously  
 **When** batch processing is initiated  
 **Then** all PDFs are generated without errors  
@@ -339,6 +357,7 @@ CREATE INDEX idx_pdf_queue_priority ON pdf_generation_queue(priority DESC, creat
 **And** system performance remains stable
 
 ### Scenario 3: Template Customization
+
 **Given** different vehicle categories require different templates  
 **When** PDF is generated for luxury vehicle  
 **Then** appropriate template is automatically selected  
@@ -346,6 +365,7 @@ CREATE INDEX idx_pdf_queue_priority ON pdf_generation_queue(priority DESC, creat
 **And** branding elements are properly positioned
 
 ### Scenario 4: Photo Quality Optimization
+
 **Given** mix of high and low resolution photos  
 **When** PDF generation processes all photos  
 **Then** compression is optimized for each photo type  
@@ -353,6 +373,7 @@ CREATE INDEX idx_pdf_queue_priority ON pdf_generation_queue(priority DESC, creat
 **And** overall file size stays within limits
 
 ### Scenario 5: Legal Compliance Validation
+
 **Given** PDF needs to meet Swiss legal standards  
 **When** generation includes legal compliance mode  
 **Then** PDF includes all required metadata  
@@ -360,6 +381,7 @@ CREATE INDEX idx_pdf_queue_priority ON pdf_generation_queue(priority DESC, creat
 **And** tamper-evident features are active
 
 ### Scenario 6: Error Recovery
+
 **Given** PDF generation fails due to corrupted photo  
 **When** system attempts retry  
 **Then** problematic photos are identified and skipped  
@@ -367,6 +389,7 @@ CREATE INDEX idx_pdf_queue_priority ON pdf_generation_queue(priority DESC, creat
 **And** clear error report is provided
 
 ### Scenario 7: Version Management
+
 **Given** contract needs updated PDF with new photos  
 **When** regeneration is requested  
 **Then** new version is created maintaining history  
@@ -374,6 +397,7 @@ CREATE INDEX idx_pdf_queue_priority ON pdf_generation_queue(priority DESC, creat
 **And** original version remains accessible
 
 ### Scenario 8: Performance Under Load
+
 **Given** peak usage with multiple simultaneous PDF generations  
 **When** system processes queue  
 **Then** response times remain acceptable  
@@ -404,15 +428,18 @@ CREATE INDEX idx_pdf_queue_priority ON pdf_generation_queue(priority DESC, creat
 - [ ] Documentation for template customization and maintenance
 
 ## Estimated Effort
+
 **8 Story Points** (2 Developer Days)
 
 ### Breakdown:
+
 - PDF generation engine: 3 points
 - Image optimization and embedding: 2 points
 - Template system and layout: 2 points
 - Legal compliance and metadata: 1 point
 
 ### Dependencies:
+
 - Photo capture system (Story 1) completed
 - Photo annotation tools (Story 2) completed
 - PDF generation library selection (PDF-lib, jsPDF, or similar)

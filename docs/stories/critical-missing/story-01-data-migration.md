@@ -1,12 +1,14 @@
 # User Story: Data Migration from Legacy System
 
 ## Story Information
+
 - **Story ID:** CRITICAL-01
 - **Epic:** Epic 6 - System Administration & Security (Addition)
 - **Priority:** P0 - Critical (Day 0 Requirement)
 - **Story Points:** 13
 
 ## User Story Statement
+
 **As a** system administrator  
 **I want to** migrate all data from our existing paper/Excel-based system  
 **So that** we can start operations with complete historical data and customer information
@@ -58,6 +60,7 @@
 ## Technical Implementation Notes
 
 ### Import Pipeline Architecture
+
 ```python
 class DataMigrationPipeline:
     stages = [
@@ -67,13 +70,14 @@ class DataMigrationPipeline:
         'load',        # Insert to database
         'verify'       # Post-import checks
     ]
-    
+
     rollback_enabled = True
     batch_size = 100
     error_threshold = 5  # Stop if >5% errors
 ```
 
 ### Database Transaction Management
+
 - Use database transactions for atomicity
 - Implement checkpoint/resume for large imports
 - Maintain import audit log
@@ -134,6 +138,7 @@ CREATE TABLE migration_mappings (
 ## UI/UX Considerations
 
 ### Import Wizard Interface
+
 1. **Step 1:** Select data type to import
 2. **Step 2:** Upload file or paste data
 3. **Step 3:** Map fields (with auto-detection)
@@ -142,6 +147,7 @@ CREATE TABLE migration_mappings (
 6. **Step 6:** View results and download report
 
 ### Visual Feedback
+
 - Progress bar during import
 - Real-time error highlighting
 - Success/failure summary dashboard
@@ -205,6 +211,7 @@ CREATE TABLE migration_mappings (
 - [ ] Successfully imported test dataset from actual legacy system
 
 ## Dependencies
+
 - Database schema must be finalized
 - Legacy system data export capability
 - Admin authentication system
@@ -212,6 +219,7 @@ CREATE TABLE migration_mappings (
 - Background job processing system
 
 ## Risks & Mitigation
+
 - **Risk:** Data loss during migration
   - **Mitigation:** Complete backup before migration, rollback capability
 - **Risk:** Invalid data corrupts system
@@ -220,6 +228,7 @@ CREATE TABLE migration_mappings (
   - **Mitigation:** Batch processing, off-hours migration
 
 ## Estimated Effort Breakdown
+
 - Data mapping analysis: 2 points
 - Import pipeline development: 3 points
 - Validation rules implementation: 2 points
@@ -230,4 +239,5 @@ CREATE TABLE migration_mappings (
 
 ---
 
-*This story is CRITICAL for go-live. Without it, manual data entry would take weeks and introduce errors.*
+_This story is CRITICAL for go-live. Without it, manual data entry would take weeks and introduce
+errors._

@@ -1,1 +1,90 @@
-import * as React from "react";\n\nimport { cn } from "@/lib/utils";\n\nexport interface InputProps\n  extends React.InputHTMLAttributes<HTMLInputElement> {\n  error?: string;\n  label?: string;\n  helper?: string;\n  leftIcon?: React.ReactNode;\n  rightIcon?: React.ReactNode;\n}\n\nconst Input = React.forwardRef<HTMLInputElement, InputProps>(\n  ({ \n    className, \n    type, \n    error, \n    label, \n    helper, \n    leftIcon, \n    rightIcon,\n    id,\n    ...props \n  }, ref) => {\n    const inputId = id || `input-${React.useId()}`;\n    const hasError = Boolean(error);\n\n    return (\n      <div className="space-y-2">\n        {/* Label */}\n        {label && (\n          <label \n            htmlFor={inputId}\n            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"\n          >\n            {label}\n            {props.required && (\n              <span className="ml-1 text-destructive">*</span>\n            )}\n          </label>\n        )}\n\n        {/* Input Container */}\n        <div className="relative">\n          {/* Left Icon */}\n          {leftIcon && (\n            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">\n              {leftIcon}\n            </div>\n          )}\n\n          {/* Input */}\n          <input\n            id={inputId}\n            type={type}\n            className={cn(\n              "flex h-10 w-full rounded-md border bg-background px-3 py-2 text-sm ring-offset-background transition-colors",\n              "file:border-0 file:bg-transparent file:text-sm file:font-medium",\n              "placeholder:text-muted-foreground",\n              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",\n              "disabled:cursor-not-allowed disabled:opacity-50",\n              // Error state\n              hasError \n                ? "border-destructive focus-visible:ring-destructive" \n                : "border-input",\n              // Icon padding\n              leftIcon && "pl-10",\n              rightIcon && "pr-10",\n              className\n            )}\n            ref={ref}\n            aria-invalid={hasError}\n            aria-describedby={error ? `${inputId}-error` : helper ? `${inputId}-helper` : undefined}\n            {...props}\n          />\n\n          {/* Right Icon */}\n          {rightIcon && (\n            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">\n              {rightIcon}\n            </div>\n          )}\n        </div>\n\n        {/* Helper Text */}\n        {helper && !error && (\n          <p \n            id={`${inputId}-helper`}\n            className="text-sm text-muted-foreground"\n          >\n            {helper}\n          </p>\n        )}\n\n        {/* Error Message */}\n        {error && (\n          <p \n            id={`${inputId}-error`}\n            className="text-sm text-destructive"\n            role="alert"\n          >\n            {error}\n          </p>\n        )}\n      </div>\n    );\n  }\n);\nInput.displayName = "Input";\n\nexport { Input };
+import * as React from 'react';
+
+import { cn } from '@/lib/utils';
+
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  error?: string;
+  label?: string;
+  helper?: string;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
+}
+
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ className, type, error, label, helper, leftIcon, rightIcon, id, ...props }, ref) => {
+    const inputId = id || `input-${React.useId()}`;
+    const hasError = Boolean(error);
+
+    return (
+      <div className="space-y-2">
+        {/* Label */}
+        {label && (
+          <label
+            htmlFor={inputId}
+            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          >
+            {label}
+            {props.required && <span className="ml-1 text-destructive">*</span>}
+          </label>
+        )}
+
+        {/* Input Container */}
+        <div className="relative">
+          {/* Left Icon */}
+          {leftIcon && (
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+              {leftIcon}
+            </div>
+          )}
+
+          {/* Input */}
+          <input
+            id={inputId}
+            type={type}
+            className={cn(
+              'flex h-10 w-full rounded-md border bg-background px-3 py-2 text-sm ring-offset-background transition-colors',
+              'file:border-0 file:bg-transparent file:text-sm file:font-medium',
+              'placeholder:text-muted-foreground',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+              'disabled:cursor-not-allowed disabled:opacity-50',
+              // Error state
+              hasError ? 'border-destructive focus-visible:ring-destructive' : 'border-input',
+              // Icon padding
+              leftIcon && 'pl-10',
+              rightIcon && 'pr-10',
+              className,
+            )}
+            ref={ref}
+            aria-invalid={hasError}
+            aria-describedby={error ? `${inputId}-error` : helper ? `${inputId}-helper` : undefined}
+            {...props}
+          />
+
+          {/* Right Icon */}
+          {rightIcon && (
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+              {rightIcon}
+            </div>
+          )}
+        </div>
+
+        {/* Helper Text */}
+        {helper && !error && (
+          <p id={`${inputId}-helper`} className="text-sm text-muted-foreground">
+            {helper}
+          </p>
+        )}
+
+        {/* Error Message */}
+        {error && (
+          <p id={`${inputId}-error`} className="text-sm text-destructive" role="alert">
+            {error}
+          </p>
+        )}
+      </div>
+    );
+  },
+);
+Input.displayName = 'Input';
+
+export { Input };

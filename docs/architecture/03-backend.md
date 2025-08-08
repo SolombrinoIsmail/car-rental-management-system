@@ -5,6 +5,7 @@
 ### Simplified Supabase-First Approach
 
 The CRMS backend leverages Supabase's integrated platform to handle:
+
 - **Authentication**: JWT-based auth with RLS
 - **Database**: PostgreSQL with automated backups
 - **File Storage**: Photos, PDFs, and documents
@@ -12,6 +13,7 @@ The CRMS backend leverages Supabase's integrated platform to handle:
 - **Edge Functions**: Custom business logic
 
 **Benefits:**
+
 - Reduced infrastructure complexity
 - Built-in security and compliance
 - Swiss data residency (Zurich region)
@@ -24,14 +26,16 @@ The CRMS backend leverages Supabase's integrated platform to handle:
 The system uses 8 core entities designed for multi-tenant SaaS with Swiss compliance requirements.
 
 ### 1. Companies (Multi-tenant isolation)
-**Purpose:** Isolates data per rental company for SaaS multi-tenancy
-**Key Attributes:**
+
+**Purpose:** Isolates data per rental company for SaaS multi-tenancy **Key Attributes:**
+
 - id: UUID - Unique identifier
 - name: string - Company name
 - subscription_tier: enum - Pricing tier (starter/professional/business)
 - settings: JSON - Company-specific configuration
 
 **TypeScript Interface:**
+
 ```typescript
 interface Company {
   id: string;
@@ -58,55 +62,62 @@ interface Company {
 ```
 
 ### 2. Users (Staff and Owners)
-**Purpose:** Staff access control with role-based permissions
-**Key Features:**
+
+**Purpose:** Staff access control with role-based permissions **Key Features:**
+
 - Multi-role support (owner, manager, staff, viewer)
 - Granular permissions per role
 - Activity tracking and audit trails
 
 ### 3. Customers (Rental customers)
-**Purpose:** Customer registry with Swiss compliance
-**Key Features:**
+
+**Purpose:** Customer registry with Swiss compliance **Key Features:**
+
 - Swiss ID validation
 - Driver license verification
 - GDPR-compliant data handling
 - Blacklist management
 
 ### 4. Vehicles (Fleet inventory)
-**Purpose:** Complete vehicle management
-**Key Features:**
+
+**Purpose:** Complete vehicle management **Key Features:**
+
 - Multi-vehicle type support
 - Maintenance tracking
 - Real-time availability status
 - Rate management (daily/weekly/monthly)
 
 ### 5. Contracts (Core rental agreements)
-**Purpose:** Central business entity for rentals
-**Key Features:**
+
+**Purpose:** Central business entity for rentals **Key Features:**
+
 - Automated contract numbering
 - Multi-status workflow
 - Financial calculations
 - Digital signatures
 
 ### 6. Contract Photos (Evidence documentation)
-**Purpose:** Visual documentation for damage/condition
-**Key Features:**
+
+**Purpose:** Visual documentation for damage/condition **Key Features:**
+
 - Pickup/return photo comparison
 - Damage annotation system
 - Secure storage with RLS
 - Thumbnail generation
 
 ### 7. Payments (Financial transactions)
-**Purpose:** Complete payment processing
-**Key Features:**
+
+**Purpose:** Complete payment processing **Key Features:**
+
 - Multi-method support (card, QR bill, cash)
 - Stripe integration
 - Swiss QR bill generation
 - Refund processing
 
 ### 8. Reservations (Future bookings)
-**Purpose:** Advanced booking system
-**Key Features:**
+
+**Purpose:** Advanced booking system **Key Features:**
+
 - Availability checking
 - No-show management
 - Conversion to contracts
@@ -117,6 +128,7 @@ interface Company {
 ### Error Handling Strategy
 
 #### Error Classes
+
 ```typescript
 // lib/errors.ts
 export class AppError extends Error {
@@ -125,7 +137,7 @@ export class AppError extends Error {
     public message: string,
     public statusCode: number,
     public details?: any,
-    public isOperational = true
+    public isOperational = true,
   ) {
     super(message);
     Error.captureStackTrace(this, this.constructor);
@@ -146,12 +158,10 @@ export class AuthenticationError extends AppError {
 ```
 
 #### Global Error Handler
+
 ```typescript
 // app/api/middleware/errorHandler.ts
-export async function errorHandler(
-  error: Error,
-  request: Request
-): Promise<Response> {
+export async function errorHandler(error: Error, request: Request): Promise<Response> {
   // Log error
   logger.error({
     error: error.message,
@@ -178,7 +188,7 @@ export async function errorHandler(
           details: error.details,
         },
       },
-      { status: error.statusCode }
+      { status: error.statusCode },
     );
   }
 
@@ -191,7 +201,7 @@ export async function errorHandler(
         message: 'An unexpected error occurred',
       },
     },
-    { status: 500 }
+    { status: 500 },
   );
 }
 ```
@@ -199,6 +209,7 @@ export async function errorHandler(
 ### Logging Architecture
 
 #### Structured Logging
+
 ```typescript
 // lib/logger.ts
 import pino from 'pino';
@@ -238,16 +249,18 @@ logger.info({
 ### Performance Targets
 
 #### Response Time SLAs
-| Operation | Target | Maximum |
-|-----------|--------|---------|
-| API Response | < 200ms | 500ms |
-| Contract Creation | < 2s | 5s |
-| PDF Generation | < 3s | 10s |
-| Photo Upload (5MB) | < 3s | 10s |
-| Search | < 300ms | 1s |
-| Report Generation | < 5s | 30s |
+
+| Operation          | Target  | Maximum |
+| ------------------ | ------- | ------- |
+| API Response       | < 200ms | 500ms   |
+| Contract Creation  | < 2s    | 5s      |
+| PDF Generation     | < 3s    | 10s     |
+| Photo Upload (5MB) | < 3s    | 10s     |
+| Search             | < 300ms | 1s      |
+| Report Generation  | < 5s    | 30s     |
 
 #### Capacity Planning
+
 - **Concurrent Users**: 100 per company
 - **Total Users**: 10,000 system-wide
 - **API Requests/Second**: 1,000 peak
@@ -256,6 +269,7 @@ logger.info({
 - **Photo Storage**: 1GB per 100 contracts
 
 ### Caching Strategy
+
 ```typescript
 // lib/cache.ts
 import { Redis } from '@upstash/redis';
@@ -268,11 +282,11 @@ const redis = new Redis({
 export async function getCachedData<T>(
   key: string,
   fetcher: () => Promise<T>,
-  ttl = 300 // 5 minutes default
+  ttl = 300, // 5 minutes default
 ): Promise<T> {
   const cached = await redis.get(key);
   if (cached) return cached as T;
-  
+
   const fresh = await fetcher();
   await redis.set(key, fresh, { ex: ttl });
   return fresh;
@@ -281,6 +295,5 @@ export async function getCachedData<T>(
 
 ---
 
-**Document Version:** 3.0 - Backend Architecture
-**Last Updated:** 2025-08-06
-**Status:** Ready for Implementation
+**Document Version:** 3.0 - Backend Architecture **Last Updated:** 2025-08-06 **Status:** Ready for
+Implementation

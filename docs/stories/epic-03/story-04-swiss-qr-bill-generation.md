@@ -9,7 +9,8 @@
 
 **As an** owner  
 **I want to** generate Swiss QR bills for invoices  
-**So that** customers can pay invoices easily using their preferred Swiss banking app and we improve cash flow with faster payments
+**So that** customers can pay invoices easily using their preferred Swiss banking app and we improve
+cash flow with faster payments
 
 ## Detailed Acceptance Criteria
 
@@ -88,18 +89,21 @@
 ## Technical Implementation Notes
 
 ### Swiss QR Bill Standards Compliance
+
 - **Standard:** Swiss Implementation Guidelines QR-bill v2.3
 - **Format:** ISO 20022 pain.001 message format
 - **Validation:** Must pass Swiss Payment Standards test suite
 - **Layout:** Exact positioning requirements (62mm x 105mm payment part)
 
 ### QR Code Generation
+
 - **Library:** Use certified Swiss QR bill library (e.g., Swiss-QR-Bill library)
 - **Error Correction:** Level M (15% error correction)
 - **Encoding:** UTF-8 character encoding
 - **Size:** 46x46mm at 300 DPI minimum resolution
 
 ### Reference Number Algorithm
+
 ```typescript
 // ISO 11649 RF Creditor Reference
 function generateReferenceNumber(invoiceId: string): string {
@@ -118,6 +122,7 @@ function calculateMod97CheckDigits(reference: string): string {
 ```
 
 ### Database Design
+
 ```sql
 -- QR bill records
 CREATE TABLE qr_bills (
@@ -157,6 +162,7 @@ CREATE TABLE qr_payment_matches (
 ## API Endpoints Needed
 
 ### QR Bill Generation
+
 ```
 POST /api/v1/qr-bills/generate
 - Body: { invoice_id, payment_terms?, custom_message? }
@@ -170,6 +176,7 @@ POST /api/v1/qr-bills/{qr_bill_id}/regenerate
 ```
 
 ### Payment Tracking
+
 ```
 GET /api/v1/qr-bills/payment-status/{reference_number}
 - Response: { payment_status, amount_paid, payment_date }
@@ -180,6 +187,7 @@ POST /api/v1/qr-bills/payment-received
 ```
 
 ### Bank Integration
+
 ```
 POST /api/v1/qr-bills/reconcile-bank-statement
 - Body: { bank_statement_data, date_range }
@@ -193,18 +201,21 @@ GET /api/v1/qr-bills/unmatched-payments
 ## Database Schema Requirements
 
 ### Core Tables
+
 - `qr_bills` - Generated QR bills with all Swiss banking details
 - `qr_payment_matches` - Links between bank payments and invoices
 - `bank_transactions` - Raw bank transaction data for reconciliation
 - `qr_bill_templates` - Customizable templates for different invoice types
 
 ### Indexes Required
+
 - `qr_bills(reference_number)` (unique)
 - `qr_bills(invoice_id, status)`
 - `qr_payment_matches(qr_bill_id, payment_date DESC)`
 - `qr_bills(status, generated_at DESC)`
 
 ### Constraints
+
 - Reference numbers must be unique across all QR bills
 - IBAN must be valid Swiss or SEPA format
 - Amount must be positive and within Swiss banking limits
@@ -213,24 +224,28 @@ GET /api/v1/qr-bills/unmatched-payments
 ## UI/UX Considerations
 
 ### QR Bill Generation Interface
+
 - **Invoice Integration:** One-click QR bill generation from invoices
 - **Preview Mode:** Show QR bill preview before final generation
 - **Customization Options:** Allow custom payment messages and terms
 - **Batch Generation:** Generate multiple QR bills for unpaid invoices
 
 ### Payment Tracking Dashboard
+
 - **Status Overview:** Visual dashboard of QR bill payment statuses
 - **Payment Matching:** Interface for reviewing and confirming payment matches
 - **Exception Handling:** Clear workflow for unmatched or partial payments
 - **Reporting Tools:** Generate payment status reports for accounting
 
 ### Customer-Facing Elements
+
 - **Email Templates:** Professional email templates with embedded QR bills
 - **Print Layout:** Optimized layout for standard A4 printing
 - **Mobile Display:** QR codes properly sized for mobile scanning
 - **Payment Instructions:** Clear instructions in multiple languages
 
 ### Administrative Interface
+
 - **Bank Integration Setup:** Configure bank account details and IBAN
 - **Reference Number Format:** Configure reference number patterns
 - **Template Management:** Customize QR bill templates and layouts
@@ -239,6 +254,7 @@ GET /api/v1/qr-bills/unmatched-payments
 ## Testing Scenarios
 
 ### QR Bill Generation Testing
+
 1. **Standard Invoice QR Bill**
    - Generate QR bill for CHF invoice
    - Validate QR code content against Swiss standards
@@ -255,6 +271,7 @@ GET /api/v1/qr-bills/unmatched-payments
    - Verify handling of incomplete address information
 
 ### Payment Integration Testing
+
 4. **Bank Payment Matching**
    - Simulate bank payment with correct reference number
    - Verify automatic payment matching and status update
@@ -266,6 +283,7 @@ GET /api/v1/qr-bills/unmatched-payments
    - Test generation of follow-up QR bills for balance
 
 ### Error Handling Testing
+
 6. **Invalid QR Data Handling**
    - Attempt QR bill generation with invalid IBAN
    - Test handling of excessive payment message length
@@ -304,18 +322,21 @@ GET /api/v1/qr-bills/unmatched-payments
 ## Estimated Effort: 5 Story Points
 
 ### Breakdown
+
 - **Swiss QR Standard Implementation:** 2 points
 - **Bank Integration and Reconciliation:** 1 point
 - **PDF Integration and Layout:** 1 point
 - **Payment Matching and Tracking:** 1 point
 
 ### Dependencies
+
 - Swiss bank account setup with QR bill capability
 - Payment processing system (Story 01) integration
 - Invoice generation system
 - PDF generation infrastructure
 
 ### Risks
+
 - **High:** Swiss banking standard changes during development
 - **Medium:** Bank integration API availability and reliability
 - **Medium:** QR code scanning compatibility across banking apps

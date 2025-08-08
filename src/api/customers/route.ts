@@ -4,20 +4,17 @@
  * Swiss Car Rental Management System
  */
 
-import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { 
-  Customer, 
-  CreateCustomerRequest, 
-  CustomerSearchQuery, 
-  CustomerSearchResult,
-  SwissIdDocumentType,
+
+import type { Customer, CustomerSearchResult, ApiResponse } from '@/types/customer';
+import {
   SwissUtils,
-  ApiResponse,
   CustomerValidationError,
   DuplicateCustomerError,
-  CustomerNotFoundError 
+  CustomerNotFoundError,
 } from '@/types/customer';
 
 // Validation schemas using Zod
@@ -26,52 +23,83 @@ const SwissAddressSchema = z.object({
   houseNumber: z.string().min(1, 'House number is required').max(10),
   postalCode: z.string().regex(/^[1-9][0-9]{3}$/, 'Invalid Swiss postal code'),
   city: z.string().min(1, 'City is required').max(100),
-  canton: z.enum(['AG', 'AR', 'AI', 'BL', 'BS', 'BE', 'FR', 'GE', 'GL', 'GR', 
-                  'JU', 'LU', 'NE', 'NW', 'OW', 'SG', 'SH', 'SZ', 'SO', 'TG', 
-                  'TI', 'UR', 'VD', 'VS', 'ZG', 'ZH']),
-  country: z.string().default('CH')
+  canton: z.enum([
+    'AG',
+    'AR',
+    'AI',
+    'BL',
+    'BS',
+    'BE',
+    'FR',
+    'GE',
+    'GL',
+    'GR',
+    'JU',
+    'LU',
+    'NE',
+    'NW',
+    'OW',
+    'SG',
+    'SH',
+    'SZ',
+    'SO',
+    'TG',
+    'TI',
+    'UR',
+    'VD',
+    'VS',
+    'ZG',
+    'ZH',
+  ]),
+  country: z.string().default('CH'),
 });
 
-const CreateCustomerSchema = z.object({
-  firstName: z.string().min(1, 'First name is required').max(100),
-  lastName: z.string().min(1, 'Last name is required').max(100),
-  email: z.string().email('Invalid email format').optional(),
-  phone: z.string().refine(SwissUtils.validatePhone, 'Invalid Swiss phone number format'),
-  dateOfBirth: z.string().datetime().refine(
-    (date) => {
-      const birth = new Date(date);
-      const today = new Date();
-      const age = today.getFullYear() - birth.getFullYear();
-      return age >= 18 && age <= 100;
-    },
-    'Customer must be between 18 and 100 years old'
-  ),
-  nationality: z.string().length(3).default('CHE'),
-  preferredLanguage: z.string().default('de-CH'),
-  address: SwissAddressSchema,
-  idDocumentType: z.enum(['swiss_passport', 'swiss_id_card', 'residence_permit_b', 
-                         'residence_permit_c', 'residence_permit_l', 'residence_permit_f',
-                         'eu_passport', 'other_passport']),
-  idDocumentNumber: z.string().min(1, 'ID document number is required'),
-  idDocumentExpiry: z.string().datetime().optional(),
-  driverLicenseNumber: z.string().min(1, 'Driver license number is required'),
-  driverLicenseCountry: z.string().length(3).default('CHE'),
-  driverLicenseExpiry: z.string().datetime().refine(
-    (date) => new Date(date) > new Date(),
-    'Driver license must not be expired'
-  ),
-  driverLicenseCategory: z.record(z.boolean()).default({ 'B': true }),
-  notes: z.string().max(2000).optional(),
-  gdprConsentDate: z.string().datetime(),
-  gdprConsentVersion: z.string().min(1),
-  marketingConsent: z.boolean().default(false)
-}).refine(
-  (data) => SwissUtils.validateIdDocument(data.idDocumentType, data.idDocumentNumber),
-  {
+const CreateCustomerSchema = z
+  .object({
+    firstName: z.string().min(1, 'First name is required').max(100),
+    lastName: z.string().min(1, 'Last name is required').max(100),
+    email: z.string().email('Invalid email format').optional(),
+    phone: z.string().refine(SwissUtils.validatePhone, 'Invalid Swiss phone number format'),
+    dateOfBirth: z
+      .string()
+      .datetime()
+      .refine((date) => {
+        const birth = new Date(date);
+        const today = new Date();
+        const age = today.getFullYear() - birth.getFullYear();
+        return age >= 18 && age <= 100;
+      }, 'Customer must be between 18 and 100 years old'),
+    nationality: z.string().length(3).default('CHE'),
+    preferredLanguage: z.string().default('de-CH'),
+    address: SwissAddressSchema,
+    idDocumentType: z.enum([
+      'swiss_passport',
+      'swiss_id_card',
+      'residence_permit_b',
+      'residence_permit_c',
+      'residence_permit_l',
+      'residence_permit_f',
+      'eu_passport',
+      'other_passport',
+    ]),
+    idDocumentNumber: z.string().min(1, 'ID document number is required'),
+    idDocumentExpiry: z.string().datetime().optional(),
+    driverLicenseNumber: z.string().min(1, 'Driver license number is required'),
+    driverLicenseCountry: z.string().length(3).default('CHE'),
+    driverLicenseExpiry: z
+      .string()
+      .datetime()
+      .refine((date) => new Date(date) > new Date(), 'Driver license must not be expired'),
+    driverLicenseCategory: z.record(z.boolean()).default({ B: true }),
+    notes: z.string().max(2000).optional(),
+    gdprConsentDate: z.string().datetime(),
+    gdprConsentVersion: z.string().min(1),
+    marketingConsent: z.boolean().default(false),
+  })
+  .refine((data) => SwissUtils.validateIdDocument(data.idDocumentType, data.idDocumentNumber), {
     message: 'Invalid ID document number format for the selected document type',
-    path: ['idDocumentNumber']
-  }
-);
+    path: ['idDocumentNumber'],
+  });
 
 const CustomerSearchSchema = z.object({
   q: z.string().min(1, 'Search query is required'),
@@ -79,13 +107,13 @@ const CustomerSearchSchema = z.object({
   offset: z.number().min(0).default(0),
   includeFlags: z.boolean().default(false),
   sortBy: z.enum(['name', 'created', 'updated', 'lifetime_value']).default('updated'),
-  sortOrder: z.enum(['asc', 'desc']).default('desc')
+  sortOrder: z.enum(['asc', 'desc']).default('desc'),
 });
 
 // Initialize Supabase client
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
 );
 
 // Utility functions
@@ -95,24 +123,24 @@ async function getTenantId(request: NextRequest): Promise<string> {
   if (!authHeader?.startsWith('Bearer ')) {
     throw new Error('Missing or invalid authorization header');
   }
-  
+
   // In production, decode JWT and extract tenant_id
   // For now, using a mock implementation
   return '00000000-0000-0000-0000-000000000001';
 }
 
-async function getUserId(request: NextRequest): Promise<string> {
+async function getUserId(): Promise<string> {
   // Extract user ID from JWT token
-  // In production, decode JWT and extract user_id
+  // In production, decode JWT and extract user_id from request
   return '00000000-0000-0000-0000-000000000002';
 }
 
 function createErrorResponse(error: Error, status: number = 500): NextResponse {
   console.error('Customer API Error:', error);
-  
+
   let errorCode = 'INTERNAL_ERROR';
   let message = 'An unexpected error occurred';
-  
+
   if (error instanceof CustomerValidationError) {
     errorCode = 'VALIDATION_ERROR';
     message = error.message;
@@ -126,14 +154,17 @@ function createErrorResponse(error: Error, status: number = 500): NextResponse {
     message = error.message;
     status = 404;
   }
-  
-  return NextResponse.json({
-    success: false,
-    error: {
-      code: errorCode,
-      message: message
-    }
-  }, { status });
+
+  return NextResponse.json(
+    {
+      success: false,
+      error: {
+        code: errorCode,
+        message,
+      },
+    },
+    { status },
+  );
 }
 
 // GET /api/customers/search - Search customers
@@ -142,17 +173,17 @@ export async function GET(request: NextRequest) {
     const startTime = Date.now();
     const searchParams = request.nextUrl.searchParams;
     const tenantId = await getTenantId(request);
-    
+
     // Parse and validate search parameters
     const query = CustomerSearchSchema.parse({
       q: searchParams.get('q'),
       limit: searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : undefined,
       offset: searchParams.get('offset') ? parseInt(searchParams.get('offset')!) : undefined,
       includeFlags: searchParams.get('includeFlags') === 'true',
-      sortBy: searchParams.get('sortBy') as any,
-      sortOrder: searchParams.get('sortOrder') as any
+      sortBy: searchParams.get('sortBy') as 'relevance' | 'lastName' | 'created' | undefined,
+      sortOrder: searchParams.get('sortOrder') as 'asc' | 'desc' | undefined,
     });
-    
+
     // Check cache first (Redis-like behavior with Supabase)
     const cacheKey = `search:${tenantId}:${Buffer.from(JSON.stringify(query)).toString('base64')}`;
     const { data: cachedResult } = await supabase
@@ -162,54 +193,48 @@ export async function GET(request: NextRequest) {
       .eq('query_hash', cacheKey)
       .gt('expires_at', new Date().toISOString())
       .single();
-    
+
     if (cachedResult) {
       return NextResponse.json({
         success: true,
         data: {
           customers: cachedResult.result_data,
           total: cachedResult.result_count,
-          hasMore: query.offset + query.limit < cachedResult.result_count
+          hasMore: query.offset + query.limit < cachedResult.result_count,
         },
         metadata: {
           cached: true,
-          executionTime: Date.now() - startTime
-        }
+          executionTime: Date.now() - startTime,
+        },
       });
     }
-    
+
     // Execute search using the optimized PostgreSQL function
-    const { data: searchResults, error } = await supabase.rpc(
-      'search_customers_optimized',
-      {
-        p_tenant_id: tenantId,
-        p_query: query.q,
-        p_limit: query.limit,
-        p_offset: query.offset,
-        p_include_flags: query.includeFlags
-      }
-    );
-    
+    const { data: searchResults, error } = await supabase.rpc('search_customers_optimized', {
+      p_tenant_id: tenantId,
+      p_query: query.q,
+      p_limit: query.limit,
+      p_offset: query.offset,
+      p_include_flags: query.includeFlags,
+    });
+
     if (error) throw error;
-    
+
     // Get total count for pagination
-    const { count: totalCount } = await supabase.rpc(
-      'search_customers_optimized',
-      {
-        p_tenant_id: tenantId,
-        p_query: query.q,
-        p_limit: 1000000, // Large number to get total
-        p_offset: 0,
-        p_include_flags: false
-      }
-    );
-    
+    const { count: totalCount } = await supabase.rpc('search_customers_optimized', {
+      p_tenant_id: tenantId,
+      p_query: query.q,
+      p_limit: 1000000, // Large number to get total
+      p_offset: 0,
+      p_include_flags: false,
+    });
+
     const result: CustomerSearchResult = {
       customers: searchResults || [],
       total: totalCount || 0,
-      hasMore: query.offset + query.limit < (totalCount || 0)
+      hasMore: query.offset + query.limit < (totalCount || 0),
     };
-    
+
     // Cache the result for 5 minutes
     await supabase.from('customer_search_cache').insert({
       tenant_id: tenantId,
@@ -217,9 +242,9 @@ export async function GET(request: NextRequest) {
       query_params: query,
       result_data: result.customers,
       result_count: result.total,
-      expires_at: new Date(Date.now() + 5 * 60 * 1000).toISOString()
+      expires_at: new Date(Date.now() + 5 * 60 * 1000).toISOString(),
     });
-    
+
     const response: ApiResponse<CustomerSearchResult> = {
       success: true,
       data: result,
@@ -227,12 +252,11 @@ export async function GET(request: NextRequest) {
         total: result.total,
         page: Math.floor(query.offset / query.limit) + 1,
         limit: query.limit,
-        executionTime: Date.now() - startTime
-      }
+        executionTime: Date.now() - startTime,
+      },
     };
-    
+
     return NextResponse.json(response);
-    
   } catch (error) {
     return createErrorResponse(error as Error);
   }
@@ -245,10 +269,10 @@ export async function POST(request: NextRequest) {
     const tenantId = await getTenantId(request);
     const userId = await getUserId(request);
     const body = await request.json();
-    
+
     // Validate request data
     const customerData = CreateCustomerSchema.parse(body);
-    
+
     // Check for duplicate email within tenant
     if (customerData.email) {
       const { data: existingCustomer } = await supabase
@@ -257,12 +281,12 @@ export async function POST(request: NextRequest) {
         .eq('tenant_id', tenantId)
         .eq('email', customerData.email)
         .single();
-      
+
       if (existingCustomer) {
         throw new DuplicateCustomerError('email', customerData.email);
       }
     }
-    
+
     // Check for duplicate phone within tenant
     const { data: existingPhone } = await supabase
       .from('customers')
@@ -270,14 +294,14 @@ export async function POST(request: NextRequest) {
       .eq('tenant_id', tenantId)
       .eq('phone', SwissUtils.formatPhone(customerData.phone))
       .single();
-    
+
     if (existingPhone) {
       throw new DuplicateCustomerError('phone', customerData.phone);
     }
-    
+
     // Format phone number to international format
     const formattedPhone = SwissUtils.formatPhone(customerData.phone);
-    
+
     // Prepare customer record
     const newCustomer = {
       tenant_id: tenantId,
@@ -301,23 +325,27 @@ export async function POST(request: NextRequest) {
       gdpr_consent_version: customerData.gdprConsentVersion,
       marketing_consent: customerData.marketingConsent,
       created_by: userId,
-      updated_by: userId
+      updated_by: userId,
     };
-    
+
     // Insert customer record
     const { data: insertedCustomer, error: insertError } = await supabase
       .from('customers')
       .insert(newCustomer)
       .select('*')
       .single();
-    
+
     if (insertError) {
-      if (insertError.code === '23505') { // Unique violation
-        throw new DuplicateCustomerError('customer', 'A customer with this information already exists');
+      if (insertError.code === '23505') {
+        // Unique violation
+        throw new DuplicateCustomerError(
+          'customer',
+          'A customer with this information already exists',
+        );
       }
       throw insertError;
     }
-    
+
     // Transform database record to API response format
     const customer: Customer = {
       id: insertedCustomer.id,
@@ -334,7 +362,10 @@ export async function POST(request: NextRequest) {
       idDocumentType: insertedCustomer.id_document_type,
       idDocumentNumber: SwissUtils.maskSensitiveData(insertedCustomer.id_document_number, 'id'),
       idDocumentExpiry: insertedCustomer.id_document_expiry,
-      driverLicenseNumber: SwissUtils.maskSensitiveData(insertedCustomer.driver_license_number, 'id'),
+      driverLicenseNumber: SwissUtils.maskSensitiveData(
+        insertedCustomer.driver_license_number,
+        'id',
+      ),
       driverLicenseCountry: insertedCustomer.driver_license_country,
       driverLicenseExpiry: insertedCustomer.driver_license_expiry,
       driverLicenseCategory: insertedCustomer.driver_license_category,
@@ -349,19 +380,18 @@ export async function POST(request: NextRequest) {
       createdAt: insertedCustomer.created_at,
       updatedAt: insertedCustomer.updated_at,
       createdBy: insertedCustomer.created_by,
-      updatedBy: insertedCustomer.updated_by
+      updatedBy: insertedCustomer.updated_by,
     };
-    
+
     const response: ApiResponse<Customer> = {
       success: true,
       data: customer,
       metadata: {
-        executionTime: Date.now() - startTime
-      }
+        executionTime: Date.now() - startTime,
+      },
     };
-    
+
     return NextResponse.json(response, { status: 201 });
-    
   } catch (error) {
     return createErrorResponse(error as Error);
   }

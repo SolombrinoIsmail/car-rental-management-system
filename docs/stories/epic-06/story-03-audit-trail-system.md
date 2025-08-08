@@ -343,6 +343,7 @@ CREATE INDEX idx_audit_logs_changes_gin ON audit_logs USING GIN (changes);
 **Story Points:** 8
 
 **Breakdown:**
+
 - Audit logging framework and database design (2 points)
 - Search and query functionality (2 points)
 - Report generation and export system (1 point)
@@ -351,12 +352,14 @@ CREATE INDEX idx_audit_logs_changes_gin ON audit_logs USING GIN (changes);
 - Frontend audit interfaces (1 point)
 
 **Dependencies:**
+
 - User management system (Story 1)
 - Authentication system (Story 2)
 - Database infrastructure with partitioning support
 - Search engine setup (Elasticsearch)
 
 **Risks:**
+
 - Large audit data volumes may impact query performance
 - Compliance requirements may be more complex than anticipated
 - Integration with all system modules may reveal additional logging needs

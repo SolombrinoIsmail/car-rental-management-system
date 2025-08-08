@@ -9,7 +9,8 @@
 
 **As a** staff supervisor  
 **I want to** generate comprehensive operational reports automatically  
-**So that** I can manage staff performance, track operational efficiency, and ensure seamless shift handovers
+**So that** I can manage staff performance, track operational efficiency, and ensure seamless shift
+handovers
 
 ## Detailed Acceptance Criteria
 
@@ -100,6 +101,7 @@
 ## Technical Implementation Notes
 
 ### Report Generation System
+
 - PDF generation using libraries like PDFKit or Puppeteer
 - Template engine (Handlebars or similar) for dynamic content
 - Scheduled job processing using cron jobs or task queues
@@ -107,6 +109,7 @@
 - File storage system for report archival and retrieval
 
 ### Data Aggregation
+
 - Efficient queries for operational data collection
 - Cached calculations for frequently accessed metrics
 - Real-time data synchronization for accurate reporting
@@ -114,6 +117,7 @@
 - Performance optimization for large dataset processing
 
 ### Template Management
+
 - Flexible template system for report customization
 - Version control for template changes
 - User-friendly template editor interface
@@ -123,8 +127,10 @@
 ## API Endpoints Needed
 
 ### POST /api/v1/reports/generate
+
 **Purpose:** Generate operational reports on-demand  
 **Payload:**
+
 ```json
 {
   "report_type": "daily_closing",
@@ -139,8 +145,10 @@
 ```
 
 ### GET /api/v1/reports/templates
+
 **Purpose:** Retrieve available report templates  
 **Response:**
+
 ```json
 {
   "templates": [
@@ -156,14 +164,17 @@
 ```
 
 ### GET /api/v1/reports/scheduled
+
 **Purpose:** Retrieve scheduled report configurations  
 **Response:** List of scheduled reports with timing and recipient information
 
 ### POST /api/v1/reports/schedule
+
 **Purpose:** Configure scheduled report generation  
 **Payload:** Schedule configuration with timing, recipients, and report parameters
 
 ### GET /api/v1/reports/history
+
 **Purpose:** Retrieve historical report archives  
 **Parameters:** date_range, report_type, limit, offset  
 **Response:** List of generated reports with metadata and download links
@@ -171,6 +182,7 @@
 ## Database Schema Requirements
 
 ### report_templates Table
+
 ```sql
 CREATE TABLE report_templates (
   id SERIAL PRIMARY KEY,
@@ -186,6 +198,7 @@ CREATE TABLE report_templates (
 ```
 
 ### scheduled_reports Table
+
 ```sql
 CREATE TABLE scheduled_reports (
   id SERIAL PRIMARY KEY,
@@ -202,6 +215,7 @@ CREATE TABLE scheduled_reports (
 ```
 
 ### generated_reports Table
+
 ```sql
 CREATE TABLE generated_reports (
   id SERIAL PRIMARY KEY,
@@ -221,6 +235,7 @@ CREATE TABLE generated_reports (
 ## UI/UX Considerations
 
 ### Report Generation Interface
+
 - **Report Selection:** Dropdown menu with available report types
 - **Date Range Picker:** Intuitive calendar interface for period selection
 - **Parameter Configuration:** Dynamic form based on selected report type
@@ -228,6 +243,7 @@ CREATE TABLE generated_reports (
 - **Generation Progress:** Status indicator for report processing
 
 ### Report Management Dashboard
+
 - **Recent Reports:** List of recently generated reports with quick access
 - **Scheduled Reports:** Management interface for automated report schedules
 - **Template Library:** Visual catalog of available report templates
@@ -235,6 +251,7 @@ CREATE TABLE generated_reports (
 - **Settings Panel:** Configuration options for default preferences
 
 ### Print Optimization
+
 - **Page Layout:** Professional formatting with proper margins and spacing
 - **Typography:** Clear, readable fonts optimized for printing
 - **Chart Rendering:** High-resolution charts and graphs for print quality
@@ -244,6 +261,7 @@ CREATE TABLE generated_reports (
 ## Testing Scenarios
 
 ### Report Generation Testing
+
 1. **Report Accuracy Validation**
    - Verify report data matches source operational data
    - Test calculations and aggregations for mathematical accuracy
@@ -295,6 +313,7 @@ CREATE TABLE generated_reports (
 ## Definition of Done
 
 ### Functional Requirements
+
 - [ ] All 12 acceptance criteria implemented and tested
 - [ ] Report generation working for all specified report types
 - [ ] Scheduling system operational with reliable automation
@@ -303,6 +322,7 @@ CREATE TABLE generated_reports (
 - [ ] Historical archive system working correctly
 
 ### Technical Requirements
+
 - [ ] PDF generation system optimized and reliable
 - [ ] Template management system fully functional
 - [ ] Email integration stable and error-resistant
@@ -311,6 +331,7 @@ CREATE TABLE generated_reports (
 - [ ] Performance optimized for concurrent report generation
 
 ### Quality Assurance
+
 - [ ] All 8 testing scenarios passed comprehensively
 - [ ] Report accuracy verified against operational data
 - [ ] Cross-browser compatibility for report interface
@@ -319,6 +340,7 @@ CREATE TABLE generated_reports (
 - [ ] Security measures implemented for sensitive operational data
 
 ### Business Requirements
+
 - [ ] Staff supervisor user acceptance testing completed
 - [ ] Report templates meet operational management needs
 - [ ] Scheduling flexibility supports various operational patterns
@@ -326,6 +348,7 @@ CREATE TABLE generated_reports (
 - [ ] Email integration meets organizational communication standards
 
 ### User Experience
+
 - [ ] Report generation interface intuitive and efficient
 - [ ] Template management accessible to non-technical users
 - [ ] Print outputs professional quality suitable for filing
@@ -333,6 +356,7 @@ CREATE TABLE generated_reports (
 - [ ] Performance acceptable for daily operational use
 
 ### Documentation
+
 - [ ] User guide for report generation and management created
 - [ ] Technical documentation for template system complete
 - [ ] API documentation published with examples
@@ -344,12 +368,14 @@ CREATE TABLE generated_reports (
 **Story Points:** 8
 
 **Breakdown:**
+
 - Report generation system development: 3 points
 - Template management and customization: 2 points
 - Scheduling and automation system: 2 points
 - Email integration and testing: 1 point
 
 **Dependencies:**
+
 - Operational data from all system components
 - User management system for staff attribution (Epic 6)
 - Vehicle management system (Epic 2)
@@ -357,12 +383,14 @@ CREATE TABLE generated_reports (
 - Email infrastructure and SMTP configuration
 
 **Risks:**
+
 - PDF generation performance with complex reports may need optimization
 - Email delivery reliability depends on external SMTP services
 - Template customization complexity could require additional development
 - Large dataset processing may impact system performance during report generation
 
 **Success Metrics:**
+
 - Daily operational reports generated automatically and reliably
 - Shift handover efficiency improved by 30% with structured reports
 - Staff supervisor satisfaction with report quality and utility

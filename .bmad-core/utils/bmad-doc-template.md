@@ -2,7 +2,9 @@
 
 ## Overview
 
-BMad document templates are defined in YAML format to drive interactive document generation and agent interaction. Templates separate structure definition from content generation, making them both human and LLM-agent-friendly.
+BMad document templates are defined in YAML format to drive interactive document generation and
+agent interaction. Templates separate structure definition from content generation, making them both
+human and LLM-agent-friendly.
 
 ## Template Structure
 
@@ -14,7 +16,7 @@ template:
   output:
     format: markdown
     filename: default-path/to/{{filename}}.md
-    title: "{{variable}} Document Title"
+    title: '{{variable}} Document Title'
 
 workflow:
   mode: interactive
@@ -108,8 +110,8 @@ sections:
 Use `{{variable_name}}` in titles, templates, and content:
 
 ```yaml
-title: "Epic {{epic_number}} {{epic_title}}"
-template: "As a {{user_type}}, I want {{action}}, so that {{benefit}}."
+title: 'Epic {{epic_number}} {{epic_title}}'
+template: 'As a {{user_type}}, I want {{action}}, so that {{benefit}}.'
 ```
 
 ### Conditional Sections
@@ -212,7 +214,7 @@ choices:
         - id: criteria
           title: Acceptance Criteria
           type: numbered-list
-          item_template: "{{criterion_number}}: {{criteria}}"
+          item_template: '{{criterion_number}}: {{criteria}}'
           repeatable: true
 ```
 
@@ -220,7 +222,7 @@ choices:
 
 ````yaml
 examples:
-  - "FR6: The system must authenticate users within 2 seconds"
+  - 'FR6: The system must authenticate users within 2 seconds'
   - |
     ```mermaid
     sequenceDiagram
@@ -242,7 +244,8 @@ examples:
 
 ## Section Hierarchy
 
-Templates define the complete document structure starting with the first H2 - each level in is the next H#:
+Templates define the complete document structure starting with the first H2 - each level in is the
+next H#:
 
 ```yaml
 sections:
@@ -322,4 +325,5 @@ When converting from markdown+frontmatter templates:
 4. Move `@{examples}` to `examples` arrays
 5. Convert `{{placeholders}}` to proper variable syntax
 
-This specification ensures templates are both human-readable and machine-processable while maintaining the flexibility needed for complex document generation.
+This specification ensures templates are both human-readable and machine-processable while
+maintaining the flexibility needed for complex document generation.

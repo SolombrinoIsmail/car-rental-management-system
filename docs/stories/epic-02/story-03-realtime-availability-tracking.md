@@ -8,8 +8,10 @@
 ## User Story Statement
 
 **As a** rental staff member  
-**I want to** see accurate, real-time vehicle availability and status information across all system terminals  
-**So that** I never double-book vehicles and can provide customers with current, reliable availability information
+**I want to** see accurate, real-time vehicle availability and status information across all system
+terminals  
+**So that** I never double-book vehicles and can provide customers with current, reliable
+availability information
 
 ## Detailed Acceptance Criteria
 
@@ -88,6 +90,7 @@
 ## Technical Implementation Notes
 
 ### Database Schema Requirements
+
 ```sql
 -- Real-time vehicle status table
 CREATE TABLE vehicle_status_realtime (
@@ -150,6 +153,7 @@ CREATE TABLE overdue_vehicles (
 ```
 
 ### API Endpoints Needed
+
 - `GET /api/availability/realtime` - Get real-time fleet availability
 - `POST /api/availability/search` - Search available vehicles by criteria
 - `GET /api/vehicles/{id}/status` - Get specific vehicle current status
@@ -163,20 +167,21 @@ CREATE TABLE overdue_vehicles (
 - `GET /api/availability/audit` - Get availability change audit log
 
 ### Real-time Communication Setup
+
 ```javascript
 // WebSocket implementation for real-time updates
 const availabilitySocket = new WebSocket('ws://api/availability/realtime');
 
-availabilitySocket.onmessage = function(event) {
-    const update = JSON.parse(event.data);
-    handleAvailabilityUpdate(update);
+availabilitySocket.onmessage = function (event) {
+  const update = JSON.parse(event.data);
+  handleAvailabilityUpdate(update);
 };
 
 // Server-Sent Events fallback
 const eventSource = new EventSource('/api/availability/events');
-eventSource.onmessage = function(event) {
-    const update = JSON.parse(event.data);
-    handleAvailabilityUpdate(update);
+eventSource.onmessage = function (event) {
+  const update = JSON.parse(event.data);
+  handleAvailabilityUpdate(update);
 };
 ```
 
@@ -299,6 +304,7 @@ eventSource.onmessage = function(event) {
 ## Estimated Effort: 5 Story Points
 
 **Breakdown:**
+
 - Real-time communication setup: 1 day
 - Availability calculation engine: 1.5 days
 - Search and filtering system: 1 day

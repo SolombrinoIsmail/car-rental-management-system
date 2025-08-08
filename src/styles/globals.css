@@ -65,10 +65,12 @@
   * {
     @apply border-border;
   }
-  
+
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings:
+      'rlig' 1,
+      'calt' 1;
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
@@ -132,7 +134,7 @@
   }
 
   .swiss-card {
-    @apply bg-card text-card-foreground rounded-lg border p-6 shadow-sm transition-shadow hover:shadow-md;
+    @apply rounded-lg border bg-card p-6 text-card-foreground shadow-sm transition-shadow hover:shadow-md;
   }
 
   .swiss-badge {
@@ -140,7 +142,7 @@
   }
 
   .swiss-button-primary {
-    @apply bg-swiss-red text-white hover:bg-swiss-red-600 focus:ring-swiss-red-500 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
+    @apply inline-flex items-center justify-center rounded-md bg-swiss-red px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-swiss-red-600 focus:outline-none focus:ring-2 focus:ring-swiss-red-500 focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
   }
 
   .swiss-input {
@@ -179,7 +181,7 @@
   .no-print {
     display: none !important;
   }
-  
+
   body {
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
@@ -196,7 +198,7 @@
   :root {
     --border: 0 0% 30%;
   }
-  
+
   .dark {
     --border: 0 0% 70%;
   }

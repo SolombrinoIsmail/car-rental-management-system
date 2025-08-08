@@ -1,19 +1,23 @@
 # Story 8: Duplicate Customer Merge
 
 ## Story Information
+
 - **Story ID:** CRMS-E9-S8
 - **Epic:** 9 - Operational Edge Cases
 - **Story Points:** 5
 
 ## User Story
+
 **As a** rental staff member  
 **I want to** identify and merge duplicate customer records systematically  
-**So that** customer data is accurate, marketing efforts are effective, and customer service is improved through complete rental history
+**So that** customer data is accurate, marketing efforts are effective, and customer service is
+improved through complete rental history
 
 ## Detailed Acceptance Criteria
 
 1. **Automated Duplicate Detection**
-   - System scans for potential duplicates using multiple criteria (name, phone, email, license number)
+   - System scans for potential duplicates using multiple criteria (name, phone, email, license
+     number)
    - Fuzzy matching algorithm to catch variations in spelling, formatting, and data entry
    - Confidence scoring for duplicate matches (high, medium, low probability)
    - Daily automated scans with flagged potential duplicates for staff review
@@ -87,6 +91,7 @@
 ## Technical Implementation Notes
 
 ### Backend Services
+
 - `DuplicateDetectionService`: Identifies potential duplicate customers
 - `CustomerMergeService`: Orchestrates the complete merge process
 - `DataConsolidationService`: Handles data field selection and combination
@@ -94,6 +99,7 @@
 - `AuditTrailService`: Maintains complete merge operation history
 
 ### Data Models
+
 ```sql
 customer_duplicates (
   id, primary_customer_id, duplicate_customer_id,
@@ -109,6 +115,7 @@ customer_merges (
 ```
 
 ### Algorithms
+
 - **Fuzzy String Matching:** Levenshtein distance for name variations
 - **Phone Number Standardization:** Format normalization for comparison
 - **Email Domain Analysis:** Corporate vs. personal email detection
@@ -117,23 +124,27 @@ customer_merges (
 ## API Endpoints
 
 ### Duplicate Detection
+
 - `GET /api/customers/duplicates/scan` - Run duplicate detection scan
 - `GET /api/customers/duplicates/pending` - Get unresolved duplicate matches
 - `POST /api/customers/duplicates/{id}/review` - Mark duplicate as reviewed
 - `GET /api/customers/{id}/potential-duplicates` - Find duplicates for specific customer
 
 ### Merge Operations
+
 - `POST /api/customers/merge/preview` - Preview merge operation results
 - `POST /api/customers/merge/execute` - Perform customer merge
 - `GET /api/customers/merge/{id}/status` - Check merge operation status
 - `POST /api/customers/merge/{id}/reverse` - Reverse merge if possible
 
 ### Quality Assurance
+
 - `GET /api/customers/merge/audit/{id}` - Get merge audit trail
 - `POST /api/customers/merge/validate` - Validate merge operation completeness
 - `GET /api/customers/data-quality/report` - Generate data quality metrics
 
 ### Administrative
+
 - `POST /api/customers/merge/batch` - Initiate batch merge operation
 - `GET /api/customers/merge/performance-stats` - Get merge performance metrics
 - `POST /api/customers/prevention/rules` - Update duplicate prevention rules
@@ -141,6 +152,7 @@ customer_merges (
 ## Database Schema Requirements
 
 ### New Tables
+
 ```sql
 CREATE TABLE customer_duplicates (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -203,6 +215,7 @@ CREATE TABLE duplicate_detection_rules (
 ```
 
 ### Schema Updates
+
 - Add `merged_from_customer_ids` JSONB array to customers table for tracking merge history
 - Add `duplicate_detection_score` to customers table for prevention
 - Add `last_duplicate_check` timestamp to customers table
@@ -210,24 +223,28 @@ CREATE TABLE duplicate_detection_rules (
 ## UI/UX Considerations
 
 ### Duplicate Review Interface
+
 - Split-screen comparison with highlighted differences and similarities
 - Drag-and-drop field selection for choosing preferred values
 - Color-coded confidence indicators for match quality
 - Quick action buttons for common decisions (merge, keep separate, investigate)
 
-### Merge Preview Interface  
+### Merge Preview Interface
+
 - Visual representation of consolidated customer profile
 - Before/after comparison showing impact of merge operation
 - Warning indicators for potential data loss or conflicts
 - Confirmation checklist ensuring staff understands merge consequences
 
 ### Dashboard Integration
+
 - Duplicate detection queue with priority sorting by confidence score
 - Performance metrics showing duplicate resolution rates
 - Data quality indicators with trends over time
 - Quick access to recently merged customers for verification
 
 ### Mobile Accessibility
+
 - Touch-friendly interface for tablet use during customer service
 - Simplified duplicate review process for field staff
 - Offline capability for reviewing and queuing merge decisions
@@ -236,44 +253,52 @@ CREATE TABLE duplicate_detection_rules (
 ## Testing Scenarios
 
 ### Scenario 1: High-Confidence Name and Phone Match
+
 **Given:** Two customer records with identical names and phone numbers but different email addresses
-**When:** Staff reviews duplicate match and selects merge option
-**Then:** Accounts merged with most recent email retained, all rental history consolidated
+**When:** Staff reviews duplicate match and selects merge option **Then:** Accounts merged with most
+recent email retained, all rental history consolidated
 
 ### Scenario 2: Complex Multi-Field Partial Match
-**Given:** Customer records with similar names, same license number, but different contact information
-**When:** Fuzzy matching detects potential duplicate with medium confidence
-**Then:** Staff presented with detailed comparison, manual review completed, merge decision documented
+
+**Given:** Customer records with similar names, same license number, but different contact
+information **When:** Fuzzy matching detects potential duplicate with medium confidence **Then:**
+Staff presented with detailed comparison, manual review completed, merge decision documented
 
 ### Scenario 3: False Positive Duplicate Detection
-**Given:** Two different customers with same common name and similar contact information
-**When:** Staff reviews potential duplicate match
-**Then:** Customers confirmed as separate individuals, dismissal reason documented, prevention rules updated
+
+**Given:** Two different customers with same common name and similar contact information **When:**
+Staff reviews potential duplicate match **Then:** Customers confirmed as separate individuals,
+dismissal reason documented, prevention rules updated
 
 ### Scenario 4: Batch Merge Operation for Data Cleanup
-**Given:** 100 high-confidence duplicate pairs identified during data quality audit
-**When:** Administrator initiates batch merge operation
-**Then:** All duplicates processed in background, progress tracked, completion report generated
+
+**Given:** 100 high-confidence duplicate pairs identified during data quality audit **When:**
+Administrator initiates batch merge operation **Then:** All duplicates processed in background,
+progress tracked, completion report generated
 
 ### Scenario 5: Manager Approval Required for VIP Customer
-**Given:** Potential duplicate involving customer with >$10,000 rental history
-**When:** Staff attempts to merge high-value customer accounts
-**Then:** Manager approval required, detailed review process initiated, additional verification performed
+
+**Given:** Potential duplicate involving customer with >$10,000 rental history **When:** Staff
+attempts to merge high-value customer accounts **Then:** Manager approval required, detailed review
+process initiated, additional verification performed
 
 ### Scenario 6: Merge Reversal Due to Error
-**Given:** Customer merge performed incorrectly combining unrelated accounts
-**When:** Error discovered through customer complaint
-**Then:** Merge operation reversed, original accounts restored, audit trail maintained
+
+**Given:** Customer merge performed incorrectly combining unrelated accounts **When:** Error
+discovered through customer complaint **Then:** Merge operation reversed, original accounts
+restored, audit trail maintained
 
 ### Scenario 7: Real-Time Duplicate Detection During Registration
-**Given:** New customer registration with information matching existing customer
-**When:** Staff enters customer details during reservation process
-**Then:** System alerts to potential duplicate, staff prompted to verify or merge
+
+**Given:** New customer registration with information matching existing customer **When:** Staff
+enters customer details during reservation process **Then:** System alerts to potential duplicate,
+staff prompted to verify or merge
 
 ### Scenario 8: Corporate Account Duplicate with Multiple Contacts
-**Given:** Business customer with multiple employee contacts creating apparent duplicates
-**When:** Staff reviews potential duplicates for corporate account
-**Then:** Business relationship identified, contacts consolidated under corporate account structure
+
+**Given:** Business customer with multiple employee contacts creating apparent duplicates **When:**
+Staff reviews potential duplicates for corporate account **Then:** Business relationship identified,
+contacts consolidated under corporate account structure
 
 ## Definition of Done
 
@@ -296,6 +321,7 @@ CREATE TABLE duplicate_detection_rules (
 - [ ] Documentation for duplicate detection rules and merge procedures
 
 ## Dependencies
+
 - Customer management system with comprehensive data access
 - Fuzzy string matching library or service
 - Audit logging system for compliance and traceability
@@ -304,6 +330,7 @@ CREATE TABLE duplicate_detection_rules (
 - Data quality monitoring and reporting tools
 
 ## Risks and Mitigation
+
 - **Risk:** Incorrect merges combining unrelated customers
   - **Mitigation:** Multi-step verification process with manager approval for uncertain cases
 - **Risk:** Data loss during merge operations

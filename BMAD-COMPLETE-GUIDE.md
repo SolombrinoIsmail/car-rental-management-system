@@ -1,8 +1,10 @@
 # 📚 BMad Method Complete Step-by-Step Guide
 
-> **IMPORTANT**: Follow EVERY step in order. Do not skip any step. Each step builds on the previous one.
+> **IMPORTANT**: Follow EVERY step in order. Do not skip any step. Each step builds on the previous
+> one.
 
 ## Table of Contents
+
 1. [Pre-Installation Checklist](#pre-installation-checklist)
 2. [Installation Phase](#installation-phase)
 3. [Planning Phase](#planning-phase)
@@ -18,6 +20,7 @@
 ## Pre-Installation Checklist
 
 ### ✅ Required Tools
+
 - [ ] Node.js installed (version 16 or higher)
 - [ ] npm or yarn installed
 - [ ] Git installed
@@ -25,6 +28,7 @@
 - [ ] Terminal/Command Prompt access
 
 ### ✅ Verify Installation
+
 ```bash
 # Check Node.js
 node --version  # Should show v16.x.x or higher
@@ -83,6 +87,7 @@ npx bmad-method install
 ### Step 4: Installer Interactive Prompts
 
 #### Prompt 4.1: Choose Installation Type
+
 ```
 ? What would you like to do?
   1) Complete installation (recommended for new users)
@@ -94,6 +99,7 @@ ENTER: 1
 ```
 
 #### Prompt 4.2: Select Your IDE
+
 ```
 ? Which IDE are you using?
   1) Cursor
@@ -109,6 +115,7 @@ ENTER: [Your IDE number - e.g., 2 for Claude Code]
 ```
 
 #### Prompt 4.3: Document Location
+
 ```
 ? Where should documents be stored? (docs/)
 
@@ -116,6 +123,7 @@ PRESS ENTER to accept default OR type custom path like "documentation/"
 ```
 
 #### Prompt 4.4: Technical Preferences
+
 ```
 ? Would you like to set up technical preferences? (y/n)
 
@@ -123,6 +131,7 @@ ENTER: y
 ```
 
 #### Prompt 4.5: Enter Your Technical Stack
+
 ```
 ? Enter your technical preferences:
 
@@ -202,22 +211,27 @@ code .
 ### Step 8: Start a NEW Chat/Conversation
 
 **CRITICAL**: In your IDE, start a completely NEW chat/conversation
+
 - Claude Code: Click "New Chat" or Cmd+N
-- Cursor: Click "New Chat" 
+- Cursor: Click "New Chat"
 - VS Code with Cline: Start new Cline session
 
 ### Step 9: Load Product Manager Agent
 
 Type EXACTLY (including the slash or @ symbol):
+
 ```
 /pm
 ```
+
 OR (depending on your IDE):
+
 ```
 @pm
 ```
 
 **WAIT** for response like:
+
 ```
 PM Agent loaded. I'm your Product Manager ready to help create PRDs...
 Type *help to see available commands.
@@ -226,6 +240,7 @@ Type *help to see available commands.
 ### Step 10: Create Product Requirements Document (PRD)
 
 Type EXACTLY:
+
 ```
 *create-doc prd
 ```
@@ -233,6 +248,7 @@ Type EXACTLY:
 ### Step 11: Answer PM Agent Questions
 
 #### Question 11.1: Document Type
+
 ```
 PM: What type of document would you like to create?
 
@@ -240,18 +256,20 @@ YOUR ANSWER: PRD for a SaaS application
 ```
 
 #### Question 11.2: Project Description
+
 ```
 PM: Please provide a brief description of your project.
 
-YOUR ANSWER: 
-A project management SaaS called TaskFlow that helps remote teams 
-collaborate efficiently. Core features include kanban boards, 
-real-time collaboration, time tracking, team chat, and 
+YOUR ANSWER:
+A project management SaaS called TaskFlow that helps remote teams
+collaborate efficiently. Core features include kanban boards,
+real-time collaboration, time tracking, team chat, and
 subscription-based billing with free, pro, and enterprise tiers.
 Target market is small to medium remote teams (5-50 people).
 ```
 
 #### Question 11.3: Target Users
+
 ```
 PM: Who are your target users and personas?
 
@@ -270,22 +288,24 @@ User Personas:
 ```
 
 #### Question 11.4: Core Problems
+
 ```
 PM: What core problems are you solving?
 
 YOUR ANSWER:
-1. Tool Fragmentation - Teams use 5+ different tools (Slack, Trello, 
+1. Tool Fragmentation - Teams use 5+ different tools (Slack, Trello,
    Toggl, Google Docs, Zoom) leading to context switching
-2. Lack of Real-time Visibility - Managers can't see project status 
+2. Lack of Real-time Visibility - Managers can't see project status
    without asking for updates
-3. Time Tracking Friction - Developers forget to track time, 
+3. Time Tracking Friction - Developers forget to track time,
    leading to lost billable hours
 4. No Unified Workload View - Can't see who's overloaded or available
-5. Expensive Enterprise Tools - Current solutions like Jira/Monday 
+5. Expensive Enterprise Tools - Current solutions like Jira/Monday
    are too complex and expensive for small teams
 ```
 
 #### Question 11.5: Key Features
+
 ```
 PM: What are the key features? (Separate must-have from nice-to-have)
 
@@ -316,6 +336,7 @@ NICE TO HAVE (Phase 2):
 ```
 
 #### Question 11.6: Success Metrics
+
 ```
 PM: What are your success metrics?
 
@@ -349,6 +370,7 @@ The PM will generate a comprehensive PRD. Review it carefully:
 4. Ensure acceptance criteria are clear
 
 If changes needed:
+
 ```
 Please update the [specific section] to include [specific change]
 ```
@@ -385,15 +407,19 @@ head -20 docs/prd.md  # Should show PRD header
 ### Step 16: Load Architect Agent
 
 Type EXACTLY:
+
 ```
 /architect
 ```
+
 OR:
+
 ```
 @architect
 ```
 
 Wait for:
+
 ```
 Architect Agent loaded. I'm your Solution Architect ready to design systems...
 ```
@@ -401,6 +427,7 @@ Architect Agent loaded. I'm your Solution Architect ready to design systems...
 ### Step 17: Create Architecture Document
 
 Type:
+
 ```
 *create-doc architecture
 
@@ -419,11 +446,12 @@ Please create a comprehensive architecture document covering:
 ### Step 18: Answer Architecture Questions
 
 #### Question 18.1: Deployment Approach
+
 ```
 Architect: What's your deployment preference and constraints?
 
 YOUR ANSWER:
-Start with monolith for faster MVP development, but architect for 
+Start with monolith for faster MVP development, but architect for
 future microservices extraction. Deploy on AWS using:
 - ECS Fargate for containers
 - RDS PostgreSQL for database
@@ -436,6 +464,7 @@ Budget: $500/month initially, scaling to $5000/month at 10K users
 ```
 
 #### Question 18.2: Scale Requirements
+
 ```
 Architect: What scale should we design for?
 
@@ -451,6 +480,7 @@ Data growth: ~1GB per 100 users per month
 ```
 
 #### Question 18.3: Security Requirements
+
 ```
 Architect: What are your security and compliance requirements?
 
@@ -486,10 +516,11 @@ head -20 docs/architecture.md
 ### Step 20: Validate Document Alignment (Optional but Recommended)
 
 Start NEW chat:
+
 ```
 /po
 
-Please run the master checklist to validate alignment between 
+Please run the master checklist to validate alignment between
 docs/prd.md and docs/architecture.md
 ```
 
@@ -502,6 +533,7 @@ Fix any issues identified before proceeding.
 ### Step 21: Document Sharding (CRITICAL)
 
 Start NEW chat:
+
 ```
 /bmad-master
 
@@ -623,6 +655,7 @@ tree -L 3 -d  # Shows directory structure
 ### Step 26: Create Configuration Files
 
 Start NEW chat:
+
 ```
 /dev
 
@@ -666,11 +699,13 @@ npx prisma studio  # Opens browser to view database
 **CRITICAL**: Start a COMPLETELY NEW chat
 
 Type:
+
 ```
 /sm
 ```
 
 Wait for SM agent to load, then type:
+
 ```
 *create
 ```
@@ -678,11 +713,13 @@ Wait for SM agent to load, then type:
 ### Step 29: SM Creates Story
 
 SM will:
-1. Read docs/prd/epic-1-*.md
+
+1. Read docs/prd/epic-1-\*.md
 2. Read docs/architecture/
 3. Create story file
 
 You'll see:
+
 ```
 Creating Story 1.1: User Authentication Foundation
 Location: docs/stories/story-1.1-user-authentication-foundation.md
@@ -692,6 +729,7 @@ Status: Draft
 ### Step 30: Review Story Content
 
 The story should contain:
+
 - **Title**: Clear and specific
 - **Status**: Draft
 - **Acceptance Criteria**: 3-5 specific criteria
@@ -700,12 +738,14 @@ The story should contain:
 - **Estimated Hours**: 4-8 hours
 
 Example:
+
 ```markdown
 # Story 1.1: User Authentication Foundation
 
 ## Status: Draft
 
 ## Acceptance Criteria
+
 - [ ] Users can register with email/password
 - [ ] Passwords are hashed with bcrypt
 - [ ] JWT tokens are generated on login
@@ -713,6 +753,7 @@ Example:
 - [ ] Refresh token mechanism works
 
 ## Tasks
+
 - [ ] Create Prisma schema for User model
 - [ ] Implement registration endpoint
 - [ ] Implement login endpoint
@@ -724,11 +765,13 @@ Example:
 ### Step 31: Approve the Story
 
 In the same SM chat:
+
 ```
 The story looks good. Please update the status from Draft to Approved.
 ```
 
 SM responds:
+
 ```
 ✅ Updated story-1.1 status to Approved
 Ready for development!
@@ -739,6 +782,7 @@ Ready for development!
 **CRITICAL**: Close SM chat and start COMPLETELY NEW chat
 
 Type:
+
 ```
 /dev
 ```
@@ -746,6 +790,7 @@ Type:
 ### Step 33: Give Story to Dev
 
 Type EXACTLY:
+
 ```
 Please implement story 1.1: User Authentication Foundation
 The story file is at: docs/stories/story-1.1-user-authentication-foundation.md
@@ -760,6 +805,7 @@ Maintain a File List of all created/modified files.
 Watch Dev work through each task:
 
 #### Task 34.1: Database Schema
+
 ```
 Dev: Starting Task 1: Create Prisma schema for User model
 
@@ -770,6 +816,7 @@ Creating backend/prisma/schema.prisma...
 ```
 
 #### Task 34.2: Registration Endpoint
+
 ```
 Dev: Starting Task 2: Implement registration endpoint
 
@@ -781,7 +828,9 @@ Adding validation with Zod...
 ```
 
 #### Task 34.3: Continue Through All Tasks
+
 Dev will complete each task, showing:
+
 - Files created/modified
 - Code snippets
 - Test results
@@ -790,16 +839,18 @@ Dev will complete each task, showing:
 ### Step 35: Handle Dev Questions
 
 Dev might ask clarifying questions:
+
 ```
 Dev: Should refresh tokens be stored in database or Redis?
 
-YOUR ANSWER: Use Redis with 7-day TTL for refresh tokens. 
+YOUR ANSWER: Use Redis with 7-day TTL for refresh tokens.
 This allows easy revocation and automatic cleanup.
 ```
 
 ### Step 36: Dev Completes Story
 
 Dev will:
+
 1. Mark all tasks ✅ complete
 2. Run tests
 3. Update story status to "Review"
@@ -817,6 +868,7 @@ Dev: All tasks completed!
 ### Step 37: Verify Dev Work
 
 Check that Dev has:
+
 - [ ] All task checkboxes marked ✅
 - [ ] File List section with all files
 - [ ] Dev Notes with decisions/issues
@@ -832,6 +884,7 @@ Check that Dev has:
 **CRITICAL**: Start NEW chat
 
 Type:
+
 ```
 /qa
 ```
@@ -839,6 +892,7 @@ Type:
 ### Step 39: Request QA Review
 
 Type:
+
 ```
 Please review story 1.1: User Authentication Foundation
 Location: docs/stories/story-1.1-user-authentication-foundation.md
@@ -854,6 +908,7 @@ Perform senior developer review:
 ### Step 40: QA Review Process
 
 QA will:
+
 ```
 Reading story and implementation...
 
@@ -876,6 +931,7 @@ Fixing issues...
 ### Step 41: QA Improvements
 
 QA actively improves code:
+
 ```
 Adding rate limiting with express-rate-limit...
 ✅ Added to login and register endpoints
@@ -896,8 +952,10 @@ Running all tests...
 ### Step 42: QA Completion
 
 QA updates story with:
+
 ```markdown
 ## QA Review Results
+
 - ✅ Security hardening complete
 - ✅ Added rate limiting
 - ✅ Improved error handling
@@ -913,12 +971,14 @@ QA updates story with:
 **CRITICAL**: Start NEW chat
 
 Type:
+
 ```
 /sm
 *create
 ```
 
 SM will:
+
 - Read story 1.1's Dev Notes and QA Review
 - Create story 1.2 building on 1.1
 - Continue the epic
@@ -926,12 +986,14 @@ SM will:
 ### Step 44: Continue Development Cycle
 
 Repeat Steps 28-43 for each story:
+
 1. SM creates story → Approve
 2. Dev implements → Review
 3. QA reviews → Done
 4. Next story
 
 Stories progress:
+
 - Story 1.1: User Authentication Foundation ✅
 - Story 1.2: User Profile Management
 - Story 1.3: Password Reset Flow
@@ -941,6 +1003,7 @@ Stories progress:
 ### Step 45: Epic Completion
 
 When all Epic 1 stories complete:
+
 ```
 /sm
 
@@ -978,6 +1041,7 @@ Visit: http://localhost:3000
 Every 5 stories, validate progress:
 
 Start NEW chat:
+
 ```
 /po
 
@@ -1020,6 +1084,7 @@ Please review our progress:
 ### IDE-Specific Agent Commands
 
 #### Claude Code
+
 ```
 /pm          # Product Manager
 /architect   # Solution Architect
@@ -1031,6 +1096,7 @@ Please review our progress:
 ```
 
 #### Cursor / Windsurf
+
 ```
 @pm          # Product Manager
 @architect   # Solution Architect
@@ -1042,6 +1108,7 @@ Please review our progress:
 ```
 
 ### Agent Task Commands
+
 ```
 *help        # Show available commands
 *status      # Show current status
@@ -1051,6 +1118,7 @@ Please review our progress:
 ```
 
 ### Story Status Progression
+
 ```
 Draft → Approved → InProgress → Review → Done
 ```
@@ -1062,6 +1130,7 @@ Draft → Approved → InProgress → Review → Done
 ### Problem: "Agent not recognized"
 
 Solution:
+
 ```bash
 # Check installation
 ls -la .bmad-core/agents/
@@ -1074,21 +1143,24 @@ ls -la .claude/  # or .cursorrules
 ### Problem: "SM can't find epics"
 
 Solution:
+
 ```
 /bmad-master
-The SM agent can't find epics. Please verify docs/prd/ 
+The SM agent can't find epics. Please verify docs/prd/
 has sharded epic files.
 ```
 
 ### Problem: "Dev lost context"
 
 Solution:
+
 1. Save current work
 2. Start NEW chat
 3. Give specific context:
+
 ```
 /dev
-Continue implementing story 1.2. 
+Continue implementing story 1.2.
 Previous story 1.1 is complete.
 Focus on the tasks in docs/stories/story-1.2-*.md
 ```
@@ -1096,6 +1168,7 @@ Focus on the tasks in docs/stories/story-1.2-*.md
 ### Problem: "Tests failing"
 
 Solution:
+
 ```
 /dev
 Tests are failing with error: [paste error]
@@ -1105,6 +1178,7 @@ Please fix the tests and ensure all pass.
 ### Problem: "Story too large"
 
 Solution:
+
 ```
 /sm
 This story seems too large (over 8 hours).
@@ -1114,6 +1188,7 @@ Please split into 2-3 smaller stories.
 ### Problem: "Can't run commands"
 
 Solution:
+
 ```bash
 # Check Node/npm
 node --version
@@ -1134,6 +1209,7 @@ npm install
 ## Success Checklist
 
 ### After 1 Hour
+
 - [ ] BMad installed
 - [ ] PRD created and saved
 - [ ] Architecture created and saved
@@ -1141,6 +1217,7 @@ npm install
 - [ ] First story created
 
 ### After 4 Hours
+
 - [ ] Story 1.1 implemented
 - [ ] Story 1.1 QA reviewed
 - [ ] Story 1.2 in progress
@@ -1148,6 +1225,7 @@ npm install
 - [ ] Tests passing
 
 ### After 1 Day
+
 - [ ] Epic 1 (5-6 stories) complete
 - [ ] Application running locally
 - [ ] 50+ tests passing
@@ -1155,6 +1233,7 @@ npm install
 - [ ] Database migrations working
 
 ### After 1 Week
+
 - [ ] 3-4 Epics complete
 - [ ] 20-30 stories done
 - [ ] Core features working
@@ -1168,12 +1247,14 @@ npm install
 If you get stuck at any point:
 
 1. **Check where you are**:
+
 ```bash
 ls -la docs/stories/  # How many stories?
 git status  # What's changed?
 ```
 
 2. **Reset agent context**:
+
 ```
 *exit
 # Start new chat
@@ -1182,6 +1263,7 @@ git status  # What's changed?
 ```
 
 3. **Get unstuck**:
+
 ```
 /bmad-master
 I'm stuck at [describe situation].
@@ -1190,6 +1272,7 @@ Please help me continue.
 ```
 
 4. **Emergency restart**:
+
 ```bash
 # Save your work
 git add .
@@ -1228,7 +1311,7 @@ What's the next story to create after [last story]?
 ## Ready to Start?
 
 1. ✅ Save this guide for reference
-2. ✅ Run `npx bmad-method install` 
+2. ✅ Run `npx bmad-method install`
 3. ✅ Type `/pm` to begin
 4. ✅ Follow each step exactly
 5. ✅ Build your SaaS!

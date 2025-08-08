@@ -1,12 +1,16 @@
 # Story 5: Photo Storage & Retrieval
 
 ## Story ID
+
 **Epic 7 - Story 5**
 
 ## User Story Statement
+
 **As a** system administrator  
-**I want to** efficiently store, organize, and retrieve photos with intelligent compression and backup systems  
-**So that** system performance is maintained, storage costs are optimized, and photos are always available when needed
+**I want to** efficiently store, organize, and retrieve photos with intelligent compression and
+backup systems  
+**So that** system performance is maintained, storage costs are optimized, and photos are always
+available when needed
 
 ## Detailed Acceptance Criteria
 
@@ -85,12 +89,14 @@
 ## Technical Implementation Notes
 
 ### Storage Architecture
+
 - **StorageManager.js**: Core storage operations and abstraction layer
 - **CompressionEngine.js**: Intelligent image compression algorithms
 - **BackupScheduler.js**: Automated backup and verification system
 - **RetrievalOptimizer.js**: Fast search and caching management
 
 ### File System Structure
+
 ```
 /storage/photos/
 ├── active/
@@ -115,83 +121,88 @@
 ```
 
 ### Compression Algorithm
+
 ```javascript
 class IntelligentCompressor {
   async compressPhoto(photo, targetSizeKB, quality = 'auto') {
-    const metadata = await this.analyzeImage(photo)
-    
+    const metadata = await this.analyzeImage(photo);
+
     // Determine optimal compression based on content
-    const compressionConfig = this.getCompressionConfig(metadata, targetSizeKB)
-    
+    const compressionConfig = this.getCompressionConfig(metadata, targetSizeKB);
+
     if (metadata.isDocument) {
       // Prioritize text readability
-      return await this.compressDocument(photo, compressionConfig)
+      return await this.compressDocument(photo, compressionConfig);
     } else if (metadata.hasFineDamageDetails) {
       // Maintain detail for damage assessment
-      return await this.compressWithDetailPreservation(photo, compressionConfig)
+      return await this.compressWithDetailPreservation(photo, compressionConfig);
     } else {
       // Standard vehicle photo compression
-      return await this.compressStandard(photo, compressionConfig)
+      return await this.compressStandard(photo, compressionConfig);
     }
   }
-  
+
   getCompressionConfig(metadata, targetSizeKB) {
     const baseConfig = {
       format: metadata.supportsWebP ? 'webp' : 'jpeg',
       quality: 0.85,
       maxWidth: 1920,
-      maxHeight: 1080
-    }
-    
+      maxHeight: 1080,
+    };
+
     // Adjust based on content analysis
     if (metadata.isDocument) {
-      baseConfig.quality = 0.95 // Higher quality for text
-      baseConfig.format = 'jpeg' // Better text compatibility
+      baseConfig.quality = 0.95; // Higher quality for text
+      baseConfig.format = 'jpeg'; // Better text compatibility
     }
-    
-    return this.optimizeForSize(baseConfig, targetSizeKB)
+
+    return this.optimizeForSize(baseConfig, targetSizeKB);
   }
 }
 ```
 
 ### Retrieval Optimization
+
 ```typescript
 interface PhotoQuery {
-  contractId?: string
-  dateRange?: { start: Date; end: Date }
-  vehicleVin?: string
-  photoType?: 'pickup' | 'return' | 'inspection'
-  includeArchived?: boolean
+  contractId?: string;
+  dateRange?: { start: Date; end: Date };
+  vehicleVin?: string;
+  photoType?: 'pickup' | 'return' | 'inspection';
+  includeArchived?: boolean;
 }
 
 class PhotoRetrieval {
   async searchPhotos(query: PhotoQuery, limit = 50): Promise<PhotoResult[]> {
     // Use database index for fast initial filtering
-    const indexResults = await this.searchIndex(query, limit * 2)
-    
+    const indexResults = await this.searchIndex(query, limit * 2);
+
     // Verify file existence and generate access URLs
-    const validResults = await this.validateAndPrepareResults(indexResults)
-    
+    const validResults = await this.validateAndPrepareResults(indexResults);
+
     // Generate thumbnails on-demand if not cached
-    await this.ensureThumbnails(validResults)
-    
-    return validResults.slice(0, limit)
+    await this.ensureThumbnails(validResults);
+
+    return validResults.slice(0, limit);
   }
-  
-  async getPhotoStream(photoId: string, size: 'thumbnail' | 'preview' | 'full'): Promise<ReadableStream> {
-    const cacheKey = `${photoId}_${size}`
-    
+
+  async getPhotoStream(
+    photoId: string,
+    size: 'thumbnail' | 'preview' | 'full',
+  ): Promise<ReadableStream> {
+    const cacheKey = `${photoId}_${size}`;
+
     // Check cache first
-    let stream = await this.getFromCache(cacheKey)
-    if (stream) return stream
-    
+    let stream = await this.getFromCache(cacheKey);
+    if (stream) return stream;
+
     // Generate requested size if needed
-    stream = await this.generateSizeVariant(photoId, size)
-    
+    stream = await this.generateSizeVariant(photoId, size);
+
     // Cache for future requests
-    await this.cacheStream(cacheKey, stream)
-    
-    return stream
+    await this.cacheStream(cacheKey, stream);
+
+    return stream;
   }
 }
 ```
@@ -199,6 +210,7 @@ class PhotoRetrieval {
 ## API Endpoints Needed
 
 ### Storage Operations
+
 ```
 POST /api/v1/storage/photos
 - Upload and store new photo
@@ -220,6 +232,7 @@ POST /api/v1/storage/photos/{photo_id}/restore
 ```
 
 ### Search and Retrieval
+
 ```
 GET /api/v1/storage/search
 - Search photos by various criteria
@@ -238,6 +251,7 @@ POST /api/v1/storage/photos/batch-retrieve
 ```
 
 ### Storage Management
+
 ```
 GET /api/v1/storage/stats
 - Get storage usage statistics
@@ -261,6 +275,7 @@ POST /api/v1/storage/archive
 ## Database Schema Requirements
 
 ### photo_storage Table
+
 ```sql
 CREATE TABLE photo_storage (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -289,6 +304,7 @@ CREATE INDEX idx_photo_storage_last_accessed ON photo_storage(last_accessed_at);
 ```
 
 ### storage_metrics Table
+
 ```sql
 CREATE TABLE storage_metrics (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -313,6 +329,7 @@ CREATE INDEX idx_storage_metrics_created ON storage_metrics(created_at);
 ```
 
 ### backup_jobs Table
+
 ```sql
 CREATE TABLE backup_jobs (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -337,6 +354,7 @@ CREATE INDEX idx_backup_jobs_started ON backup_jobs(started_at);
 ```
 
 ### photo_access_log Table
+
 ```sql
 CREATE TABLE photo_access_log (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -363,24 +381,28 @@ CREATE TABLE photo_access_log_y2024m01 PARTITION OF photo_access_log
 ## UI/UX Considerations
 
 ### Storage Dashboard
+
 - Visual storage usage with capacity planning charts
 - Real-time upload progress indicators
 - Batch operation status with detailed progress
 - Storage cost optimization recommendations
 
 ### Photo Gallery Interface
+
 - Infinite scroll with lazy loading
 - Grid and list view options
 - Quick filtering by date, contract, or type
 - Bulk selection and operations
 
 ### Performance Indicators
+
 - Loading states for photo retrieval
 - Compression quality previews
 - Cache hit rate displays
 - Network usage optimization for mobile
 
 ### Admin Interface
+
 - Storage health monitoring dashboard
 - Backup status and scheduling controls
 - Archive management with recovery options
@@ -389,6 +411,7 @@ CREATE TABLE photo_access_log_y2024m01 PARTITION OF photo_access_log
 ## Testing Scenarios
 
 ### Scenario 1: High-Volume Photo Upload
+
 **Given** multiple staff uploading photos simultaneously  
 **When** system processes concurrent uploads  
 **Then** all photos are stored successfully  
@@ -396,6 +419,7 @@ CREATE TABLE photo_access_log_y2024m01 PARTITION OF photo_access_log
 **And** system performance remains stable
 
 ### Scenario 2: Fast Photo Retrieval
+
 **Given** user requests photo from recent contract  
 **When** system processes retrieval request  
 **Then** photo is returned within 2 seconds  
@@ -403,6 +427,7 @@ CREATE TABLE photo_access_log_y2024m01 PARTITION OF photo_access_log
 **And** access is logged for analytics
 
 ### Scenario 3: Storage Capacity Management
+
 **Given** storage approaches capacity limits  
 **When** automatic archival process runs  
 **Then** old photos are moved to archive tier  
@@ -410,6 +435,7 @@ CREATE TABLE photo_access_log_y2024m01 PARTITION OF photo_access_log
 **And** performance is maintained
 
 ### Scenario 4: Backup and Recovery
+
 **Given** scheduled backup process runs  
 **When** backup completes successfully  
 **Then** all photos are verified in backup  
@@ -417,6 +443,7 @@ CREATE TABLE photo_access_log_y2024m01 PARTITION OF photo_access_log
 **And** recovery testing validates backup quality
 
 ### Scenario 5: Search Performance
+
 **Given** large photo database (100K+ photos)  
 **When** user searches by contract ID  
 **Then** results are returned quickly (<3 seconds)  
@@ -424,6 +451,7 @@ CREATE TABLE photo_access_log_y2024m01 PARTITION OF photo_access_log
 **And** filters apply correctly
 
 ### Scenario 6: Compression Optimization
+
 **Given** photos of varying types and sizes  
 **When** intelligent compression is applied  
 **Then** target file sizes are achieved  
@@ -431,6 +459,7 @@ CREATE TABLE photo_access_log_y2024m01 PARTITION OF photo_access_log
 **And** compression ratios are logged
 
 ### Scenario 7: Data Integrity Monitoring
+
 **Given** regular integrity checks are scheduled  
 **When** corruption is detected in stored photo  
 **Then** system automatically attempts repair from backup  
@@ -438,6 +467,7 @@ CREATE TABLE photo_access_log_y2024m01 PARTITION OF photo_access_log
 **And** affected contracts are flagged
 
 ### Scenario 8: Disaster Recovery Validation
+
 **Given** simulated storage system failure  
 **When** disaster recovery procedures are executed  
 **Then** photo access is restored within 4 hours  
@@ -469,15 +499,18 @@ CREATE TABLE photo_access_log_y2024m01 PARTITION OF photo_access_log
 - [ ] Documentation for system administration and maintenance
 
 ## Estimated Effort
+
 **5 Story Points** (1 Developer Day)
 
 ### Breakdown:
+
 - Storage architecture and compression: 2 points
 - Backup and recovery systems: 1 point
 - Performance optimization and caching: 1 point
 - Monitoring and administration interface: 1 point
 
 ### Dependencies:
+
 - Photo capture system (Story 1) completed
 - Database infrastructure sizing
 - Storage infrastructure setup (file system or cloud storage)
