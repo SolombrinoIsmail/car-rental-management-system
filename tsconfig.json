@@ -1,0 +1,62 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "checkJs": false,
+    "jsx": "preserve",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "rootDir": "./",
+    "removeComments": true,
+    "noEmit": true,
+    "isolatedModules": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "incremental": true,
+    "baseUrl": ".",
+    "paths": {
+      "@swiss-car-rental/ui": ["./packages/ui/src"],
+      "@swiss-car-rental/ui/*": ["./packages/ui/src/*"],
+      "@swiss-car-rental/shared": ["./packages/shared/src"],
+      "@swiss-car-rental/shared/*": ["./packages/shared/src/*"],
+      "@swiss-car-rental/database": ["./packages/database/src"],
+      "@swiss-car-rental/database/*": ["./packages/database/src/*"],
+      "@swiss-car-rental/utils": ["./packages/utils/src"],
+      "@swiss-car-rental/utils/*": ["./packages/utils/src/*"]
+    }
+  },
+  "include": [
+    "apps/**/*.ts",
+    "apps/**/*.tsx",
+    "packages/**/*.ts",
+    "packages/**/*.tsx",
+    "scripts/**/*.ts",
+    "tests/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/node_modules",
+    "dist",
+    "**/dist",
+    "build",
+    "**/build",
+    ".next",
+    "**/.next",
+    ".turbo",
+    "**/.turbo",
+    "coverage",
+    "**/coverage"
+  ]
+}
