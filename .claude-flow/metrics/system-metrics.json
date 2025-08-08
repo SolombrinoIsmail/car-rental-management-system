@@ -10,5 +10,77 @@
     "cpuLoad": 0.18125,
     "platform": "linux",
     "uptime": 21350.75
+  },
+  {
+    "timestamp": 1754613830452,
+    "memoryTotal": 33525997568,
+    "memoryUsed": 10584973312,
+    "memoryFree": 22941024256,
+    "memoryUsagePercent": 31.5724335734701,
+    "memoryEfficiency": 68.42756642652989,
+    "cpuCount": 16,
+    "cpuLoad": 0.226875,
+    "platform": "linux",
+    "uptime": 21380.77
+  },
+  {
+    "timestamp": 1754613860483,
+    "memoryTotal": 33525997568,
+    "memoryUsed": 10581749760,
+    "memoryFree": 22944247808,
+    "memoryUsagePercent": 31.562818491939826,
+    "memoryEfficiency": 68.43718150806018,
+    "cpuCount": 16,
+    "cpuLoad": 0.201875,
+    "platform": "linux",
+    "uptime": 21410.81
+  },
+  {
+    "timestamp": 1754613890512,
+    "memoryTotal": 33525997568,
+    "memoryUsed": 10567028736,
+    "memoryFree": 22958968832,
+    "memoryUsagePercent": 31.518909212372105,
+    "memoryEfficiency": 68.48109078762789,
+    "cpuCount": 16,
+    "cpuLoad": 0.281875,
+    "platform": "linux",
+    "uptime": 21440.83
+  },
+  {
+    "timestamp": 1754613920542,
+    "memoryTotal": 33525997568,
+    "memoryUsed": 10623139840,
+    "memoryFree": 22902857728,
+    "memoryUsagePercent": 31.68627516139776,
+    "memoryEfficiency": 68.31372483860224,
+    "cpuCount": 16,
+    "cpuLoad": 0.226875,
+    "platform": "linux",
+    "uptime": 21470.87
+  },
+  {
+    "timestamp": 1754613950572,
+    "memoryTotal": 33525997568,
+    "memoryUsed": 10615713792,
+    "memoryFree": 22910283776,
+    "memoryUsagePercent": 31.664125043463343,
+    "memoryEfficiency": 68.33587495653666,
+    "cpuCount": 16,
+    "cpuLoad": 0.271875,
+    "platform": "linux",
+    "uptime": 21500.89
+  },
+  {
+    "timestamp": 1754613980602,
+    "memoryTotal": 33525997568,
+    "memoryUsed": 10386964480,
+    "memoryFree": 23139033088,
+    "memoryUsagePercent": 30.981820776346364,
+    "memoryEfficiency": 69.01817922365363,
+    "cpuCount": 16,
+    "cpuLoad": 0.31625,
+    "platform": "linux",
+    "uptime": 21530.92
   }
 ]
