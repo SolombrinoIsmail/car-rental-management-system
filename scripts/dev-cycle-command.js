@@ -390,7 +390,7 @@ class DevCycleHandler {
     return this.executeClaudeCode(operations);
   }
 
-  executeClaudeCode(operations) {
+  executeClaudeCode() {
     // This would be executed by Claude Code's internal system
     console.log('🤖 Executing concurrent operations...');
     return Promise.resolve({ success: true });

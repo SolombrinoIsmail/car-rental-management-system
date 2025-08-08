@@ -11,9 +11,6 @@ import { z } from 'zod';
 
 import type { Customer, CustomerSearchResult, ApiResponse } from '@/types/customer';
 import {
-  CreateCustomerRequest,
-  CustomerSearchQuery,
-  SwissIdDocumentType,
   SwissUtils,
   CustomerValidationError,
   DuplicateCustomerError,
@@ -132,9 +129,9 @@ async function getTenantId(request: NextRequest): Promise<string> {
   return '00000000-0000-0000-0000-000000000001';
 }
 
-async function getUserId(request: NextRequest): Promise<string> {
+async function getUserId(): Promise<string> {
   // Extract user ID from JWT token
-  // In production, decode JWT and extract user_id
+  // In production, decode JWT and extract user_id from request
   return '00000000-0000-0000-0000-000000000002';
 }
 
@@ -183,8 +180,8 @@ export async function GET(request: NextRequest) {
       limit: searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : undefined,
       offset: searchParams.get('offset') ? parseInt(searchParams.get('offset')!) : undefined,
       includeFlags: searchParams.get('includeFlags') === 'true',
-      sortBy: searchParams.get('sortBy') as any,
-      sortOrder: searchParams.get('sortOrder') as any,
+      sortBy: searchParams.get('sortBy') as 'relevance' | 'lastName' | 'created' | undefined,
+      sortOrder: searchParams.get('sortOrder') as 'asc' | 'desc' | undefined,
     });
 
     // Check cache first (Redis-like behavior with Supabase)

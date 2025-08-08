@@ -72,7 +72,7 @@ export interface CustomerDocument {
   verifiedAt?: string; // ISO 8601 datetime
   verifiedBy?: string; // User ID
   verificationNotes?: string;
-  extractedData?: Record<string, any>; // OCR data
+  extractedData?: Record<string, unknown>; // OCR data
   extractionConfidence?: number; // 0.00-1.00
   createdAt: string;
   updatedAt: string;
@@ -276,7 +276,7 @@ export interface ManagerApprovalRequest {
   reason: string;
   requestedBy: string;
   requestedAt: string;
-  details: Record<string, any>;
+  details: Record<string, unknown>;
 }
 
 // Swiss phone number validation

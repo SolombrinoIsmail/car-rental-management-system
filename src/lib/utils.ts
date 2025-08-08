@@ -58,9 +58,9 @@ export function getInitials(name: string): string {
 /**
  * Debounce function for search inputs
  */
-export function debounce<T extends (...args: any[]) => void>(func: T, wait: number): T {
+export function debounce<T extends (...args: unknown[]) => void>(func: T, wait: number): T {
   let timeout: NodeJS.Timeout;
-  return ((...args: any[]) => {
+  return ((...args: unknown[]) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => func(...args), wait);
   }) as T;

@@ -298,13 +298,14 @@ npx claude-flow github pr merge --squash --delete-branch
 When asked to review a PR, Claude will follow this comprehensive workflow:
 
 1. **Initial Analysis**
+
    ```bash
    # Check PR status and comments
    gh pr view <number> --comments
-   
+
    # Get list of changed files
    gh pr diff <number> --name-only
-   
+
    # Review the diff
    gh pr diff <number>
    ```
@@ -316,16 +317,17 @@ When asked to review a PR, Claude will follow this comprehensive workflow:
    - Add required documentation
 
 3. **Validation**
+
    ```bash
    # Run linting with fixes
    pnpm lint
-   
+
    # Check formatting
    pnpm format:check
-   
+
    # Run type checking
    pnpm typecheck
-   
+
    # Run tests if available
    pnpm test
    ```
@@ -339,8 +341,7 @@ When asked to review a PR, Claude will follow this comprehensive workflow:
    - **✨ Overall Assessment**: Score and recommendation
    - **Tag @SolombrinoIsmail** for visibility
 
-5. **Follow-up Review**
-   After fixes are applied:
+5. **Follow-up Review** After fixes are applied:
    - Re-run all validation checks
    - Document improvements made
    - Note remaining non-critical issues
