@@ -37,6 +37,15 @@
     "test": {
       "dependsOn": ["^build"]
     },
+    "test:unit": {
+      "dependsOn": ["^build"]
+    },
+    "test:e2e": {
+      "dependsOn": ["^build", "build"]
+    },
+    "test:coverage": {
+      "dependsOn": ["^build"]
+    },
     "clean": {
       "cache": false
     }
