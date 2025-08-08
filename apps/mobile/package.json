@@ -1,0 +1,15 @@
+{
+  "name": "@swiss-car-rental/mobile",
+  "version": "0.1.0",
+  "private": true,
+  "description": "React Native mobile app for Swiss Car Rental Management System",
+  "scripts": {
+    "dev": "echo 'Mobile app not yet implemented'",
+    "build": "echo 'Mobile app not yet implemented'",
+    "start": "echo 'Mobile app not yet implemented'"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.15.0"
+  }
+}

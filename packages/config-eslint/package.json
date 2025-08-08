@@ -1,0 +1,14 @@
+{
+  "name": "@swiss-car-rental/eslint-config",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shared ESLint configuration for Swiss Car Rental Management System",
+  "main": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.15.0"
+  }
+}
