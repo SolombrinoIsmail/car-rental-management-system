@@ -1,0 +1,36 @@
+{
+  "name": "@car-rental/database",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Database layer with Prisma ORM for Swiss Car Rental Management System",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:migrate:deploy": "prisma migrate deploy",
+    "db:migrate:create": "prisma migrate dev --create-only",
+    "db:reset": "prisma migrate reset",
+    "db:seed": "tsx prisma/seed.ts",
+    "db:studio": "prisma studio",
+    "postinstall": "prisma generate",
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf .turbo node_modules dist"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.0.1",
+    "@supabase/supabase-js": "^2.47.10"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^9.3.0",
+    "@types/node": "^22.10.5",
+    "prisma": "^6.0.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
