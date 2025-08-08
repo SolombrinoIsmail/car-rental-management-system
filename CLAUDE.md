@@ -1,5 +1,33 @@
 # Claude Flow Configuration - Swiss Car Rental Management System
 
+## 🚨 CRITICAL DEVELOPMENT POLICIES
+
+### ⚠️ NEVER IGNORE WARNINGS POLICY
+
+**ALL warnings MUST be fixed immediately:**
+
+- ESLint warnings must be resolved
+- TypeScript warnings must be fixed
+- Build warnings must be addressed
+- Test warnings must be corrected
+- Console warnings must be eliminated
+
+**Code is NOT ready for review or merge if ANY warnings exist.**
+
+## ⚠️ CRITICAL: ALWAYS FOLLOW THE GIT WORKFLOW
+
+**EVERY implementation task MUST follow the complete Git workflow:**
+
+1. Create feature branch
+2. Implement changes
+3. Commit with conventional commits
+4. Push to remote
+5. Create Pull Request
+6. Review PR and provide feedback
+
+**See the [MANDATORY Git Workflow section](#-mandatory-git-workflow---always-follow) below for
+detailed steps.**
+
 ## 🚀 Claude Flow: AI-Powered Development Orchestration
 
 Claude Flow is our primary development orchestrator, providing intelligent agent coordination, SPARC
@@ -266,30 +294,73 @@ npx claude-flow perf report --before-after
 - `refinement` - Iterative improvement
 - `sparc-coder` - TDD implementation
 
-## 🔄 Git Workflow with Claude Flow
+## 🔄 MANDATORY Git Workflow - ALWAYS FOLLOW
+
+**⚠️ IMPORTANT: This workflow MUST be followed for EVERY implementation task**
+
+### Complete Git Workflow Steps (REQUIRED)
 
 ```bash
-# 1. Create feature branch with Claude Flow
+# 1. Create feature branch (ALWAYS DO THIS FIRST)
+git checkout -b <branch-name>  # Use issue ID format: sol-XX-description
+
+# 2. Implement the feature/fix
+# ... development work ...
+
+# 3. Stage and commit changes
+git add -A
+git commit -m "type(SOL-XX): description
+
+- Detail 1
+- Detail 2
+
+🤖 Generated with Claude Code
+
+Co-Authored-By: Claude <noreply@anthropic.com>"
+
+# 4. Push branch to remote
+git push -u origin <branch-name>
+
+# 5. Create Pull Request
+gh pr create \
+  --title "type(SOL-XX): Description" \
+  --body "detailed PR description" \
+  --base main
+
+# 6. Review the PR
+gh pr view <pr-number> --comments
+gh pr diff <pr-number>
+
+# 7. Post review comment
+gh pr comment <pr-number> --body "review feedback"
+```
+
+### Automated Workflow with Claude Flow
+
+```bash
+# Alternative: Use Claude Flow automation (still follows git workflow)
 npx claude-flow git branch create SOL-XXX
-
-# 2. Implement with SPARC
 npx claude-flow sparc run dev "Implement feature"
-
-# 3. Run automated tests
 npx claude-flow test all --coverage
-
-# 4. Create PR with AI description
 npx claude-flow github pr create \
   --title "feat(SOL-XXX): Feature name" \
   --ai-description \
   --link-issue SOL-XXX
-
-# 5. Automated review
 npx claude-flow github pr review --comprehensive
-
-# 6. Merge when ready
 npx claude-flow github pr merge --squash --delete-branch
 ```
+
+### ✅ Workflow Checklist (MUST COMPLETE ALL)
+
+- [ ] Create feature branch before starting work
+- [ ] Implement all requirements from the issue
+- [ ] Run linting and fix any issues
+- [ ] Run tests and ensure they pass
+- [ ] Commit with conventional commit message
+- [ ] Push branch to remote
+- [ ] Create PR with detailed description
+- [ ] Review PR and provide feedback
+- [ ] Tag @SolombrinoIsmail in review
 
 ## 🔍 PR Review Workflow
 

@@ -81,3 +81,56 @@ claude-flow
 claude-flow.bat
 claude-flow.ps1
 hive-mind-prompt-*.txt
+
+# TypeScript build info
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# Storybook
+storybook-static/
+.storybook-out/
+
+# Supabase
+packages/database/supabase/.branches/
+packages/database/supabase/.temp/
+**/supabase/.env
+**/supabase/.env.local
+
+# Database dumps and backups
+*.sql.backup
+*.dump
+backup/
+
+# Claude Flow metrics and cache
+.claude-flow/
+**/.claude-flow/
+*.claude-flow.log
+.claude-flow-cache/
+
+# Vitest/Jest
+vitest.config.*.timestamp-*
+test-results/
+playwright-report/
+playwright/.cache/
+
+# Code quality
+.prettierCache
+
+# Vercel
+.vercel/
+
+# GitHub Actions artifacts
+artifacts/
+
+# Private keys and certificates
+*.pem
+*.key
+*.crt
+*.p12
+
+# Temporary and cache files
+*.tmp
+*.temp
+.cache/
+tmp/
+temp/

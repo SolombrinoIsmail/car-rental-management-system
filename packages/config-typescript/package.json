@@ -2,8 +2,12 @@
   "name": "@swiss-car-rental/config-typescript",
   "version": "0.1.0",
   "private": true,
-  "main": "tsconfig.base.json",
+  "description": "Shared TypeScript configuration for Swiss Car Rental Management System",
+  "main": "base.json",
   "files": [
-    "tsconfig.base.json"
+    "base.json",
+    "nextjs.json",
+    "node.json",
+    "react-library.json"
   ]
 }
