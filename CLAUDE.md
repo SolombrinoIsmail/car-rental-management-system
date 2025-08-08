@@ -1,5 +1,19 @@
 # Claude Flow Configuration - Swiss Car Rental Management System
 
+## 🚨 CRITICAL DEVELOPMENT POLICIES
+
+### ⚠️ NEVER IGNORE WARNINGS POLICY
+
+**ALL warnings MUST be fixed immediately:**
+
+- ESLint warnings must be resolved
+- TypeScript warnings must be fixed
+- Build warnings must be addressed
+- Test warnings must be corrected
+- Console warnings must be eliminated
+
+**Code is NOT ready for review or merge if ANY warnings exist.**
+
 ## ⚠️ CRITICAL: ALWAYS FOLLOW THE GIT WORKFLOW
 
 **EVERY implementation task MUST follow the complete Git workflow:**
