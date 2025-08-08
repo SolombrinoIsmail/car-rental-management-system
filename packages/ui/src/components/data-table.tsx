@@ -64,7 +64,7 @@ function DataTable<T extends Record<string, unknown>>({
                     column.className,
                   )}
                 >
-                  {column.accessor ? column.accessor(row) : row[column.key]}
+                  {column.accessor ? column.accessor(row) : (row[column.key] as React.ReactNode)}
                 </td>
               ))}
             </tr>
