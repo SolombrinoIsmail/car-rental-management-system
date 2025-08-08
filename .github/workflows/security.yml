@@ -54,7 +54,7 @@ jobs:
     name: Snyk Security Scan
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    if: github.event_name != 'schedule'
+    if: github.event_name != 'schedule' && secrets.SNYK_TOKEN != ''
 
     steps:
       - name: Checkout code
@@ -68,7 +68,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: '9.15.2'
+          version: '9.15.0'
           run_install: false
 
       - name: Install dependencies
