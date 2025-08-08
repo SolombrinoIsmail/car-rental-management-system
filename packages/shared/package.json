@@ -15,7 +15,7 @@
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs --dts",
     "dev": "tsup src/index.ts --format esm,cjs --dts --watch",
-    "lint": "echo 'Linting temporarily disabled for TypeScript compatibility'",
+    "lint": "eslint . --fix --cache",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -25,6 +25,6 @@
   "devDependencies": {
     "eslint": "^9",
     "tsup": "^8.0.0",
-    "typescript": "^5.6.0"
+    "typescript": "^5.7.2"
   }
 }
