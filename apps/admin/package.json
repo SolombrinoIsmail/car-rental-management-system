@@ -1,0 +1,15 @@
+{
+  "name": "@swiss-car-rental/admin",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Admin dashboard for Swiss Car Rental Management System",
+  "scripts": {
+    "dev": "echo 'Admin dashboard not yet implemented'",
+    "build": "echo 'Admin dashboard not yet implemented'",
+    "start": "echo 'Admin dashboard not yet implemented'"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.15.0"
+  }
+}
