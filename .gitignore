@@ -134,3 +134,6 @@ artifacts/
 .cache/
 tmp/
 temp/
+
+# TypeScript build info
+**/*.tsbuildinfo
