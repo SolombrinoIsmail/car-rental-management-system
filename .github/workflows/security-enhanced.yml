@@ -1,0 +1,242 @@
+name: Enhanced Security Scanning
+
+on:
+  push:
+    branches: [main, develop, 'feature/**']
+  pull_request:
+    branches: [main, develop]
+  schedule:
+    - cron: '0 2 * * 1,4' # Monday and Thursday at 2 AM UTC
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+  pull-requests: write
+
+jobs:
+  semgrep-sast:
+    name: Semgrep SAST Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    container:
+      image: semgrep/semgrep
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Semgrep
+        run: |
+          semgrep ci --config=auto \
+            --sarif --output=semgrep.sarif \
+            --metrics=off \
+            --exclude='node_modules' \
+            --exclude='*.test.*' \
+            --exclude='*.spec.*' \
+            --exclude='.next' \
+            --exclude='dist' \
+            --exclude='build' \
+            --max-target-bytes=3000000
+        env:
+          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
+        continue-on-error: true
+
+      - name: Upload Semgrep results to GitHub
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: semgrep.sarif
+          category: 'semgrep'
+
+      - name: Generate Semgrep summary
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "## 🔍 Semgrep Security Analysis" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          semgrep ci --config=auto --json | jq -r '.results | length' | xargs -I {} echo "Found {} potential issues" >> $GITHUB_STEP_SUMMARY
+
+  trufflehog-secrets:
+    name: TruffleHog Secret Scanning
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: TruffleHog OSS
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: '${{ github.event.repository.default_branch }}'
+          head: HEAD
+          extra_args: --debug --only-verified
+
+      - name: Secret Scan Summary
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "## 🔐 Secret Detection" >> $GITHUB_STEP_SUMMARY
+          echo "TruffleHog scan completed - checking for exposed secrets" >> $GITHUB_STEP_SUMMARY
+
+  owasp-dependency-check:
+    name: OWASP Dependency Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run OWASP Dependency Check
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: 'car-rental-management-system'
+          path: '.'
+          format: 'ALL'
+          args: >
+            --enableRetired
+            --enableExperimental
+            --nvdApiKey ${{ secrets.NVD_API_KEY }}
+            --failOnCVSS 7
+            --suppression .github/dependency-check-suppression.xml
+        env:
+          JAVA_HOME: /opt/jdk
+
+      - name: Upload OWASP results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: owasp-dependency-check-report
+          path: reports/
+          retention-days: 30
+
+      - name: Publish OWASP results
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: reports/dependency-check-report.sarif
+          category: 'owasp-dependency-check'
+
+  security-headers-check:
+    name: Security Headers Check
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Check Next.js Security Headers
+        run: |
+          echo "## 🛡️ Security Headers Configuration" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Check if next.config.js has security headers
+          if grep -q "securityHeaders" next.config.js 2>/dev/null || grep -q "headers" next.config.js 2>/dev/null; then
+            echo "✅ Security headers configuration found" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ No security headers configuration found in next.config.js" >> $GITHUB_STEP_SUMMARY
+            echo "Consider adding headers like CSP, X-Frame-Options, X-Content-Type-Options" >> $GITHUB_STEP_SUMMARY
+          fi
+
+  license-compliance:
+    name: License Compliance Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: '9.15.0'
+
+      - name: Install license-checker
+        run: pnpm add -g license-checker
+
+      - name: Check licenses
+        run: |
+          license-checker --summary --excludePrivatePackages --onlyAllow 'MIT;Apache-2.0;BSD-2-Clause;BSD-3-Clause;ISC;0BSD;CC0-1.0;CC-BY-3.0;CC-BY-4.0;Unlicense;Python-2.0' > license-report.txt || true
+
+      - name: Upload license report
+        uses: actions/upload-artifact@v4
+        with:
+          name: license-report
+          path: license-report.txt
+          retention-days: 30
+
+      - name: License Summary
+        run: |
+          echo "## 📜 License Compliance" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          cat license-report.txt | head -20 >> $GITHUB_STEP_SUMMARY
+
+  security-score:
+    name: Security Score Summary
+    runs-on: ubuntu-latest
+    needs:
+      [
+        semgrep-sast,
+        trufflehog-secrets,
+        owasp-dependency-check,
+        security-headers-check,
+        license-compliance,
+      ]
+    if: always()
+
+    steps:
+      - name: Generate Security Report
+        run: |
+          echo "# 🔒 Security Scan Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Check | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Semgrep SAST | ${{ needs.semgrep-sast.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Secret Detection | ${{ needs.trufflehog-secrets.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| OWASP Dependency | ${{ needs.owasp-dependency-check.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Security Headers | ${{ needs.security-headers-check.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| License Compliance | ${{ needs.license-compliance.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "_Security scan completed at $(date -u '+%Y-%m-%d %H:%M:%S UTC')_" >> $GITHUB_STEP_SUMMARY
+
+      - name: Comment PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const summary = `
+            ## 🔒 Security Scan Results
+
+            | Check | Status |
+            |-------|--------|
+            | Semgrep SAST | ${{ needs.semgrep-sast.result }} |
+            | Secret Detection | ${{ needs.trufflehog-secrets.result }} |
+            | OWASP Dependency | ${{ needs.owasp-dependency-check.result }} |
+            | Security Headers | ${{ needs.security-headers-check.result }} |
+            | License Compliance | ${{ needs.license-compliance.result }} |
+
+            View detailed results in the [Security tab](https://github.com/${{ github.repository }}/security/code-scanning)
+            `;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: summary
+            });

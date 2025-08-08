@@ -1,0 +1,70 @@
+name: Sentry Release Tracking
+
+on:
+  push:
+    branches: [main]
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  sentry-release:
+    name: Create Sentry Release
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Sentry CLI
+        run: npm install -g @sentry/cli
+
+      - name: Create Sentry release
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: solombrino-solutions
+          SENTRY_PROJECT: car-rental-management-system
+        run: |
+          VERSION=$(git describe --tags --always)
+
+          # Create release
+          sentry-cli releases new $VERSION
+
+          # Associate commits
+          sentry-cli releases set-commits $VERSION --auto
+
+          # Upload source maps (if build is available)
+          if [ -d ".next" ]; then
+            sentry-cli sourcemaps upload \
+              --release=$VERSION \
+              --url-prefix="~/_next" \
+              .next/static/chunks
+          fi
+
+          # Mark release as deployed
+          sentry-cli releases deploys $VERSION new \
+            --env=production \
+            --url=https://car-rental.solombrino.ch
+
+          # Finalize release
+          sentry-cli releases finalize $VERSION
+
+      - name: Notify Sentry of deployment
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: solombrino-solutions
+          SENTRY_PROJECT: car-rental-management-system
+        with:
+          environment: production
+          version: ${{ github.sha }}

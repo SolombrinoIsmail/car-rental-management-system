@@ -1,0 +1,7 @@
+[defaults]
+url = https://sentry.io/
+org = solombrino-solutions
+project = car-rental-management-system
+
+[auth]
+# Token will be provided via SENTRY_AUTH_TOKEN environment variable
