@@ -59,7 +59,32 @@ pnpm dev
 
 The application will be available at http://localhost:3000
 
-## 📚 Development
+## Development
+
+### Quality gates (CI)
+
+The following checks block merges:
+
+- CI/CD Pipeline / Lint & Type Check (lint & typecheck)
+- CI/CD Pipeline / Test (unit tests)
+- CI/CD Pipeline / Build (build sanity)
+- CodeQL Security Analysis (security static analysis)
+- Security Scanning (Trivy + secret scan + dependency review)
+- Preview Deployment (with Lighthouse budget checks)
+
+### Secrets
+
+See .github/secrets-setup.md for required/optional secrets. Most workflows skip gracefully if
+secrets are missing, but full functionality (preview deploy, Sentry, SonarCloud, Codecov) needs
+them.
+
+### Transient failures
+
+- Security audit: we use audit-ci with a policy file to reduce false positives. If a genuine
+  vulnerability is non-exploitable and blocks CI, add a temporary allowlist entry and open an issue
+  to track remediation.
+- Lighthouse budgets: if a known hot path fails budgets, discuss a temporary budget relaxation via
+  PR and document the follow-up performance task.
 
 ### Available Scripts
 

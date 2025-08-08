@@ -1,0 +1,11 @@
+{
+  "report": true,
+  "allowlist": [],
+  "severity": {
+    "critical": true,
+    "high": true,
+    "moderate": false,
+    "low": false
+  },
+  "advisories": []
+}

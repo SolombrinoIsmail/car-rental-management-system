@@ -67,6 +67,35 @@ Use the Linear issue ID when applicable:
 feat(SOL-48): complete development environment setup
 ```
 
+## ✅ Quality Gates and Required Checks
+
+Before a PR can merge, the following must be green:
+
+- CI/CD Pipeline / Lint & Type Check
+- CI/CD Pipeline / Test
+- CI/CD Pipeline / Build
+- CodeQL Security Analysis (javascript, typescript)
+- Security Scanning / Trivy Security Scan
+- Security Scanning / Secret Detection
+- Preview Deployment (with Lighthouse checks) when applicable
+
+If any of the above are flaky or blocked by third-party issues, start a discussion in the PR before
+disabling or downgrading gates.
+
+## 🔐 Secrets for CI/CD
+
+Some workflows are no-ops if secrets are not present. For full functionality add the following
+repository secrets (see .github/secrets-setup.md for details):
+
+- VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID (preview/prod deployments)
+- SONAR_TOKEN (SonarCloud)
+- CODECOV_TOKEN (coverage upload)
+- SENTRY_AUTH_TOKEN (release tracking)
+- SNYK_TOKEN, GITLEAKS_LICENSE (optional security scanning)
+
+Do not paste secrets in configs or PRs. Use GitHub Environments when environment-specific values are
+required.
+
 ## 🔄 Pull Request Process
 
 1. **Create feature branch**

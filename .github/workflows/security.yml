@@ -11,7 +11,6 @@ on:
 permissions:
   contents: read
   security-events: write
-  actions: read
 
 jobs:
   trivy-scan:
@@ -93,6 +92,8 @@ jobs:
     name: Secret Detection
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout code

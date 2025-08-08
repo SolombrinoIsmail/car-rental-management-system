@@ -10,8 +10,8 @@ on:
 
 permissions:
   contents: read
-  pull-requests: write
   checks: write
+  pull-requests: write
 
 jobs:
   playwright-tests:
