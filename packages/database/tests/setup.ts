@@ -1,12 +1,26 @@
 import { beforeAll, afterAll, beforeEach } from 'vitest';
 import { PrismaClient } from '@prisma/client';
+import dotenv from 'dotenv';
+import path from 'path';
+
+// Load test environment variables
+dotenv.config({ path: path.resolve(__dirname, '../.env.test') });
 
 // Test database client
 export const prisma = new PrismaClient({
-  datasourceUrl: process.env['DATABASE_TEST_URL'] || process.env['DATABASE_URL'],
+  datasourceUrl:
+    process.env['DATABASE_TEST_URL'] ||
+    process.env['DATABASE_URL'] ||
+    process.env['CI_DATABASE_URL'],
 });
 
 beforeAll(async () => {
+  // Skip database connection in CI if no database is available
+  if (process.env.CI && !process.env.DATABASE_URL && !process.env.DATABASE_TEST_URL) {
+    console.log('Skipping database tests in CI - no DATABASE_URL provided');
+    return;
+  }
+
   // Ensure test database is ready
   await prisma.$connect();
 });

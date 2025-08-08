@@ -1,0 +1,54 @@
+name: 'Swiss Car Rental CodeQL Config'
+
+# Specify the queries to run
+queries:
+  - uses: security-extended
+  - uses: security-and-quality
+
+# Define custom query suites
+query-filters:
+  - exclude:
+      id: js/unused-local-variable
+  - exclude:
+      id: js/useless-assignment-to-local
+
+# Define paths to scan
+paths:
+  - apps
+  - packages
+
+# Define paths to ignore
+paths-ignore:
+  - node_modules
+  - .next
+  - dist
+  - build
+  - coverage
+  - '**/*.test.ts'
+  - '**/*.test.tsx'
+  - '**/*.spec.ts'
+  - '**/*.spec.tsx'
+  - '**/__tests__/**'
+  - '**/__mocks__/**'
+
+# Additional security checks for Swiss compliance
+packs:
+  - codeql/javascript-queries
+  - codeql/typescript-queries
+
+# Define severity levels
+severity: error
+
+# JavaScript/TypeScript specific configuration
+languages:
+  javascript:
+    index:
+      # Include TypeScript files
+      include:
+        - '**/*.ts'
+        - '**/*.tsx'
+        - '**/*.js'
+        - '**/*.jsx'
+      exclude:
+        - '**/*.d.ts'
+        - '**/generated/**'
