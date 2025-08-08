@@ -1,1 +1,406 @@
-"use client";\n\nimport * as React from "react";\nimport { Eye, EyeOff, Calendar, Clock, MapPin, Phone, Mail, User } from "lucide-react";\n\nimport { cn } from "@/lib/utils";\nimport { Button } from "@/components/ui/button";\nimport { Input } from "@/components/ui/input";\n\n/**\n * Password input with toggle visibility\n */\nexport interface PasswordInputProps extends React.InputHTMLAttributes<HTMLInputElement> {\n  label?: string;\n  error?: string;\n  helper?: string;\n}\n\nexport function PasswordInput({ \n  className, \n  label, \n  error, \n  helper,\n  ...props \n}: PasswordInputProps) {\n  const [showPassword, setShowPassword] = React.useState(false);\n\n  return (\n    <Input\n      type={showPassword ? "text" : "password"}\n      label={label}\n      error={error}\n      helper={helper}\n      rightIcon={\n        <Button\n          type="button"\n          variant="ghost"\n          size="icon"\n          className="h-6 w-6 hover:bg-transparent"\n          onClick={() => setShowPassword(!showPassword)}\n          aria-label={showPassword ? "Hide password" : "Show password"}\n        >\n          {showPassword ? (\n            <EyeOff className="h-4 w-4" />\n          ) : (\n            <Eye className="h-4 w-4" />\n          )}\n        </Button>\n      }\n      className={className}\n      {...props}\n    />\n  );\n}\n\n/**\n * Email input with validation\n */\nexport interface EmailInputProps extends React.InputHTMLAttributes<HTMLInputElement> {\n  label?: string;\n  error?: string;\n  helper?: string;\n  validate?: boolean;\n}\n\nexport function EmailInput({ \n  label = "E-Mail", \n  error, \n  helper, \n  validate = true,\n  onChange,\n  ...props \n}: EmailInputProps) {\n  const [validationError, setValidationError] = React.useState<string>();\n\n  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {\n    onChange?.(e);\n    \n    if (validate && e.target.value) {\n      const isValid = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(e.target.value);\n      setValidationError(isValid ? undefined : "Bitte geben Sie eine gültige E-Mail-Adresse ein");\n    } else {\n      setValidationError(undefined);\n    }\n  };\n\n  return (\n    <Input\n      type="email"\n      label={label}\n      error={error || validationError}\n      helper={helper}\n      leftIcon={<Mail className="h-4 w-4" />}\n      onChange={handleChange}\n      {...props}\n    />\n  );\n}\n\n/**\n * Phone input with Swiss formatting\n */\nexport interface PhoneInputProps extends React.InputHTMLAttributes<HTMLInputElement> {\n  label?: string;\n  error?: string;\n  helper?: string;\n  country?: "CH" | "DE" | "AT" | "FR" | "IT";\n}\n\nexport function PhoneInput({ \n  label = "Telefon", \n  error, \n  helper, \n  country = "CH",\n  onChange,\n  ...props \n}: PhoneInputProps) {\n  const countryPrefixes = {\n    CH: "+41",\n    DE: "+49",\n    AT: "+43",\n    FR: "+33",\n    IT: "+39",\n  };\n\n  const formatPhoneNumber = (value: string, countryCode: string) => {\n    // Remove all non-digits\n    const digits = value.replace(/\\D/g, "");\n    \n    if (countryCode === "+41") {\n      // Swiss format: +41 XX XXX XX XX\n      if (digits.length <= 2) return digits;\n      if (digits.length <= 5) return `${digits.slice(0, 2)} ${digits.slice(2)}`;\n      if (digits.length <= 7) return `${digits.slice(0, 2)} ${digits.slice(2, 5)} ${digits.slice(5)}`;\n      return `${digits.slice(0, 2)} ${digits.slice(2, 5)} ${digits.slice(5, 7)} ${digits.slice(7, 9)}`;\n    }\n    \n    // Default formatting for other countries\n    return digits.replace(/(\\d{2})(\\d{3})(\\d{2})(\\d{2})/, "$1 $2 $3 $4");\n  };\n\n  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {\n    const prefix = countryPrefixes[country];\n    let value = e.target.value;\n    \n    // Always ensure the country prefix is present\n    if (!value.startsWith(prefix)) {\n      value = prefix + " " + value.replace(/^(\\+\\d{2,3}\\s?)?/, "");\n    }\n    \n    // Format the number\n    const formatted = prefix + " " + formatPhoneNumber(value.replace(prefix, "").trim(), prefix);\n    \n    // Create new event with formatted value\n    const newEvent = {\n      ...e,\n      target: {\n        ...e.target,\n        value: formatted,\n      },\n    };\n    \n    onChange?.(newEvent as React.ChangeEvent<HTMLInputElement>);\n  };\n\n  return (\n    <Input\n      type="tel"\n      label={label}\n      error={error}\n      helper={helper || "Format: +41 XX XXX XX XX"}\n      leftIcon={<Phone className="h-4 w-4" />}\n      onChange={handleChange}\n      {...props}\n    />\n  );\n}\n\n/**\n * Date input with localization\n */\nexport interface DateInputProps extends React.InputHTMLAttributes<HTMLInputElement> {\n  label?: string;\n  error?: string;\n  helper?: string;\n  locale?: string;\n}\n\nexport function DateInput({ \n  label = "Datum", \n  error, \n  helper, \n  locale = "de-CH",\n  ...props \n}: DateInputProps) {\n  return (\n    <Input\n      type="date"\n      label={label}\n      error={error}\n      helper={helper}\n      leftIcon={<Calendar className="h-4 w-4" />}\n      {...props}\n    />\n  );\n}\n\n/**\n * Time input\n */\nexport interface TimeInputProps extends React.InputHTMLAttributes<HTMLInputElement> {\n  label?: string;\n  error?: string;\n  helper?: string;\n}\n\nexport function TimeInput({ \n  label = "Zeit", \n  error, \n  helper, \n  ...props \n}: TimeInputProps) {\n  return (\n    <Input\n      type="time"\n      label={label}\n      error={error}\n      helper={helper}\n      leftIcon={<Clock className="h-4 w-4" />}\n      {...props}\n    />\n  );\n}\n\n/**\n * Address input for Swiss addresses\n */\nexport interface AddressInputProps {\n  street?: string;\n  postalCode?: string;\n  city?: string;\n  canton?: string;\n  onStreetChange?: (value: string) => void;\n  onPostalCodeChange?: (value: string) => void;\n  onCityChange?: (value: string) => void;\n  onCantonChange?: (value: string) => void;\n  errors?: {\n    street?: string;\n    postalCode?: string;\n    city?: string;\n    canton?: string;\n  };\n  className?: string;\n}\n\nexport function AddressInput({\n  street,\n  postalCode,\n  city,\n  canton,\n  onStreetChange,\n  onPostalCodeChange,\n  onCityChange,\n  onCantonChange,\n  errors,\n  className,\n}: AddressInputProps) {\n  const validatePostalCode = (code: string) => {\n    return /^\\d{4}$/.test(code);\n  };\n\n  return (\n    <div className={cn("space-y-4", className)}>\n      <Input\n        label="Strasse und Hausnummer"\n        placeholder="Musterstrasse 123"\n        value={street}\n        onChange={(e) => onStreetChange?.(e.target.value)}\n        error={errors?.street}\n        leftIcon={<MapPin className="h-4 w-4" />}\n        required\n      />\n      \n      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">\n        <Input\n          label="Postleitzahl"\n          placeholder="8001"\n          value={postalCode}\n          onChange={(e) => {\n            const value = e.target.value.replace(/\\D/g, "").slice(0, 4);\n            onPostalCodeChange?.(value);\n          }}\n          error={errors?.postalCode}\n          maxLength={4}\n          required\n        />\n        \n        <Input\n          label="Ort"\n          placeholder="Zürich"\n          value={city}\n          onChange={(e) => onCityChange?.(e.target.value)}\n          error={errors?.city}\n          required\n        />\n      </div>\n    </div>\n  );\n}\n\n/**\n * Person name input\n */\nexport interface PersonNameInputProps {\n  firstName?: string;\n  lastName?: string;\n  onFirstNameChange?: (value: string) => void;\n  onLastNameChange?: (value: string) => void;\n  errors?: {\n    firstName?: string;\n    lastName?: string;\n  };\n  required?: boolean;\n  className?: string;\n}\n\nexport function PersonNameInput({\n  firstName,\n  lastName,\n  onFirstNameChange,\n  onLastNameChange,\n  errors,\n  required = false,\n  className,\n}: PersonNameInputProps) {\n  return (\n    <div className={cn("grid grid-cols-1 md:grid-cols-2 gap-4", className)}>\n      <Input\n        label="Vorname"\n        placeholder="Max"\n        value={firstName}\n        onChange={(e) => onFirstNameChange?.(e.target.value)}\n        error={errors?.firstName}\n        leftIcon={<User className="h-4 w-4" />}\n        required={required}\n      />\n      \n      <Input\n        label="Nachname"\n        placeholder="Mustermann"\n        value={lastName}\n        onChange={(e) => onLastNameChange?.(e.target.value)}\n        error={errors?.lastName}\n        leftIcon={<User className="h-4 w-4" />}\n        required={required}\n      />\n    </div>\n  );\n}\n\n/**\n * Form field wrapper for consistent spacing\n */\nexport interface FormFieldProps {\n  children: React.ReactNode;\n  className?: string;\n}\n\nexport function FormField({ children, className }: FormFieldProps) {\n  return (\n    <div className={cn("space-y-2", className)}>\n      {children}\n    </div>\n  );\n}\n\n/**\n * Form section with title and description\n */\nexport interface FormSectionProps {\n  title: string;\n  description?: string;\n  children: React.ReactNode;\n  className?: string;\n}\n\nexport function FormSection({ \n  title, \n  description, \n  children, \n  className \n}: FormSectionProps) {\n  return (\n    <div className={cn("space-y-6", className)}>\n      <div className="space-y-2">\n        <h3 className="text-lg font-semibold">{title}</h3>\n        {description && (\n          <p className="text-sm text-muted-foreground">{description}</p>\n        )}\n      </div>\n      <div className="space-y-4">\n        {children}\n      </div>\n    </div>\n  );\n}
+"use client";
+
+import * as React from "react";
+import { Eye, EyeOff, Calendar, Clock, MapPin, Phone, Mail, User } from "lucide-react";
+
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+
+/**
+ * Password input with toggle visibility
+ */
+export interface PasswordInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  label?: string;
+  error?: string;
+  helper?: string;
+}
+
+export function PasswordInput({ 
+  className, 
+  label, 
+  error, 
+  helper,
+  ...props 
+}: PasswordInputProps) {
+  const [showPassword, setShowPassword] = React.useState(false);
+
+  return (
+    <Input
+      type={showPassword ? "text" : "password"}
+      label={label}
+      error={error}
+      helper={helper}
+      rightIcon={
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="h-6 w-6 hover:bg-transparent"
+          onClick={() => setShowPassword(!showPassword)}
+          aria-label={showPassword ? "Hide password" : "Show password"}
+        >
+          {showPassword ? (
+            <EyeOff className="h-4 w-4" />
+          ) : (
+            <Eye className="h-4 w-4" />
+          )}
+        </Button>
+      }
+      className={className}
+      {...props}
+    />
+  );
+}
+
+/**
+ * Email input with validation
+ */
+export interface EmailInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  label?: string;
+  error?: string;
+  helper?: string;
+  validate?: boolean;
+}
+
+export function EmailInput({ 
+  label = "E-Mail", 
+  error, 
+  helper, 
+  validate = true,
+  onChange,
+  ...props 
+}: EmailInputProps) {
+  const [validationError, setValidationError] = React.useState<string>();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange?.(e);
+    
+    if (validate && e.target.value) {
+      const isValid = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(e.target.value);
+      setValidationError(isValid ? undefined : "Bitte geben Sie eine gültige E-Mail-Adresse ein");
+    } else {
+      setValidationError(undefined);
+    }
+  };
+
+  return (
+    <Input
+      type="email"
+      label={label}
+      error={error || validationError}
+      helper={helper}
+      leftIcon={<Mail className="h-4 w-4" />}
+      onChange={handleChange}
+      {...props}
+    />
+  );
+}
+
+/**
+ * Phone input with Swiss formatting
+ */
+export interface PhoneInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  label?: string;
+  error?: string;
+  helper?: string;
+  country?: "CH" | "DE" | "AT" | "FR" | "IT";
+}
+
+export function PhoneInput({ 
+  label = "Telefon", 
+  error, 
+  helper, 
+  country = "CH",
+  onChange,
+  ...props 
+}: PhoneInputProps) {
+  const countryPrefixes = {
+    CH: "+41",
+    DE: "+49",
+    AT: "+43",
+    FR: "+33",
+    IT: "+39",
+  };
+
+  const formatPhoneNumber = (value: string, countryCode: string) => {
+    // Remove all non-digits
+    const digits = value.replace(/\\D/g, "");
+    
+    if (countryCode === "+41") {
+      // Swiss format: +41 XX XXX XX XX
+      if (digits.length <= 2) return digits;
+      if (digits.length <= 5) return `${digits.slice(0, 2)} ${digits.slice(2)}`;
+      if (digits.length <= 7) return `${digits.slice(0, 2)} ${digits.slice(2, 5)} ${digits.slice(5)}`;
+      return `${digits.slice(0, 2)} ${digits.slice(2, 5)} ${digits.slice(5, 7)} ${digits.slice(7, 9)}`;
+    }
+    
+    // Default formatting for other countries
+    return digits.replace(/(\\d{2})(\\d{3})(\\d{2})(\\d{2})/, "$1 $2 $3 $4");
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const prefix = countryPrefixes[country];
+    let value = e.target.value;
+    
+    // Always ensure the country prefix is present
+    if (!value.startsWith(prefix)) {
+      value = prefix + " " + value.replace(/^(\\+\\d{2,3}\\s?)?/, "");
+    }
+    
+    // Format the number
+    const formatted = prefix + " " + formatPhoneNumber(value.replace(prefix, "").trim(), prefix);
+    
+    // Create new event with formatted value
+    const newEvent = {
+      ...e,
+      target: {
+        ...e.target,
+        value: formatted,
+      },
+    };
+    
+    onChange?.(newEvent as React.ChangeEvent<HTMLInputElement>);
+  };
+
+  return (
+    <Input
+      type="tel"
+      label={label}
+      error={error}
+      helper={helper || "Format: +41 XX XXX XX XX"}
+      leftIcon={<Phone className="h-4 w-4" />}
+      onChange={handleChange}
+      {...props}
+    />
+  );
+}
+
+/**
+ * Date input with localization
+ */
+export interface DateInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  label?: string;
+  error?: string;
+  helper?: string;
+  locale?: string;
+}
+
+export function DateInput({ 
+  label = "Datum", 
+  error, 
+  helper, 
+  locale = "de-CH",
+  ...props 
+}: DateInputProps) {
+  return (
+    <Input
+      type="date"
+      label={label}
+      error={error}
+      helper={helper}
+      leftIcon={<Calendar className="h-4 w-4" />}
+      {...props}
+    />
+  );
+}
+
+/**
+ * Time input
+ */
+export interface TimeInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  label?: string;
+  error?: string;
+  helper?: string;
+}
+
+export function TimeInput({ 
+  label = "Zeit", 
+  error, 
+  helper, 
+  ...props 
+}: TimeInputProps) {
+  return (
+    <Input
+      type="time"
+      label={label}
+      error={error}
+      helper={helper}
+      leftIcon={<Clock className="h-4 w-4" />}
+      {...props}
+    />
+  );
+}
+
+/**
+ * Address input for Swiss addresses
+ */
+export interface AddressInputProps {
+  street?: string;
+  postalCode?: string;
+  city?: string;
+  canton?: string;
+  onStreetChange?: (value: string) => void;
+  onPostalCodeChange?: (value: string) => void;
+  onCityChange?: (value: string) => void;
+  onCantonChange?: (value: string) => void;
+  errors?: {
+    street?: string;
+    postalCode?: string;
+    city?: string;
+    canton?: string;
+  };
+  className?: string;
+}
+
+export function AddressInput({
+  street,
+  postalCode,
+  city,
+  canton,
+  onStreetChange,
+  onPostalCodeChange,
+  onCityChange,
+  onCantonChange,
+  errors,
+  className,
+}: AddressInputProps) {
+  const validatePostalCode = (code: string) => {
+    return /^\\d{4}$/.test(code);
+  };
+
+  return (
+    <div className={cn("space-y-4", className)}>
+      <Input
+        label="Strasse und Hausnummer"
+        placeholder="Musterstrasse 123"
+        value={street}
+        onChange={(e) => onStreetChange?.(e.target.value)}
+        error={errors?.street}
+        leftIcon={<MapPin className="h-4 w-4" />}
+        required
+      />
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Input
+          label="Postleitzahl"
+          placeholder="8001"
+          value={postalCode}
+          onChange={(e) => {
+            const value = e.target.value.replace(/\\D/g, "").slice(0, 4);
+            onPostalCodeChange?.(value);
+          }}
+          error={errors?.postalCode}
+          maxLength={4}
+          required
+        />
+        
+        <Input
+          label="Ort"
+          placeholder="Zürich"
+          value={city}
+          onChange={(e) => onCityChange?.(e.target.value)}
+          error={errors?.city}
+          required
+        />
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Person name input
+ */
+export interface PersonNameInputProps {
+  firstName?: string;
+  lastName?: string;
+  onFirstNameChange?: (value: string) => void;
+  onLastNameChange?: (value: string) => void;
+  errors?: {
+    firstName?: string;
+    lastName?: string;
+  };
+  required?: boolean;
+  className?: string;
+}
+
+export function PersonNameInput({
+  firstName,
+  lastName,
+  onFirstNameChange,
+  onLastNameChange,
+  errors,
+  required = false,
+  className,
+}: PersonNameInputProps) {
+  return (
+    <div className={cn("grid grid-cols-1 md:grid-cols-2 gap-4", className)}>
+      <Input
+        label="Vorname"
+        placeholder="Max"
+        value={firstName}
+        onChange={(e) => onFirstNameChange?.(e.target.value)}
+        error={errors?.firstName}
+        leftIcon={<User className="h-4 w-4" />}
+        required={required}
+      />
+      
+      <Input
+        label="Nachname"
+        placeholder="Mustermann"
+        value={lastName}
+        onChange={(e) => onLastNameChange?.(e.target.value)}
+        error={errors?.lastName}
+        leftIcon={<User className="h-4 w-4" />}
+        required={required}
+      />
+    </div>
+  );
+}
+
+/**
+ * Form field wrapper for consistent spacing
+ */
+export interface FormFieldProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+export function FormField({ children, className }: FormFieldProps) {
+  return (
+    <div className={cn("space-y-2", className)}>
+      {children}
+    </div>
+  );
+}
+
+/**
+ * Form section with title and description
+ */
+export interface FormSectionProps {
+  title: string;
+  description?: string;
+  children: React.ReactNode;
+  className?: string;
+}
+
+export function FormSection({ 
+  title, 
+  description, 
+  children, 
+  className 
+}: FormSectionProps) {
+  return (
+    <div className={cn("space-y-6", className)}>
+      <div className="space-y-2">
+        <h3 className="text-lg font-semibold">{title}</h3>
+        {description && (
+          <p className="text-sm text-muted-foreground">{description}</p>
+        )}
+      </div>
+      <div className="space-y-4">
+        {children}
+      </div>
+    </div>
+  );
+}

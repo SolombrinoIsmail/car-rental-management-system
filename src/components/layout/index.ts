@@ -1,1 +1,69 @@
-/**\n * Layout Components Index\n * \n * Exports all layout-related components for consistent application structure\n */\n\n// Main Layout Components\nexport { \n  MainLayout, \n  PageContainer, \n  GridLayout, \n  StackLayout, \n  SectionDivider \n} from \"./main-layout\";\n\nexport { \n  Header, \n  NavLink, \n  Breadcrumb \n} from \"./header\";\n\n// Component Types\nexport type { NavLinkProps } from \"./header\";\n\n/**\n * Layout configuration constants\n */\nexport const LAYOUT_CONFIG = {\n  HEADER_HEIGHT: \"64px\",\n  SIDEBAR_WIDTH: {\n    expanded: \"256px\",\n    collapsed: \"64px\",\n  },\n  CONTAINER_MAX_WIDTH: {\n    sm: \"640px\",\n    md: \"768px\",\n    lg: \"1024px\",\n    xl: \"1280px\",\n    \"2xl\": \"1536px\",\n  },\n  BREAKPOINTS: {\n    sm: \"640px\",\n    md: \"768px\",\n    lg: \"1024px\",\n    xl: \"1280px\",\n    \"2xl\": \"1536px\",\n  },\n} as const;\n\n/**\n * Common layout patterns for Swiss design standards\n */\nexport const SWISS_LAYOUT_PATTERNS = {\n  // Standard Swiss grid system based on 8px units\n  GRID_UNIT: \"8px\",\n  \n  // Swiss typography scale\n  TYPOGRAPHY_SCALE: {\n    h1: \"2.5rem\",    // 40px\n    h2: \"2rem\",      // 32px\n    h3: \"1.75rem\",   // 28px\n    h4: \"1.5rem\",    // 24px\n    h5: \"1.25rem\",   // 20px\n    h6: \"1.125rem\",  // 18px\n    body: \"1rem\",    // 16px\n    small: \"0.875rem\", // 14px\n    caption: \"0.75rem\", // 12px\n  },\n  \n  // Swiss spacing system\n  SPACING_SCALE: {\n    xs: \"0.25rem\",  // 4px\n    sm: \"0.5rem\",   // 8px \n    md: \"1rem\",     // 16px\n    lg: \"1.5rem\",   // 24px\n    xl: \"2rem\",     // 32px\n    \"2xl\": \"3rem\",  // 48px\n    \"3xl\": \"4rem\",  // 64px\n  },\n} as const;
+/**
+ * Layout Components Index
+ * 
+ * Exports all layout-related components for consistent application structure
+ */
+
+// Main Layout Components
+export { 
+  MainLayout, 
+  PageContainer, 
+  GridLayout, 
+  StackLayout, 
+  SectionDivider 
+} from "./main-layout";
+
+export { 
+  Header, 
+  NavLink, 
+  Breadcrumb 
+} from "./header";
+
+// Type exports
+export type { 
+  MainLayoutProps, 
+  PageContainerProps, 
+  GridLayoutProps, 
+  StackLayoutProps, 
+  SectionDividerProps 
+} from "./main-layout";
+
+export type { 
+  HeaderProps, 
+  NavLinkProps, 
+  BreadcrumbProps 
+} from "./header";
+
+/**
+ * Layout constants for consistent spacing and sizing
+ */
+export const LAYOUT_CONSTANTS = {
+  // Container widths
+  CONTAINER: {
+    SM: "640px",
+    MD: "768px",
+    LG: "1024px",
+    XL: "1280px",
+    "2XL": "1536px",
+  },
+  
+  // Spacing scale
+  SPACING: {
+    XS: "0.25rem",  // 4px
+    SM: "0.5rem",   // 8px
+    MD: "1rem",     // 16px
+    LG: "1.5rem",   // 24px
+    XL: "2rem",     // 32px
+    "2XL": "3rem",  // 48px
+    "3XL": "4rem",  // 64px
+  },
+  
+  // Common breakpoints
+  BREAKPOINTS: {
+    SM: "640px",
+    MD: "768px",
+    LG: "1024px",
+    XL: "1280px",
+    "2XL": "1536px",
+  },
+} as const;

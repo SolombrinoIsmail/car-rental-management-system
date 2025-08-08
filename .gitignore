@@ -38,6 +38,12 @@ pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# ESLint cache
+.eslintcache
+
+# Turbo cache
+.turbo/
+
 # Runtime data
 pids
 *.pid

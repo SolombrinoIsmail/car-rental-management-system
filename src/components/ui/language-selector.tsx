@@ -1,1 +1,172 @@
-"use client";\n\nimport * as React from "react";\nimport { Languages } from "lucide-react";\n\nimport { Button } from "@/components/ui/button";\nimport {\n  DropdownMenu,\n  DropdownMenuContent,\n  DropdownMenuItem,\n  DropdownMenuTrigger,\n} from "@/components/ui/dropdown-menu";\nimport { SWISS_LANGUAGES } from "@/lib/utils";\n\ninterface LanguageSelectorProps {\n  variant?: "default" | "outline" | "ghost";\n  size?: "default" | "sm" | "lg" | "icon";\n  className?: string;\n}\n\nexport function LanguageSelector({ \n  variant = "outline", \n  size = "icon",\n  className \n}: LanguageSelectorProps) {\n  const [currentLanguage, setCurrentLanguage] = React.useState("de-CH");\n  const [mounted, setMounted] = React.useState(false);\n\n  React.useEffect(() => {\n    setMounted(true);\n    // Get language from localStorage or browser\n    const saved = localStorage?.getItem("swiss-rental-language");\n    if (saved) {\n      setCurrentLanguage(saved);\n    } else {\n      // Detect browser language and match to Swiss locale\n      const browserLang = navigator.language;\n      const matchedLang = SWISS_LANGUAGES.find(lang => \n        browserLang.startsWith(lang.code.split("-")[0])\n      );\n      if (matchedLang) {\n        setCurrentLanguage(matchedLang.code);\n      }\n    }\n  }, []);\n\n  const handleLanguageChange = (languageCode: string) => {\n    setCurrentLanguage(languageCode);\n    localStorage?.setItem("swiss-rental-language", languageCode);\n    \n    // Here you would typically trigger a language change in your i18n system\n    // For now, we'll just store the preference\n    console.log(`Language changed to: ${languageCode}`);\n  };\n\n  const currentLang = SWISS_LANGUAGES.find(lang => lang.code === currentLanguage);\n  const shortCode = currentLang?.code.split("-")[0].toUpperCase() || "DE";\n\n  if (!mounted) {\n    return (\n      <Button variant={variant} size={size} className={className}>\n        <Languages className="h-[1.2rem] w-[1.2rem]" />\n      </Button>\n    );\n  }\n\n  return (\n    <DropdownMenu>\n      <DropdownMenuTrigger asChild>\n        <Button \n          variant={variant} \n          size={size} \n          className={className}\n          aria-label="Select language"\n        >\n          {size === "icon" ? (\n            <>\n              <Languages className="h-[1.2rem] w-[1.2rem]" />\n              <span className="sr-only">Select language</span>\n            </>\n          ) : (\n            <>\n              <Languages className="mr-2 h-4 w-4" />\n              <span>{shortCode}</span>\n            </>\n          )}\n        </Button>\n      </DropdownMenuTrigger>\n      <DropdownMenuContent align="end">\n        {SWISS_LANGUAGES.map((language) => (\n          <DropdownMenuItem\n            key={language.code}\n            onClick={() => handleLanguageChange(language.code)}\n            className={\n              currentLanguage === language.code \n                ? "bg-accent text-accent-foreground" \n                : ""\n            }\n          >\n            <span className="font-mono mr-3 text-xs">\n              {language.code.split("-")[0].toUpperCase()}\n            </span>\n            <span>{language.name}</span>\n          </DropdownMenuItem>\n        ))}\n      </DropdownMenuContent>\n    </DropdownMenu>\n  );\n}\n\n/**\n * Hook to get current language\n */\nexport function useLanguage() {\n  const [language, setLanguage] = React.useState("de-CH");\n  const [mounted, setMounted] = React.useState(false);\n\n  React.useEffect(() => {\n    setMounted(true);\n    const saved = localStorage?.getItem("swiss-rental-language");\n    if (saved) {\n      setLanguage(saved);\n    }\n\n    // Listen for language changes\n    const handleStorageChange = (e: StorageEvent) => {\n      if (e.key === "swiss-rental-language" && e.newValue) {\n        setLanguage(e.newValue);\n      }\n    };\n\n    window.addEventListener("storage", handleStorageChange);\n    return () => window.removeEventListener("storage", handleStorageChange);\n  }, []);\n\n  const changeLanguage = (newLanguage: string) => {\n    setLanguage(newLanguage);\n    localStorage?.setItem("swiss-rental-language", newLanguage);\n  };\n\n  return {\n    language,\n    changeLanguage,\n    mounted,\n    currentLang: SWISS_LANGUAGES.find(lang => lang.code === language),\n  };\n}\n\n/**\n * Simple text component that renders based on current language\n */\ninterface TranslatedTextProps {\n  translations: Record<string, string>;\n  fallback?: string;\n  className?: string;\n}\n\nexport function TranslatedText({ \n  translations, \n  fallback = "",\n  className \n}: TranslatedTextProps) {\n  const { language, mounted } = useLanguage();\n\n  if (!mounted) {\n    return <span className={className}>{fallback}</span>;\n  }\n\n  const text = translations[language] || translations["de-CH"] || fallback;\n  \n  return <span className={className}>{text}</span>;\n}
+"use client";
+
+import * as React from "react";
+import { Languages } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { SWISS_LANGUAGES } from "@/lib/utils";
+
+interface LanguageSelectorProps {
+  variant?: "default" | "outline" | "ghost";
+  size?: "default" | "sm" | "lg" | "icon";
+  className?: string;
+}
+
+export function LanguageSelector({ 
+  variant = "outline", 
+  size = "icon",
+  className 
+}: LanguageSelectorProps) {
+  const [currentLanguage, setCurrentLanguage] = React.useState("de-CH");
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+    // Get language from localStorage or browser
+    const saved = localStorage?.getItem("swiss-rental-language");
+    if (saved) {
+      setCurrentLanguage(saved);
+    } else {
+      // Detect browser language and match to Swiss locale
+      const browserLang = navigator.language;
+      const matchedLang = SWISS_LANGUAGES.find(lang => 
+        browserLang.startsWith(lang.code.split("-")[0])
+      );
+      if (matchedLang) {
+        setCurrentLanguage(matchedLang.code);
+      }
+    }
+  }, []);
+
+  const handleLanguageChange = (languageCode: string) => {
+    setCurrentLanguage(languageCode);
+    localStorage?.setItem("swiss-rental-language", languageCode);
+    
+    // Here you would typically trigger a language change in your i18n system
+    // For now, we'll just store the preference
+    console.log(`Language changed to: ${languageCode}`);
+  };
+
+  const currentLang = SWISS_LANGUAGES.find(lang => lang.code === currentLanguage);
+  const shortCode = currentLang?.code.split("-")[0].toUpperCase() || "DE";
+
+  if (!mounted) {
+    return (
+      <Button variant={variant} size={size} className={className}>
+        <Languages className="h-[1.2rem] w-[1.2rem]" />
+      </Button>
+    );
+  }
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button 
+          variant={variant} 
+          size={size} 
+          className={className}
+          aria-label="Select language"
+        >
+          {size === "icon" ? (
+            <>
+              <Languages className="h-[1.2rem] w-[1.2rem]" />
+              <span className="sr-only">Select language</span>
+            </>
+          ) : (
+            <>
+              <Languages className="mr-2 h-4 w-4" />
+              <span>{shortCode}</span>
+            </>
+          )}
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        {SWISS_LANGUAGES.map((language) => (
+          <DropdownMenuItem
+            key={language.code}
+            onClick={() => handleLanguageChange(language.code)}
+            className={
+              currentLanguage === language.code 
+                ? "bg-accent text-accent-foreground" 
+                : ""
+            }
+          >
+            <span className="font-mono mr-3 text-xs">
+              {language.code.split("-")[0].toUpperCase()}
+            </span>
+            <span>{language.name}</span>
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+/**
+ * Hook to get current language
+ */
+export function useLanguage() {
+  const [language, setLanguage] = React.useState("de-CH");
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+    const saved = localStorage?.getItem("swiss-rental-language");
+    if (saved) {
+      setLanguage(saved);
+    }
+
+    // Listen for language changes
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "swiss-rental-language" && e.newValue) {
+        setLanguage(e.newValue);
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
+
+  const changeLanguage = (newLanguage: string) => {
+    setLanguage(newLanguage);
+    localStorage?.setItem("swiss-rental-language", newLanguage);
+  };
+
+  return {
+    language,
+    changeLanguage,
+    mounted,
+    currentLang: SWISS_LANGUAGES.find(lang => lang.code === language),
+  };
+}
+
+/**
+ * Simple text component that renders based on current language
+ */
+interface TranslatedTextProps {
+  translations: Record<string, string>;
+  fallback?: string;
+  className?: string;
+}
+
+export function TranslatedText({ 
+  translations, 
+  fallback = "",
+  className 
+}: TranslatedTextProps) {
+  const { language, mounted } = useLanguage();
+
+  if (!mounted) {
+    return <span className={className}>{fallback}</span>;
+  }
+
+  const text = translations[language] || translations["de-CH"] || fallback;
+  
+  return <span className={className}>{text}</span>;
+}

@@ -21,12 +21,14 @@ export default tsConfig(
       '**/public/**',
       '**/.cache/**',
       '**/generated/**',
+      '.eslintcache',
     ],
   },
   js.configs.recommended,
   ...tsConfigs.recommended,
+  // Browser environment config (React components)
   {
-    files: ['**/*.{js,jsx,ts,tsx}'],
+    files: ['apps/web/**/*.{js,jsx,ts,tsx}', 'packages/ui/**/*.{js,jsx,ts,tsx}'],
     plugins: {
       react: reactPlugin,
       'react-hooks': reactHooksPlugin,
@@ -36,14 +38,11 @@ export default tsConfig(
     },
     languageOptions: {
       globals: {
-        process: 'readonly',
+        window: 'readonly',
+        document: 'readonly',
+        navigator: 'readonly',
         console: 'readonly',
-        Buffer: 'readonly',
-        __dirname: 'readonly',
-        __filename: 'readonly',
-        global: 'readonly',
-        module: 'readonly',
-        require: 'readonly',
+        fetch: 'readonly',
       },
       parserOptions: {
         ecmaVersion: 'latest',
@@ -100,6 +99,34 @@ export default tsConfig(
       'no-var': 'error',
       'object-shorthand': 'error',
       'prefer-template': 'error',
+    },
+  },
+  // Node.js environment config (config files, scripts)
+  {
+    files: ['**/*.config.{js,ts}', 'scripts/**/*.js', '.claude/**/*.js'],
+    languageOptions: {
+      globals: {
+        process: 'readonly',
+        console: 'readonly',
+        Buffer: 'readonly',
+        __dirname: 'readonly',
+        __filename: 'readonly',
+        global: 'readonly',
+        module: 'readonly',
+        require: 'readonly',
+        exports: 'readonly',
+      },
+    },
+  },
+  // API routes (Next.js server-side)
+  {
+    files: ['apps/web/src/api/**/*.ts', 'apps/web/src/app/api/**/*.ts'],
+    languageOptions: {
+      globals: {
+        process: 'readonly',
+        console: 'readonly',
+        Buffer: 'readonly',
+      },
     },
   },
   turboPlugin,

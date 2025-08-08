@@ -1,1 +1,169 @@
-"use client";\n\nimport * as React from "react";\nimport { Menu, X } from "lucide-react";\n\nimport { cn } from "@/lib/utils";\nimport { Button } from "@/components/ui/button";\nimport { ThemeToggle } from "@/components/ui/theme-toggle";\nimport { LanguageSelector } from "@/components/ui/language-selector";\n\ninterface HeaderProps {\n  children?: React.ReactNode;\n  className?: string;\n  sticky?: boolean;\n}\n\n/**\n * Main application header component\n * Includes navigation, theme toggle, and language selector\n */\nexport function Header({ children, className, sticky = true }: HeaderProps) {\n  const [isMenuOpen, setIsMenuOpen] = React.useState(false);\n\n  return (\n    <header\n      className={cn(\n        "border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",\n        sticky && "sticky top-0 z-50",\n        className\n      )}\n    >\n      <div className="container flex h-16 items-center justify-between">\n        {/* Logo Section */}\n        <div className="flex items-center space-x-4">\n          <div className="flex items-center space-x-2">\n            <div className="h-8 w-8 rounded bg-swiss-red flex items-center justify-center">\n              <span className="text-white font-bold text-sm">SR</span>\n            </div>\n            <span className="hidden font-bold sm:inline-block">\n              Swiss Rental\n            </span>\n          </div>\n        </div>\n\n        {/* Desktop Navigation */}\n        <nav className="hidden md:flex md:items-center md:space-x-6">\n          {children}\n        </nav>\n\n        {/* Right Section */}\n        <div className="flex items-center space-x-2">\n          <LanguageSelector />\n          <ThemeToggle />\n          \n          {/* Mobile Menu Button */}\n          <Button\n            variant="ghost"\n            size="icon"\n            className="md:hidden"\n            onClick={() => setIsMenuOpen(!isMenuOpen)}\n            aria-label="Toggle menu"\n          >\n            {isMenuOpen ? (\n              <X className="h-5 w-5" />\n            ) : (\n              <Menu className="h-5 w-5" />\n            )}\n          </Button>\n        </div>\n      </div>\n\n      {/* Mobile Navigation */}\n      {isMenuOpen && (\n        <div className="border-t bg-background md:hidden">\n          <nav className="container py-4">\n            <div className="flex flex-col space-y-3">\n              {children}\n            </div>\n          </nav>\n        </div>\n      )}\n    </header>\n  );\n}\n\n/**\n * Navigation link component for use in header\n */\nexport interface NavLinkProps {\n  href: string;\n  children: React.ReactNode;\n  active?: boolean;\n  className?: string;\n  onClick?: () => void;\n}\n\nexport function NavLink({ \n  href, \n  children, \n  active = false, \n  className, \n  onClick \n}: NavLinkProps) {\n  return (\n    <a\n      href={href}\n      onClick={onClick}\n      className={cn(\n        "text-sm font-medium transition-colors hover:text-primary",\n        active \n          ? "text-foreground" \n          : "text-foreground/60",\n        className\n      )}\n    >\n      {children}\n    </a>\n  );\n}\n\n/**\n * Breadcrumb navigation component\n */\ninterface BreadcrumbItem {\n  label: string;\n  href?: string;\n  active?: boolean;\n}\n\ninterface BreadcrumbProps {\n  items: BreadcrumbItem[];\n  className?: string;\n}\n\nexport function Breadcrumb({ items, className }: BreadcrumbProps) {\n  return (\n    <nav \n      className={cn("flex", className)} \n      aria-label="Breadcrumb"\n    >\n      <ol className="inline-flex items-center space-x-1 md:space-x-3">\n        {items.map((item, index) => (\n          <li key={index} className="inline-flex items-center">\n            {index > 0 && (\n              <span className="mx-2 text-muted-foreground">/</span>\n            )}\n            {item.href && !item.active ? (\n              <a\n                href={item.href}\n                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"\n              >\n                {item.label}\n              </a>\n            ) : (\n              <span className={cn(\n                "text-sm font-medium",\n                item.active \n                  ? "text-foreground" \n                  : "text-muted-foreground"\n              )}>\n                {item.label}\n              </span>\n            )}\n          </li>\n        ))}\n      </ol>\n    </nav>\n  );\n}
+"use client";
+
+import * as React from "react";
+import { Menu, X } from "lucide-react";
+
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { LanguageSelector } from "@/components/ui/language-selector";
+
+interface HeaderProps {
+  children?: React.ReactNode;
+  className?: string;
+  sticky?: boolean;
+}
+
+/**
+ * Main application header component
+ * Includes navigation, theme toggle, and language selector
+ */
+export function Header({ children, className, sticky = true }: HeaderProps) {
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+
+  return (
+    <header
+      className={cn(
+        "border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
+        sticky && "sticky top-0 z-50",
+        className
+      )}
+    >
+      <div className="container flex h-16 items-center justify-between">
+        {/* Logo Section */}
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
+            <div className="h-8 w-8 rounded bg-swiss-red flex items-center justify-center">
+              <span className="text-white font-bold text-sm">SR</span>
+            </div>
+            <span className="hidden font-bold sm:inline-block">
+              Swiss Rental
+            </span>
+          </div>
+        </div>
+
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex md:items-center md:space-x-6">
+          {children}
+        </nav>
+
+        {/* Right Section */}
+        <div className="flex items-center space-x-2">
+          <LanguageSelector />
+          <ThemeToggle />
+          
+          {/* Mobile Menu Button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="md:hidden"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            {isMenuOpen ? (
+              <X className="h-5 w-5" />
+            ) : (
+              <Menu className="h-5 w-5" />
+            )}
+          </Button>
+        </div>
+      </div>
+
+      {/* Mobile Navigation */}
+      {isMenuOpen && (
+        <div className="border-t bg-background md:hidden">
+          <nav className="container py-4">
+            <div className="flex flex-col space-y-3">
+              {children}
+            </div>
+          </nav>
+        </div>
+      )}
+    </header>
+  );
+}
+
+/**
+ * Navigation link component for use in header
+ */
+export interface NavLinkProps {
+  href: string;
+  children: React.ReactNode;
+  active?: boolean;
+  className?: string;
+  onClick?: () => void;
+}
+
+export function NavLink({ 
+  href, 
+  children, 
+  active = false, 
+  className, 
+  onClick 
+}: NavLinkProps) {
+  return (
+    <a
+      href={href}
+      onClick={onClick}
+      className={cn(
+        "text-sm font-medium transition-colors hover:text-primary",
+        active 
+          ? "text-foreground" 
+          : "text-foreground/60",
+        className
+      )}
+    >
+      {children}
+    </a>
+  );
+}
+
+/**
+ * Breadcrumb navigation component
+ */
+interface BreadcrumbItem {
+  label: string;
+  href?: string;
+  active?: boolean;
+}
+
+interface BreadcrumbProps {
+  items: BreadcrumbItem[];
+  className?: string;
+}
+
+export function Breadcrumb({ items, className }: BreadcrumbProps) {
+  return (
+    <nav 
+      className={cn("flex", className)} 
+      aria-label="Breadcrumb"
+    >
+      <ol className="inline-flex items-center space-x-1 md:space-x-3">
+        {items.map((item, index) => (
+          <li key={index} className="inline-flex items-center">
+            {index > 0 && (
+              <span className="mx-2 text-muted-foreground">/</span>
+            )}
+            {item.href && !item.active ? (
+              <a
+                href={item.href}
+                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+              >
+                {item.label}
+              </a>
+            ) : (
+              <span className={cn(
+                "text-sm font-medium",
+                item.active 
+                  ? "text-foreground" 
+                  : "text-muted-foreground"
+              )}>
+                {item.label}
+              </span>
+            )}
+          </li>
+        ))}
+      </ol>
+    </nav>
+  );
+}
