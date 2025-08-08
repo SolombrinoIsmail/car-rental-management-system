@@ -2,6 +2,12 @@
 
 This guide explains how to configure the required GitHub Secrets for the CI/CD pipeline.
 
+## ⚠️ Current CI/CD Status
+
+Several CI/CD checks are currently configured to handle missing secrets gracefully. The workflows
+have been updated to continue operation even without all secrets, but full functionality requires
+proper configuration.
+
 ## Required Secrets
 
 ### Vercel Deployment (Required for deployments)
@@ -17,6 +23,40 @@ These secrets are required for deploying to Vercel:
 - **`VERCEL_PROJECT_ID`**: Your Vercel project ID
   - Run `npx vercel link` locally to link your project
   - Find it in `.vercel/project.json` after linking
+
+### Code Quality & Security Secrets
+
+- **`SONAR_TOKEN`**: For SonarCloud code analysis _(Currently failing - needs configuration)_
+  - Get it from: https://sonarcloud.io/
+  - Create project: https://sonarcloud.io/projects/create
+  - Organization should be: `solombrinoismail`
+  - Project key: `SolombrinoIsmail_car-rental-management-system`
+
+- **`SEMGREP_APP_TOKEN`**: For Semgrep security scanning _(Optional - will use default rules if not
+  set)_
+  - Get it from: https://semgrep.dev/
+  - Free tier available
+
+- **`NVD_API_KEY`**: For OWASP Dependency Check _(Optional - will work without but slower)_
+  - Get it from: https://nvd.nist.gov/developers/request-an-api-key
+  - Free API key
+
+### Testing & Monitoring Secrets
+
+- **`LHCI_GITHUB_APP_TOKEN`**: For Lighthouse CI _(Optional - for storing results)_
+  - Get it from: https://github.com/apps/lighthouse-ci
+  - Install the GitHub App
+
+- **`DATABASE_URL`**: For database tests in CI _(Optional - tests will skip if not set)_
+  - Format: `postgresql://user:password@host:port/database`
+  - Can use a free PostgreSQL service for testing
+
+- **`SENTRY_AUTH_TOKEN`**: For Sentry error tracking _(Optional)_
+  - Get it from: https://sentry.io/settings/account/api/auth-tokens/
+  - Needs project:write scope
+
+- **`SENTRY_DSN`**: For Sentry error tracking _(Optional)_
+  - Get it from your Sentry project settings
 
 ### Optional Secrets (Features will be skipped if not configured)
 

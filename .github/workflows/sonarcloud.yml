@@ -66,8 +66,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
-            -Dsonar.projectKey=car-rental-management-system
-            -Dsonar.organization=solombrino-solutions
+            -Dsonar.projectKey=SolombrinoIsmail_car-rental-management-system
+            -Dsonar.organization=solombrinoismail
 
       - name: Check Quality Gate
         if: github.event_name == 'pull_request'

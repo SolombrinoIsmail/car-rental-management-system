@@ -1,9 +1,7 @@
 {
   "ci": {
     "collect": {
-      "startServerCommand": "pnpm dev",
-      "startServerReadyPattern": "ready on",
-      "startServerReadyTimeout": 60000,
+      "staticDistDir": "./apps/web/.next",
       "url": [
         "http://localhost:3000/",
         "http://localhost:3000/login",
