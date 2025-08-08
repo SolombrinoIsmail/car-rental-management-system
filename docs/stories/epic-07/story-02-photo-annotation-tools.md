@@ -1,9 +1,11 @@
 # Story 2: Photo Annotation Tools
 
 ## Story ID
+
 **Epic 7 - Story 2**
 
 ## User Story Statement
+
 **As a** rental staff member  
 **I want to** mark existing damage on vehicle photos with detailed annotations  
 **So that** pre-existing conditions are clearly documented and future disputes can be avoided
@@ -85,23 +87,25 @@
 ## Technical Implementation Notes
 
 ### Frontend Architecture
+
 - **AnnotationCanvas.vue**: Main canvas component for drawing
 - **AnnotationToolbar.vue**: Tool selection and configuration
 - **AnnotationLayer.vue**: Layer management component
 - **AnnotationTemplates.vue**: Template selection interface
 
 ### Canvas Implementation
+
 ```javascript
 // HTML5 Canvas with fabric.js for advanced drawing
-import { fabric } from 'fabric'
+import { fabric } from 'fabric';
 
 const canvas = new fabric.Canvas('annotation-canvas', {
   isDrawingMode: true,
   freeDrawingBrush: {
     width: 3,
-    color: '#ff0000'
-  }
-})
+    color: '#ff0000',
+  },
+});
 
 // Touch event handling for mobile
 canvas.on('path:created', (e) => {
@@ -110,43 +114,45 @@ canvas.on('path:created', (e) => {
     type: 'drawing',
     path: e.path,
     timestamp: new Date(),
-    author: currentUser.id
-  }
-  saveAnnotation(annotation)
-})
+    author: currentUser.id,
+  };
+  saveAnnotation(annotation);
+});
 ```
 
 ### Annotation Data Structure
+
 ```typescript
 interface Annotation {
-  id: string
-  photoId: string
-  type: 'circle' | 'rectangle' | 'freeform' | 'text' | 'arrow'
+  id: string;
+  photoId: string;
+  type: 'circle' | 'rectangle' | 'freeform' | 'text' | 'arrow';
   coordinates: {
-    x: number
-    y: number
-    width?: number
-    height?: number
-    points?: Point[]
-  }
+    x: number;
+    y: number;
+    width?: number;
+    height?: number;
+    points?: Point[];
+  };
   style: {
-    color: string
-    thickness: number
-    opacity: number
-    fontSize?: number
-  }
-  content?: string // for text annotations
-  damageType: string
-  severity: 'minor' | 'moderate' | 'severe'
-  author: string
-  timestamp: Date
-  lastModified: Date
+    color: string;
+    thickness: number;
+    opacity: number;
+    fontSize?: number;
+  };
+  content?: string; // for text annotations
+  damageType: string;
+  severity: 'minor' | 'moderate' | 'severe';
+  author: string;
+  timestamp: Date;
+  lastModified: Date;
 }
 ```
 
 ## API Endpoints Needed
 
 ### Annotation Management
+
 ```
 POST /api/v1/photos/{photo_id}/annotations
 - Create new annotation on photo
@@ -177,6 +183,7 @@ POST /api/v1/annotations/templates
 ```
 
 ### Batch Operations
+
 ```
 POST /api/v1/photos/{photo_id}/annotations/batch
 - Create multiple annotations in single request
@@ -197,6 +204,7 @@ POST /api/v1/annotations/copy
 ## Database Schema Requirements
 
 ### annotations Table
+
 ```sql
 CREATE TABLE annotations (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -225,6 +233,7 @@ CREATE INDEX idx_annotations_damage_type ON annotations(damage_type);
 ```
 
 ### annotation_templates Table
+
 ```sql
 CREATE TABLE annotation_templates (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -242,6 +251,7 @@ CREATE INDEX idx_annotation_templates_category ON annotation_templates(damage_ca
 ```
 
 ### annotation_comments Table
+
 ```sql
 CREATE TABLE annotation_comments (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -257,24 +267,28 @@ CREATE INDEX idx_annotation_comments_annotation ON annotation_comments(annotatio
 ## UI/UX Considerations
 
 ### Mobile Touch Interface
+
 - Large touch targets for tool selection (minimum 44px)
 - Gesture-based drawing with palm rejection
 - Two-finger pan and zoom without affecting annotations
 - Context-sensitive menus for annotation editing
 
 ### Desktop Interface
+
 - Keyboard shortcuts for common tools (C for circle, R for rectangle, T for text)
 - Right-click context menus for annotation operations
 - Mouse wheel zoom with annotation scaling
 - Multi-monitor support for large screen workflows
 
 ### Visual Design
+
 - Semi-transparent overlay mode for annotation visibility
 - High contrast mode for better annotation visibility
 - Dark/light theme support for different lighting conditions
 - Animation feedback for tool selection and operations
 
 ### Workflow Integration
+
 - Guided annotation workflow for new users
 - Auto-save functionality every 30 seconds
 - Annotation checklist for complete documentation
@@ -283,6 +297,7 @@ CREATE INDEX idx_annotation_comments_annotation ON annotation_comments(annotatio
 ## Testing Scenarios
 
 ### Scenario 1: Basic Damage Marking
+
 **Given** a staff member has a vehicle photo with visible damage  
 **When** they select the circle tool and mark the damage area  
 **Then** a colored circle appears on the photo  
@@ -290,6 +305,7 @@ CREATE INDEX idx_annotation_comments_annotation ON annotation_comments(annotatio
 **And** the annotation is saved with proper metadata
 
 ### Scenario 2: Mobile Touch Drawing
+
 **Given** a user is on a mobile device  
 **When** they use touch to draw annotations  
 **Then** drawing is smooth and responsive  
@@ -297,6 +313,7 @@ CREATE INDEX idx_annotation_comments_annotation ON annotation_comments(annotatio
 **And** annotations scale properly with zoom
 
 ### Scenario 3: Multiple Damage Types
+
 **Given** a vehicle has different types of damage  
 **When** staff marks each damage with appropriate colors  
 **Then** color coding system works correctly  
@@ -304,6 +321,7 @@ CREATE INDEX idx_annotation_comments_annotation ON annotation_comments(annotatio
 **And** annotations are visually distinct
 
 ### Scenario 4: Annotation Editing
+
 **Given** existing annotations on a photo  
 **When** user selects and modifies annotation  
 **Then** changes are applied correctly  
@@ -311,6 +329,7 @@ CREATE INDEX idx_annotation_comments_annotation ON annotation_comments(annotatio
 **And** undo/redo functions work properly
 
 ### Scenario 5: Template Usage
+
 **Given** predefined damage templates exist  
 **When** user applies template to photo  
 **Then** template annotations are added correctly  
@@ -318,6 +337,7 @@ CREATE INDEX idx_annotation_comments_annotation ON annotation_comments(annotatio
 **And** custom templates can be saved
 
 ### Scenario 6: Cross-Device Compatibility
+
 **Given** annotations created on mobile device  
 **When** viewed on desktop browser  
 **Then** annotations display correctly  
@@ -325,6 +345,7 @@ CREATE INDEX idx_annotation_comments_annotation ON annotation_comments(annotatio
 **And** no data loss occurs
 
 ### Scenario 7: Performance with Large Photos
+
 **Given** high-resolution vehicle photos  
 **When** adding multiple complex annotations  
 **Then** performance remains smooth  
@@ -332,6 +353,7 @@ CREATE INDEX idx_annotation_comments_annotation ON annotation_comments(annotatio
 **And** annotation quality is maintained
 
 ### Scenario 8: Collaborative Annotations
+
 **Given** multiple staff members annotating same photo  
 **When** annotations are added by different users  
 **Then** author information is tracked correctly  
@@ -361,15 +383,18 @@ CREATE INDEX idx_annotation_comments_annotation ON annotation_comments(annotatio
 - [ ] Documentation and training materials created
 
 ## Estimated Effort
+
 **8 Story Points** (2 Developer Days)
 
 ### Breakdown:
+
 - Canvas drawing implementation: 3 points
 - Annotation data management: 2 points
 - Mobile touch optimization: 2 points
 - Templates and UI polish: 1 point
 
 ### Dependencies:
+
 - Photo capture system (Story 1) completed
 - Canvas drawing library selection (fabric.js or similar)
 - Touch gesture handling research

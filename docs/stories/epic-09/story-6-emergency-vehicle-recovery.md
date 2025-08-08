@@ -1,14 +1,17 @@
 # Story 6: Emergency Vehicle Recovery
 
 ## Story Information
+
 - **Story ID:** CRMS-E9-S6
 - **Epic:** 9 - Operational Edge Cases
 - **Story Points:** 5
 
 ## User Story
+
 **As a** rental staff member  
 **I want to** handle vehicle breakdowns and emergency recovery situations efficiently  
-**So that** customers receive prompt assistance, vehicles are recovered safely, and business operations continue with minimal disruption
+**So that** customers receive prompt assistance, vehicles are recovered safely, and business
+operations continue with minimal disruption
 
 ## Detailed Acceptance Criteria
 
@@ -87,6 +90,7 @@
 ## Technical Implementation Notes
 
 ### Backend Services
+
 - `EmergencyRecoveryService`: Orchestrates the complete recovery workflow
 - `LocationTrackingService`: Manages GPS coordinates and location services
 - `ServiceProviderService`: Handles towing and roadside assistance coordination
@@ -95,6 +99,7 @@
 - `VehicleStatusService`: Updates fleet management systems
 
 ### Data Models
+
 ```sql
 emergency_recoveries (
   id, incident_number, rental_id, vehicle_id, customer_id,
@@ -112,11 +117,14 @@ recovery_services (
 ```
 
 ### State Machine
-Reported → Located → Service Dispatched → Customer Assisted → Vehicle Recovered → Costs Processed → Resolved
+
+Reported → Located → Service Dispatched → Customer Assisted → Vehicle Recovered → Costs Processed →
+Resolved
 
 ## API Endpoints
 
 ### Emergency Response
+
 - `POST /api/emergencies/breakdown` - Report vehicle breakdown
 - `GET /api/emergencies/{id}/status` - Check recovery status
 - `PUT /api/emergencies/{id}/location` - Update customer/vehicle location
@@ -124,17 +132,20 @@ Reported → Located → Service Dispatched → Customer Assisted → Vehicle Re
 - `GET /api/emergencies/{id}/eta` - Get estimated assistance arrival time
 
 ### Service Provider Integration
+
 - `POST /api/external/towing/request` - Request towing service
 - `GET /api/external/towing/{id}/status` - Check towing status
 - `POST /api/external/roadside/assistance` - Request roadside help
 - `GET /api/external/service-providers/available` - Find nearby providers
 
 ### Customer Communication
+
 - `POST /api/emergencies/{id}/notify-customer` - Send customer updates
 - `GET /api/emergencies/{id}/communication-log` - Get message history
 - `POST /api/emergencies/{id}/callback-request` - Schedule customer callback
 
 ### Cost and Billing
+
 - `POST /api/emergencies/{id}/costs` - Log recovery costs
 - `GET /api/emergencies/{id}/cost-breakdown` - Get expense details
 - `POST /api/emergencies/{id}/billing` - Process customer charges
@@ -142,6 +153,7 @@ Reported → Located → Service Dispatched → Customer Assisted → Vehicle Re
 ## Database Schema Requirements
 
 ### New Tables
+
 ```sql
 CREATE TABLE emergency_recoveries (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -223,6 +235,7 @@ CREATE TABLE service_providers (
 ```
 
 ### Schema Updates
+
 - Add `breakdown_history_count` to vehicles table
 - Add `last_breakdown_date` to vehicles table
 - Add `emergency_recovery_count` to customers table
@@ -230,24 +243,28 @@ CREATE TABLE service_providers (
 ## UI/UX Considerations
 
 ### Emergency Reporting Interface
+
 - Large, prominent "Emergency Breakdown" button in mobile app
 - One-touch location sharing with GPS coordinates
 - Voice-activated reporting for hands-free operation
 - Emergency contact display with direct dial capability
 
 ### Staff Response Dashboard
+
 - Real-time emergency queue with priority color coding
 - Map view showing customer locations and nearby service providers
 - Quick action buttons for common emergency responses
 - Integration with dispatch systems for service coordination
 
 ### Customer Status Tracking
+
 - Live map showing service provider approach and estimated arrival
 - Push notifications for status updates and service completion
 - Direct communication channel with assigned staff member
 - Self-service options for minor issues (tire inflation, fuel delivery)
 
 ### Mobile-First Design
+
 - Touch-friendly interface optimized for emergency situations
 - High contrast colors for outdoor visibility
 - Offline capability for areas with poor cellular coverage
@@ -256,44 +273,52 @@ CREATE TABLE service_providers (
 ## Testing Scenarios
 
 ### Scenario 1: Roadside Flat Tire
-**Given:** Customer reports flat tire on highway during business hours
-**When:** Staff initiates emergency recovery process
-**Then:** Roadside assistance dispatched within 30 minutes, customer receives regular updates, tire changed on-site
+
+**Given:** Customer reports flat tire on highway during business hours **When:** Staff initiates
+emergency recovery process **Then:** Roadside assistance dispatched within 30 minutes, customer
+receives regular updates, tire changed on-site
 
 ### Scenario 2: Engine Breakdown in Remote Area
-**Given:** Vehicle breaks down in rural location with poor cell coverage
-**When:** Customer uses offline emergency reporting
-**Then:** Location data captured, towing service dispatched to GPS coordinates, replacement vehicle arranged
+
+**Given:** Vehicle breaks down in rural location with poor cell coverage **When:** Customer uses
+offline emergency reporting **Then:** Location data captured, towing service dispatched to GPS
+coordinates, replacement vehicle arranged
 
 ### Scenario 3: After-Hours Emergency
-**Given:** Customer stranded at 2 AM with dead battery
-**When:** Emergency hotline processes breakdown report
-**Then:** 24-hour roadside service contacted, customer assisted within 45 minutes, jump-start successful
+
+**Given:** Customer stranded at 2 AM with dead battery **When:** Emergency hotline processes
+breakdown report **Then:** 24-hour roadside service contacted, customer assisted within 45 minutes,
+jump-start successful
 
 ### Scenario 4: Multiple Simultaneous Breakdowns
-**Given:** 3 vehicles experience issues during peak travel period
-**When:** Staff manages multiple emergency recoveries
-**Then:** Priority system manages queue, resources allocated efficiently, all customers assisted within SLA
+
+**Given:** 3 vehicles experience issues during peak travel period **When:** Staff manages multiple
+emergency recoveries **Then:** Priority system manages queue, resources allocated efficiently, all
+customers assisted within SLA
 
 ### Scenario 5: Customer Safety Emergency
-**Given:** Vehicle accident with customer injury reported
-**When:** Emergency services coordination triggered
-**Then:** Ambulance and police contacted immediately, insurance notified, family contacted per emergency contacts
+
+**Given:** Vehicle accident with customer injury reported **When:** Emergency services coordination
+triggered **Then:** Ambulance and police contacted immediately, insurance notified, family contacted
+per emergency contacts
 
 ### Scenario 6: High-Cost Recovery Situation
-**Given:** Luxury vehicle requires specialized towing and repair
-**When:** Recovery costs exceed $2,000 threshold
-**Then:** Manager approval required, insurance claim initiated, customer liability calculated and communicated
+
+**Given:** Luxury vehicle requires specialized towing and repair **When:** Recovery costs exceed
+$2,000 threshold **Then:** Manager approval required, insurance claim initiated, customer liability
+calculated and communicated
 
 ### Scenario 7: Service Provider No-Show
-**Given:** Scheduled towing service fails to arrive as promised
-**When:** Customer reports continued waiting after ETA expires
-**Then:** Alternative provider automatically contacted, customer compensation calculated, provider performance noted
+
+**Given:** Scheduled towing service fails to arrive as promised **When:** Customer reports continued
+waiting after ETA expires **Then:** Alternative provider automatically contacted, customer
+compensation calculated, provider performance noted
 
 ### Scenario 8: Customer Refuses Assistance
-**Given:** Customer reports breakdown but declines company-provided recovery services
-**When:** Customer wants to handle recovery independently
-**Then:** Customer liability documented, rental agreement impact explained, self-service return process initiated
+
+**Given:** Customer reports breakdown but declines company-provided recovery services **When:**
+Customer wants to handle recovery independently **Then:** Customer liability documented, rental
+agreement impact explained, self-service return process initiated
 
 ## Definition of Done
 
@@ -315,6 +340,7 @@ CREATE TABLE service_providers (
 - [ ] User acceptance testing with real emergency scenarios simulation
 
 ## Dependencies
+
 - GPS and mapping services
 - Service provider API integrations (towing, roadside assistance)
 - Mobile application platform for customer reporting
@@ -324,6 +350,7 @@ CREATE TABLE service_providers (
 - 24/7 call center or emergency response capability
 
 ## Risks and Mitigation
+
 - **Risk:** Service providers unavailable during peak demand
   - **Mitigation:** Multiple provider contracts and backup service arrangements
 - **Risk:** Customer safety compromised during breakdown

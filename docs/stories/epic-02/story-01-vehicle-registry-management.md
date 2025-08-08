@@ -8,25 +8,28 @@
 ## User Story Statement
 
 **As an** owner/admin  
-**I want to** manage my complete vehicle fleet with comprehensive vehicle information, documentation, and pricing  
+**I want to** manage my complete vehicle fleet with comprehensive vehicle information,
+documentation, and pricing  
 **So that** all vehicles are properly tracked, documented, and configured for rental operations
 
 ## Detailed Acceptance Criteria
 
 1. **Vehicle Registration**
-   - System shall allow adding new vehicles with complete specification details (make, model, year, VIN, license plate, color, transmission, fuel type)
+   - System shall allow adding new vehicles with complete specification details (make, model, year,
+     VIN, license plate, color, transmission, fuel type)
    - System shall validate VIN format and check for duplicates
    - System shall require mandatory fields (VIN, license plate, make, model, year)
 
 2. **Document Management**
-   - System shall allow uploading multiple document types (registration, insurance, inspection certificates)
+   - System shall allow uploading multiple document types (registration, insurance, inspection
+     certificates)
    - System shall support common file formats (PDF, JPG, PNG) with max 5MB per file
    - System shall track document expiry dates and send notifications 30 days before expiration
 
 3. **Rate Configuration**
    - System shall allow setting multiple rate types (hourly, daily, weekly, monthly)
    - System shall support seasonal pricing with date range configurations
-   - System shall validate rate consistency (hourly * 24 ≤ daily rate)
+   - System shall validate rate consistency (hourly \* 24 ≤ daily rate)
 
 4. **Vehicle Categories**
    - System shall allow categorizing vehicles (Economy, Compact, Mid-size, SUV, Luxury)
@@ -66,6 +69,7 @@
 ## Technical Implementation Notes
 
 ### Database Schema Requirements
+
 ```sql
 -- Vehicles table
 CREATE TABLE vehicles (
@@ -116,6 +120,7 @@ CREATE TABLE vehicle_features (
 ```
 
 ### API Endpoints Needed
+
 - `POST /api/vehicles` - Create new vehicle
 - `GET /api/vehicles` - List vehicles with filtering
 - `GET /api/vehicles/{id}` - Get vehicle details
@@ -236,6 +241,7 @@ CREATE TABLE vehicle_features (
 ## Estimated Effort: 5 Story Points
 
 **Breakdown:**
+
 - Database schema design: 0.5 days
 - Backend API development: 2 days
 - Frontend vehicle management UI: 1.5 days

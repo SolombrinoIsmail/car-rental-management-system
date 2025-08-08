@@ -1,15 +1,18 @@
 # Story 04: Cancellation Processing
 
 ## Story Information
+
 - **Story ID:** RS-04
 - **Epic:** Epic 5 - Reservation System
 - **Priority:** High
 - **Story Points:** 8
 
 ## User Story
+
 **As a** rental staff member  
 **I want to** process reservation cancellations efficiently and consistently  
-**So that** cancellation policies are properly enforced and vehicles are immediately available for rebooking
+**So that** cancellation policies are properly enforced and vehicles are immediately available for
+rebooking
 
 ## Detailed Acceptance Criteria
 
@@ -29,17 +32,19 @@
 ## Technical Implementation Notes
 
 ### Cancellation Policy Engine
+
 - **Time-based Rules:** Different policies based on hours/days before pickup
 - **Reservation Type:** Standard vs. special rates may have different policies
 - **Customer Tier:** Loyalty status may affect cancellation terms
 - **Seasonal Adjustments:** Peak periods may have stricter policies
 
 ### Policy Examples
+
 ```
 Standard Policy:
 - 48+ hours before: Full refund
 - 24-48 hours: 50% cancellation fee
-- 6-24 hours: 75% cancellation fee  
+- 6-24 hours: 75% cancellation fee
 - <6 hours: No refund
 
 Premium Policy:
@@ -49,6 +54,7 @@ Premium Policy:
 ```
 
 ### Financial Integration
+
 - Automatic refund processing for card payments
 - Manual refund tracking for cash/other payments
 - Accounting integration for revenue recognition
@@ -57,8 +63,9 @@ Premium Policy:
 ## API Endpoints Needed
 
 ### POST /api/reservations/{id}/cancel
-**Purpose:** Process reservation cancellation
-**Request Body:**
+
+**Purpose:** Process reservation cancellation **Request Body:**
+
 ```json
 {
   "reason": "customer_request|staff_initiated|no_show|overbooking",
@@ -68,13 +75,15 @@ Premium Policy:
   "staffNotes": "Customer very upset, offering goodwill gesture"
 }
 ```
+
 **Response:**
+
 ```json
 {
   "cancellationId": "uuid",
-  "originalAmount": 250.00,
-  "cancellationFee": 37.50,
-  "refundAmount": 212.50,
+  "originalAmount": 250.0,
+  "cancellationFee": 37.5,
+  "refundAmount": 212.5,
   "refundMethod": "original_payment",
   "processingTime": "2-3 business days",
   "confirmationSent": true
@@ -82,13 +91,14 @@ Premium Policy:
 ```
 
 ### GET /api/reservations/{id}/cancellation-preview
-**Purpose:** Preview cancellation fees before processing
-**Response:**
+
+**Purpose:** Preview cancellation fees before processing **Response:**
+
 ```json
 {
   "applicablePolicy": "standard_48h",
-  "cancellationFee": 37.50,
-  "refundAmount": 212.50,
+  "cancellationFee": 37.5,
+  "refundAmount": 212.5,
   "policyDetails": {
     "description": "Cancelled 36 hours before pickup",
     "feePercentage": 15
@@ -97,16 +107,17 @@ Premium Policy:
 ```
 
 ### GET /api/cancellation-policies
-**Purpose:** Retrieve current cancellation policies
-**Response:**
+
+**Purpose:** Retrieve current cancellation policies **Response:**
+
 ```json
 {
   "policies": [
     {
       "name": "standard",
       "rules": [
-        {"hoursBeforePickup": 48, "feePercentage": 0},
-        {"hoursBeforePickup": 24, "feePercentage": 50}
+        { "hoursBeforePickup": 48, "feePercentage": 0 },
+        { "hoursBeforePickup": 24, "feePercentage": 50 }
       ]
     }
   ]
@@ -114,12 +125,14 @@ Premium Policy:
 ```
 
 ### POST /api/cancellations/{id}/process-refund
-**Purpose:** Process actual refund after cancellation approval
-**Internal endpoint for payment processing**
+
+**Purpose:** Process actual refund after cancellation approval **Internal endpoint for payment
+processing**
 
 ## Database Schema Requirements
 
 ### New Tables
+
 ```sql
 CREATE TABLE cancellation_policies (
     id UUID PRIMARY KEY,
@@ -162,12 +175,14 @@ CREATE TABLE cancellation_reasons (
 ```
 
 ### Updated Tables
+
 ```sql
 ALTER TABLE reservations ADD COLUMN cancelled_at TIMESTAMP;
 ALTER TABLE reservations ADD COLUMN cancellation_id UUID REFERENCES reservation_cancellations(id);
 ```
 
 ### Indexes
+
 ```sql
 CREATE INDEX idx_cancellations_reservation ON reservation_cancellations(reservation_id);
 CREATE INDEX idx_cancellations_date ON reservation_cancellations(processed_at);
@@ -177,6 +192,7 @@ CREATE INDEX idx_cancellations_refund_status ON reservation_cancellations(refund
 ## UI/UX Considerations
 
 ### Cancellation Interface
+
 - **Reservation Lookup:** Quick search by confirmation number or customer
 - **Policy Display:** Clear explanation of applicable fees before confirmation
 - **Reason Selection:** Dropdown with common reasons plus free-text details
@@ -184,12 +200,14 @@ CREATE INDEX idx_cancellations_refund_status ON reservation_cancellations(refund
 - **Confirmation Summary:** Complete breakdown of fees and refund amounts
 
 ### Customer Communication
+
 - **Professional Templates:** Branded cancellation confirmations
 - **Fee Transparency:** Clear explanation of why fees apply
 - **Refund Timeline:** Expected processing times for different payment methods
 - **Contact Information:** Support details for questions or disputes
 
 ### Staff Tools
+
 - **Policy Calculator:** Real-time fee calculations as staff input details
 - **Override Approval:** Workflow for manager approval of policy exceptions
 - **Batch Processing:** Handle multiple cancellations efficiently
@@ -198,41 +216,49 @@ CREATE INDEX idx_cancellations_refund_status ON reservation_cancellations(refund
 ## Testing Scenarios
 
 ### Scenario 1: Standard Cancellation Within Policy
+
 **Given:** Customer calls to cancel reservation 72 hours before pickup  
 **When:** Staff processes cancellation with "customer request" reason  
 **Then:** Full refund processed, confirmation sent, vehicle immediately available
 
 ### Scenario 2: Late Cancellation with Fees
+
 **Given:** Reservation cancelled 12 hours before pickup  
 **When:** Staff processes cancellation  
 **Then:** Cancellation fee applied per policy, partial refund processed, customer notified
 
 ### Scenario 3: No-Show Conversion to Cancellation
+
 **Given:** No-show customer contacts within 24 hours  
 **When:** Staff converts no-show to voluntary cancellation  
 **Then:** Lesser fee applied than no-show fee, goodwill maintained
 
 ### Scenario 4: Policy Override for Emergency
+
 **Given:** Customer has medical emergency 6 hours before pickup  
 **When:** Staff requests policy override  
 **Then:** Manager approval workflow initiated, override processed if approved
 
 ### Scenario 5: Group Cancellation
+
 **Given:** Multiple reservations for same customer need cancellation  
 **When:** Staff processes batch cancellation  
 **Then:** All reservations cancelled consistently, single communication sent
 
 ### Scenario 6: Partial Refund Processing
+
 **Given:** Customer with complex booking including extras  
 **When:** Cancellation processed  
 **Then:** Fees calculated on total amount, extras refunded separately if applicable
 
 ### Scenario 7: Payment Method Edge Cases
+
 **Given:** Original payment with expired credit card  
 **When:** Refund processing attempted  
 **Then:** System flags for manual processing, staff notified to contact customer
 
 ### Scenario 8: Same-Day Rebooking
+
 **Given:** Vehicle released through cancellation  
 **When:** New customer wants immediate booking  
 **Then:** Vehicle shows as available, new reservation can be created immediately
@@ -261,6 +287,7 @@ CREATE INDEX idx_cancellations_refund_status ON reservation_cancellations(refund
 ## Dependencies
 
 ### Internal Dependencies
+
 - Reservation system (Stories 1, 2, 3)
 - Payment processing system (Epic 3)
 - Email notification service
@@ -268,6 +295,7 @@ CREATE INDEX idx_cancellations_refund_status ON reservation_cancellations(refund
 - Staff management and approval workflows
 
 ### External Dependencies
+
 - Payment gateway for refund processing
 - Email service for customer notifications
 - Approval workflow system (or manual process)
@@ -275,26 +303,32 @@ CREATE INDEX idx_cancellations_refund_status ON reservation_cancellations(refund
 ## Risk Mitigation
 
 ### Risk: Incorrect fee calculations leading to disputes
+
 - **Mitigation:** Comprehensive testing of policy engine with edge cases
 - **Contingency:** Manual override capabilities and dispute resolution process
 
 ### Risk: Payment refund failures
+
 - **Mitigation:** Robust error handling and retry mechanisms
 - **Contingency:** Manual refund processing procedures
 
 ### Risk: Vehicle availability sync issues
+
 - **Mitigation:** Transaction-based processing ensuring data consistency
 - **Contingency:** Manual availability correction tools
 
 ### Risk: Policy abuse by customers
+
 - **Mitigation:** Pattern detection and customer history tracking
 - **Contingency:** Manager approval required for repeat override requests
 
 ### Risk: Staff inconsistency in applying policies
+
 - **Mitigation:** Clear policy documentation and automated calculations
 - **Contingency:** Regular training and audit reviews
 
 ## Success Criteria
+
 - Cancellation processing time <3 minutes average
 - Policy application accuracy >99%
 - Customer dispute rate <2% of cancellations

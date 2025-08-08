@@ -1,11 +1,14 @@
 # Epic 9: Operational Edge Cases
 
 ## Epic Goal
-Handle real-world operational exceptions and edge cases that occur weekly in car rental operations, ensuring business continuity and customer service even in unusual situations.
+
+Handle real-world operational exceptions and edge cases that occur weekly in car rental operations,
+ensuring business continuity and customer service even in unusual situations.
 
 ## Epic Description
 
 ### Business Value
+
 - **Business Continuity:** Operations continue despite exceptions
 - **Customer Service:** Handle emergencies professionally
 - **Risk Management:** Documented procedures for incidents
@@ -13,16 +16,20 @@ Handle real-world operational exceptions and edge cases that occur weekly in car
 - **Revenue Protection:** Minimize losses from operational issues
 
 ### Scope
-Comprehensive handling of common operational edge cases including lost keys, accidents, after-hours returns, vehicle swaps, shift handovers, and emergency procedures.
+
+Comprehensive handling of common operational edge cases including lost keys, accidents, after-hours
+returns, vehicle swaps, shift handovers, and emergency procedures.
 
 ## User Stories
 
 ### Story 1: Lost Key Process
+
 **As a** rental staff member  
 **I want to** handle lost key situations  
 **So that** operations continue and costs are recovered
 
 **Acceptance Criteria:**
+
 - Document key loss incident
 - Calculate replacement cost
 - Charge customer appropriately
@@ -31,6 +38,7 @@ Comprehensive handling of common operational edge cases including lost keys, acc
 - Update vehicle availability
 
 **Technical Requirements:**
+
 - Incident documentation
 - Cost calculation
 - Charge processing
@@ -39,11 +47,13 @@ Comprehensive handling of common operational edge cases including lost keys, acc
 - Availability management
 
 ### Story 2: After-Hours Return
+
 **As a** rental staff member  
 **I want to** process after-hours returns  
 **So that** customers have flexibility
 
 **Acceptance Criteria:**
+
 - Key drop box process
 - Next-day inspection workflow
 - Customer notification
@@ -52,6 +62,7 @@ Comprehensive handling of common operational edge cases including lost keys, acc
 - Late return charges
 
 **Technical Requirements:**
+
 - Delayed processing workflow
 - Notification system
 - Provisional status
@@ -60,11 +71,13 @@ Comprehensive handling of common operational edge cases including lost keys, acc
 - Customer communication
 
 ### Story 3: Vehicle Swap Mid-Rental
+
 **As a** rental staff member  
 **I want to** swap vehicles during active rental  
 **So that** customers continue their rental
 
 **Acceptance Criteria:**
+
 - Document swap reason
 - Transfer contract to new vehicle
 - Adjust pricing if needed
@@ -73,6 +86,7 @@ Comprehensive handling of common operational edge cases including lost keys, acc
 - Maintain audit trail
 
 **Technical Requirements:**
+
 - Swap workflow
 - Contract transfer
 - Price adjustment
@@ -81,11 +95,13 @@ Comprehensive handling of common operational edge cases including lost keys, acc
 - Audit logging
 
 ### Story 4: Accident Reporting
+
 **As a** rental staff member  
 **I want to** document accidents thoroughly  
 **So that** insurance claims are supported
 
 **Acceptance Criteria:**
+
 - Capture accident details
 - Police report number
 - Insurance information
@@ -95,6 +111,7 @@ Comprehensive handling of common operational edge cases including lost keys, acc
 - Insurance package generation
 
 **Technical Requirements:**
+
 - Accident form system
 - Photo integration
 - Document storage
@@ -103,11 +120,13 @@ Comprehensive handling of common operational edge cases including lost keys, acc
 - Insurance export
 
 ### Story 5: Shift Handover Process
+
 **As a** rental staff member  
 **I want to** hand over shift properly  
 **So that** next shift is informed
 
 **Acceptance Criteria:**
+
 - Outstanding items list
 - Cash reconciliation
 - Pending returns
@@ -116,6 +135,7 @@ Comprehensive handling of common operational edge cases including lost keys, acc
 - Shift report generation
 
 **Technical Requirements:**
+
 - Handover checklist
 - Cash counting
 - Pending items
@@ -124,11 +144,13 @@ Comprehensive handling of common operational edge cases including lost keys, acc
 - Shift tracking
 
 ### Story 6: Emergency Vehicle Recovery
+
 **As a** rental staff member  
 **I want to** handle vehicle breakdowns  
 **So that** customers are assisted
 
 **Acceptance Criteria:**
+
 - Log breakdown incident
 - Customer location tracking
 - Replacement vehicle dispatch
@@ -137,6 +159,7 @@ Comprehensive handling of common operational edge cases including lost keys, acc
 - Customer compensation
 
 **Technical Requirements:**
+
 - Incident logging
 - Location recording
 - Dispatch workflow
@@ -145,11 +168,13 @@ Comprehensive handling of common operational edge cases including lost keys, acc
 - Compensation calculation
 
 ### Story 7: Vehicle Preparation Workflow
+
 **As a** rental staff member  
 **I want to** prepare vehicles systematically  
 **So that** vehicles are ready for customers
 
 **Acceptance Criteria:**
+
 - Cleaning checklist
 - Fuel level check
 - Document removal
@@ -158,6 +183,7 @@ Comprehensive handling of common operational edge cases including lost keys, acc
 - Ready status update
 
 **Technical Requirements:**
+
 - Preparation checklist
 - Status workflow
 - Inspection recording
@@ -166,11 +192,13 @@ Comprehensive handling of common operational edge cases including lost keys, acc
 - Status management
 
 ### Story 8: Duplicate Customer Merge
+
 **As a** rental staff member  
 **I want to** merge duplicate customer records  
 **So that** data is clean
 
 **Acceptance Criteria:**
+
 - Identify duplicates
 - Compare records
 - Merge history
@@ -179,6 +207,7 @@ Comprehensive handling of common operational edge cases including lost keys, acc
 - Prevent re-duplication
 
 **Technical Requirements:**
+
 - Duplicate detection
 - Merge algorithm
 - History consolidation
@@ -187,6 +216,7 @@ Comprehensive handling of common operational edge cases including lost keys, acc
 - Prevention rules
 
 ## Dependencies
+
 - Incident management framework
 - Communication templates
 - Emergency contact list
@@ -194,6 +224,7 @@ Comprehensive handling of common operational edge cases including lost keys, acc
 - Shift management system
 
 ## Definition of Done
+
 - [ ] All edge cases have workflows
 - [ ] Documentation complete
 - [ ] Emergency procedures tested
@@ -205,6 +236,7 @@ Comprehensive handling of common operational edge cases including lost keys, acc
 - [ ] Manager approval obtained
 
 ## Success Metrics
+
 - Edge case handling time: <5 minutes
 - Successful resolution: >95%
 - Customer satisfaction: >85%
@@ -212,6 +244,7 @@ Comprehensive handling of common operational edge cases including lost keys, acc
 - Staff confidence: >4/5
 
 ## Risk Mitigation
+
 - **Risk:** Unprepared for emergency
   - **Mitigation:** Clear procedures and training
   - **Contingency:** Manager on-call
@@ -225,21 +258,26 @@ Comprehensive handling of common operational edge cases including lost keys, acc
   - **Contingency:** Manager intervention
 
 ## Implementation Priority
+
 **Phase 2 (Week 8):** Critical Edge Cases
+
 - Lost keys (Story 1)
 - After-hours (Story 2)
 - Vehicle swap (Story 3)
 
 **Phase 3 (Week 10):** Emergency Handling
+
 - Accident reporting (Story 4)
 - Emergency recovery (Story 6)
 
 **Phase 3 (Week 11):** Operations
+
 - Shift handover (Story 5)
 - Vehicle preparation (Story 7)
 - Customer merge (Story 8)
 
 ## Estimated Effort
+
 - **Total:** 10-12 developer days
 - **Story 1:** 1 day
 - **Story 2:** 1.5 days

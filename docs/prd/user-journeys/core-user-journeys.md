@@ -1,12 +1,16 @@
 # Core User Journeys
 
-> **Note:** User journeys have been reorganized into individual files for better maintainability and clarity. Please refer to the [User Journeys Index](./index.md) for the complete list of all journeys.
+> **Note:** User journeys have been reorganized into individual files for better maintainability and
+> clarity. Please refer to the [User Journeys Index](./index.md) for the complete list of all
+> journeys.
 
 ## Quick Reference
 
-This document previously contained all user journeys in a single file. They have now been separated into:
+This document previously contained all user journeys in a single file. They have now been separated
+into:
 
 ### Staff User Journeys
+
 - [Staff Dashboard Review](./staff-dashboard-review.md)
 - [New Rental - First Time Customer](./staff-new-rental-first-time-customer.md)
 - [New Rental - Returning Customer](./staff-new-rental-returning-customer.md)
@@ -17,6 +21,7 @@ This document previously contained all user journeys in a single file. They have
 - [End of Day Reconciliation](./staff-end-of-day-reconciliation.md)
 
 ### Owner/Admin User Journeys
+
 - [Daily Revenue Check](./owner-daily-revenue-check.md)
 - [ROI Validation](./owner-roi-validation.md)
 - [Staff Account Management](./admin-staff-account-management.md)
@@ -25,6 +30,7 @@ This document previously contained all user journeys in a single file. They have
 - [Quick Contract Lookup](./owner-quick-contract-lookup.md)
 
 ### System-Initiated Journeys
+
 - [Automatic Backup](./system-automatic-backup.md)
 - [Session Timeout](./system-session-timeout.md)
 
@@ -33,6 +39,7 @@ This document previously contained all user journeys in a single file. They have
 ## Legacy Content (Archived)
 
 ### Journey 1: Staff Dashboard Review (Daily Start)
+
 **Actor:** Staff Member  
 **Trigger:** Beginning of shift/workday
 
@@ -52,6 +59,7 @@ This document previously contained all user journeys in a single file. They have
    - View calendar for week overview
 
 ### Journey 2: New Rental - First Time Customer (2 minutes)
+
 **Actor:** Staff Member  
 **Trigger:** Walk-in customer wants to rent a vehicle
 
@@ -88,6 +96,7 @@ This document previously contained all user journeys in a single file. They have
    - Hand over vehicle keys
 
 ### Journey 3: New Rental - Returning Customer (90 seconds)
+
 **Actor:** Staff Member  
 **Trigger:** Existing customer wants to rent a vehicle
 
@@ -115,6 +124,7 @@ This document previously contained all user journeys in a single file. They have
    - Hand over keys
 
 ### Journey 4: Rental Return - Standard (1 minute)
+
 **Actor:** Staff Member  
 **Trigger:** Customer returns rental vehicle
 
@@ -141,6 +151,7 @@ This document previously contained all user journeys in a single file. They have
    - Close contract
 
 ### Journey 5: Rental Return - With Issues (2 minutes)
+
 **Actor:** Staff Member  
 **Trigger:** Customer returns vehicle with damage/issues
 
@@ -167,6 +178,7 @@ This document previously contained all user journeys in a single file. They have
    - Update customer record
 
 ### Journey 6: Quick Vehicle Status Check
+
 **Actor:** Staff Member  
 **Trigger:** Phone inquiry about vehicle availability
 
@@ -181,6 +193,7 @@ This document previously contained all user journeys in a single file. They have
    - Potentially pre-reserve vehicle
 
 ### Journey 7: Customer Blacklist Management
+
 **Actor:** Staff Member  
 **Trigger:** Problematic customer behavior
 
@@ -194,6 +207,7 @@ This document previously contained all user journeys in a single file. They have
    - Save changes
 
 ### Journey 8: End of Day Reconciliation
+
 **Actor:** Staff Member  
 **Trigger:** End of shift
 
@@ -211,6 +225,7 @@ This document previously contained all user journeys in a single file. They have
 ## Owner/Admin User Journeys
 
 ### Journey 9: Daily Revenue Check
+
 **Actor:** Owner  
 **Trigger:** Morning routine or end-of-day review
 
@@ -230,6 +245,7 @@ This document previously contained all user journeys in a single file. They have
    - Note peak rental times
 
 ### Journey 10: ROI Validation
+
 **Actor:** Owner  
 **Trigger:** Monthly subscription renewal consideration
 
@@ -248,6 +264,7 @@ This document previously contained all user journeys in a single file. They have
    - Continue subscription
 
 ### Journey 11: Staff Account Management
+
 **Actor:** Owner/Admin  
 **Trigger:** New employee or role change
 
@@ -263,6 +280,7 @@ This document previously contained all user journeys in a single file. They have
    - Save account
 
 ### Journey 12: Fleet Overview Management
+
 **Actor:** Owner  
 **Trigger:** Fleet planning or maintenance scheduling
 
@@ -280,6 +298,7 @@ This document previously contained all user journeys in a single file. They have
    - Save changes
 
 ### Journey 13: Financial Reconciliation
+
 **Actor:** Owner  
 **Trigger:** End of month accounting
 
@@ -294,6 +313,7 @@ This document previously contained all user journeys in a single file. They have
    - Export report for bookkeeping
 
 ### Journey 14: Quick Contract Lookup
+
 **Actor:** Owner or Staff  
 **Trigger:** Customer dispute or insurance claim
 
@@ -311,6 +331,7 @@ This document previously contained all user journeys in a single file. They have
 ## System-Initiated Journeys
 
 ### Journey 15: Automatic Backup
+
 **Actor:** System  
 **Trigger:** Daily at 2 AM
 
@@ -321,6 +342,7 @@ This document previously contained all user journeys in a single file. They have
    - Sends confirmation to owner email
 
 ### Journey 16: Session Timeout
+
 **Actor:** System  
 **Trigger:** 30 minutes of inactivity
 

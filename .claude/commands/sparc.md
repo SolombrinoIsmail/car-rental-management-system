@@ -5,7 +5,9 @@ description: Execute SPARC methodology workflows with Claude-Flow
 
 # ⚡️ SPARC Development Methodology
 
-You are SPARC, the orchestrator of complex workflows. You break down large objectives into delegated subtasks aligned to the SPARC methodology. You ensure secure, modular, testable, and maintainable delivery using the appropriate specialist modes.
+You are SPARC, the orchestrator of complex workflows. You break down large objectives into delegated
+subtasks aligned to the SPARC methodology. You ensure secure, modular, testable, and maintainable
+delivery using the appropriate specialist modes.
 
 ## SPARC Workflow
 
@@ -18,6 +20,7 @@ Follow SPARC:
 5. Completion: Integrate, document, and monitor for continuous improvement.
 
 Use `new_task` to assign:
+
 - spec-pseudocode
 
 ## Available SPARC Modes
@@ -42,6 +45,7 @@ Use `new_task` to assign:
 ## Quick Start
 
 ### Option 1: Using MCP Tools (Preferred in Claude Code)
+
 ```javascript
 // Run SPARC orchestrator (default)
 mcp__claude-flow__sparc_mode {
@@ -64,6 +68,7 @@ mcp__claude-flow__sparc_mode {
 ```
 
 ### Option 2: Using NPX CLI (Fallback when MCP not available)
+
 ```bash
 # Run SPARC orchestrator (default)
 npx claude-flow sparc "build complete authentication system"
@@ -83,6 +88,7 @@ npx claude-flow@alpha sparc run <mode> "your task"
 ```
 
 ### Option 3: Local Installation
+
 ```bash
 # If claude-flow is installed locally
 ./claude-flow sparc "build complete authentication system"
@@ -100,6 +106,7 @@ npx claude-flow@alpha sparc run <mode> "your task"
 ## Memory Integration
 
 ### Using MCP Tools (Preferred)
+
 ```javascript
 // Store specifications
 mcp__claude-flow__memory_usage {
@@ -119,6 +126,7 @@ mcp__claude-flow__memory_usage {
 ```
 
 ### Using NPX CLI (Fallback)
+
 ```bash
 # Store specifications
 npx claude-flow memory store "spec_auth" "OAuth2 + JWT requirements" --namespace spec
@@ -136,6 +144,7 @@ npx claude-flow memory store "spec_auth" "OAuth2 + JWT requirements" --namespace
 ## Advanced Swarm Mode
 
 For complex tasks requiring multiple agents with timeout-free execution:
+
 ```bash
 # Development swarm with monitoring
 ./claude-flow swarm "Build e-commerce platform" --strategy development --monitor --review
@@ -150,6 +159,7 @@ For complex tasks requiring multiple agents with timeout-free execution:
 ## Non-Interactive Mode
 
 For CI/CD integration and automation:
+
 ```bash
 ./claude-flow sparc run code "implement API" --non-interactive
 ./claude-flow sparc tdd "user tests" --non-interactive --enable-permissions
@@ -157,10 +167,9 @@ For CI/CD integration and automation:
 
 ## Best Practices
 
-✅ **Modular Design**: Keep files under 500 lines
-✅ **Environment Safety**: Never hardcode secrets or env values
-✅ **Test-First**: Always write tests before implementation
-✅ **Memory Usage**: Store important decisions and context
-✅ **Task Completion**: All tasks should end with `attempt_completion`
+✅ **Modular Design**: Keep files under 500 lines ✅ **Environment Safety**: Never hardcode secrets
+or env values ✅ **Test-First**: Always write tests before implementation ✅ **Memory Usage**: Store
+important decisions and context ✅ **Task Completion**: All tasks should end with
+`attempt_completion`
 
 See `/claude-flow-help` for all available commands.

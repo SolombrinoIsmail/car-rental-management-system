@@ -261,6 +261,7 @@ CREATE TABLE audit_logs (
 ## Database Optimization
 
 ### Indexes for Performance
+
 ```sql
 -- Create indexes for performance
 CREATE INDEX idx_companies_subscription ON companies(subscription_status, subscription_tier);
@@ -284,10 +285,11 @@ CREATE INDEX idx_audit_logs_user ON audit_logs(user_id, created_at);
 ```
 
 ### Materialized Views for Analytics
+
 ```sql
 -- Materialized view for dashboard metrics
 CREATE MATERIALIZED VIEW dashboard_metrics AS
-SELECT 
+SELECT
   company_id,
   DATE(created_at) as date,
   COUNT(*) as total_contracts,
@@ -335,6 +337,7 @@ CREATE POLICY company_isolation_contracts ON contracts
 ## Automated Functions
 
 ### Timestamp Updates
+
 ```sql
 -- Triggers for automated timestamps
 CREATE OR REPLACE FUNCTION update_updated_at()
@@ -362,6 +365,7 @@ CREATE TRIGGER update_contracts_updated_at BEFORE UPDATE ON contracts
 ```
 
 ### Contract Number Generation
+
 ```sql
 -- Function for contract number generation
 CREATE OR REPLACE FUNCTION generate_contract_number(company_id UUID)
@@ -377,18 +381,18 @@ BEGIN
     INTO company_prefix
     FROM companies
     WHERE id = company_id;
-    
+
     year_prefix := TO_CHAR(CURRENT_DATE, 'YYYY');
-    
+
     -- Get next sequential number for this company and year
     SELECT COALESCE(MAX(CAST(REGEXP_REPLACE(c.contract_number, '^[A-Z]+-\d{4}-', '') AS INT)), 0) + 1
     INTO sequential_number
     FROM contracts c
     WHERE c.company_id = generate_contract_number.company_id
     AND c.contract_number LIKE company_prefix || '-' || year_prefix || '-%';
-    
+
     contract_number := company_prefix || '-' || year_prefix || '-' || LPAD(sequential_number::TEXT, 5, '0');
-    
+
     RETURN contract_number;
 END;
 $$ LANGUAGE plpgsql;
@@ -396,6 +400,5 @@ $$ LANGUAGE plpgsql;
 
 ---
 
-**Document Version:** 3.0 - Database Architecture
-**Last Updated:** 2025-08-06
-**Status:** Ready for Implementation
+**Document Version:** 3.0 - Database Architecture **Last Updated:** 2025-08-06 **Status:** Ready for
+Implementation

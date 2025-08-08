@@ -291,6 +291,96 @@ npx claude-flow github pr review --comprehensive
 npx claude-flow github pr merge --squash --delete-branch
 ```
 
+## 🔍 PR Review Workflow
+
+### Automated PR Review Process
+
+When asked to review a PR, Claude will follow this comprehensive workflow:
+
+1. **Initial Analysis**
+   ```bash
+   # Check PR status and comments
+   gh pr view <number> --comments
+   
+   # Get list of changed files
+   gh pr diff <number> --name-only
+   
+   # Review the diff
+   gh pr diff <number>
+   ```
+
+2. **Fix Issues**
+   - Address critical ESLint configuration issues
+   - Fix TypeScript errors and type issues
+   - Update missing configurations
+   - Add required documentation
+
+3. **Validation**
+   ```bash
+   # Run linting with fixes
+   pnpm lint
+   
+   # Check formatting
+   pnpm format:check
+   
+   # Run type checking
+   pnpm typecheck
+   
+   # Run tests if available
+   pnpm test
+   ```
+
+4. **Review Comment Structure**
+   - **✅ Strengths**: Highlight what's done well
+   - **⚠️ Critical Issues**: Must-fix problems
+   - **🔧 Suggestions**: Improvements and optimizations
+   - **📊 Performance Impact**: Performance considerations
+   - **🚨 Security**: Security implications
+   - **✨ Overall Assessment**: Score and recommendation
+   - **Tag @SolombrinoIsmail** for visibility
+
+5. **Follow-up Review**
+   After fixes are applied:
+   - Re-run all validation checks
+   - Document improvements made
+   - Note remaining non-critical issues
+   - Provide merge recommendation
+   - Create follow-up issues if needed
+
+### Example PR Review Command Sequence
+
+```bash
+# Step 1: Initial review
+gh pr view 15 --comments
+gh pr diff 15
+
+# Step 2: Fix issues (automated)
+pnpm lint
+pnpm format
+git add .
+git commit -m "fix: address PR review comments"
+
+# Step 3: Validate fixes
+pnpm lint:check
+pnpm typecheck
+pnpm test
+
+# Step 4: Post review comment
+gh pr comment 15 --body "Review complete with fixes applied"
+```
+
+### PR Review Checklist
+
+- [ ] Code quality and style compliance
+- [ ] TypeScript types and interfaces
+- [ ] Test coverage for new features
+- [ ] Documentation updates
+- [ ] Security considerations
+- [ ] Performance implications
+- [ ] Breaking changes identified
+- [ ] Migration path documented
+- [ ] CI/CD checks passing
+
 ## 📊 Claude Flow Configuration
 
 ### .claude-flow.config.json

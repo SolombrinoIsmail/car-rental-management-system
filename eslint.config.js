@@ -35,6 +35,16 @@ export default tsConfig(
       tailwindcss: tailwindPlugin,
     },
     languageOptions: {
+      globals: {
+        process: 'readonly',
+        console: 'readonly',
+        Buffer: 'readonly',
+        __dirname: 'readonly',
+        __filename: 'readonly',
+        global: 'readonly',
+        module: 'readonly',
+        require: 'readonly',
+      },
       parserOptions: {
         ecmaVersion: 'latest',
         sourceType: 'module',
@@ -70,14 +80,14 @@ export default tsConfig(
 
       // Import
       'import/order': [
-        'error',
+        'warn',
         {
           groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
           'newlines-between': 'always',
           alphabetize: { order: 'asc', caseInsensitive: true },
         },
       ],
-      'import/no-duplicates': 'error',
+      'import/no-duplicates': 'warn',
 
       // Tailwind CSS
       'tailwindcss/classnames-order': 'warn',

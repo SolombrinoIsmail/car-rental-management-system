@@ -2,7 +2,7 @@
 
 /**
  * Claude Code /dev-cycle Slash Command Handler
- * 
+ *
  * Implements the /dev-cycle command for Claude Code with full Claude Flow integration
  * Usage: /dev-cycle [story-id] [--verbose] [--analysis] [--monitor]
  */
@@ -14,13 +14,12 @@ class DevCycleHandler {
 
   async handleCommand(args) {
     const options = this.parseArgs(args);
-    
+
     try {
       console.log(`🐝 Dev Cycle initiated${options.storyId ? ` for ${options.storyId}` : ''}`);
-      
+
       // Execute 4-phase workflow with concurrent operations
       await this.executeDevCycle(options);
-      
     } catch (error) {
       console.error('🚨 Dev Cycle failed:', error.message);
       if (options.verbose) {
@@ -35,7 +34,7 @@ class DevCycleHandler {
       () => this.phase1_hiveMindInit(options),
       () => this.phase2_sparcPipeline(options),
       () => this.phase3_githubOrchestration(options),
-      () => this.phase4_monitoringOptimization(options)
+      () => this.phase4_monitoringOptimization(options),
     ];
 
     for (let i = 0; i < phases.length; i++) {
@@ -48,13 +47,13 @@ class DevCycleHandler {
 
   async phase1_hiveMindInit(options) {
     console.log('👑 Initializing Hive Mind collective intelligence...');
-    
+
     // Get story details from Linear if provided
     let storyDetails = null;
     if (options.storyId) {
       storyDetails = await this.getLinearStoryDetails(options.storyId);
     }
-    
+
     // Concurrent Claude Flow and integration operations
     const operations = `
     // Initialize swarm coordination
@@ -78,7 +77,9 @@ class DevCycleHandler {
     });
     
     // Linear integration - Update story status and add comment
-    ${options.storyId ? `
+    ${
+      options.storyId
+        ? `
     mcp__linear-server__update_issue({ 
       id: "${options.storyId}", 
       stateId: "${await this.getLinearStateId('In Progress')}"
@@ -88,7 +89,9 @@ class DevCycleHandler {
       issueId: "${options.storyId}",
       body: "🐝 **Hive Mind Dev Cycle Started**\\n\\n🤖 Automated development workflow initiated by Claude Code\\n👑 Swarm topology: Hierarchical with 8 agents\\n⚡ SPARC methodology: Specification → Architecture → TDD → Integration\\n\\nSession: ${this.sessionId}"
     });
-    ` : ''}
+    `
+        : ''
+    }
     
     // Notion documentation - Create development log page
     mcp__notion__notion-create-pages({
@@ -127,7 +130,7 @@ class DevCycleHandler {
 
   async phase2_sparcPipeline(options) {
     console.log('⚡ Executing SPARC Development Pipeline...');
-    
+
     const operations = `
     // SPARC methodology with multi-agent coordination
     Task({
@@ -149,10 +152,14 @@ class DevCycleHandler {
     });
     
     // File operations coordination
-    ${!options.analysisMode ? `
+    ${
+      !options.analysisMode
+        ? `
     Bash("mkdir -p src/{components,services,utils,types}");
     Bash("mkdir -p tests/{unit,integration,e2e}");
-    ` : ''}
+    `
+        : ''
+    }
     
     // Quality gates
     mcp__claude-flow__task_orchestrate({
@@ -162,12 +169,16 @@ class DevCycleHandler {
     });
     
     // Linear progress update
-    ${options.storyId ? `
+    ${
+      options.storyId
+        ? `
     mcp__linear-server__create_comment({
       issueId: "${options.storyId}",
       body: "⚡ **Phase 2: SPARC Pipeline Complete**\\n\\n✅ Specification phase executed\\n✅ Architecture designed\\n🔄 TDD implementation in progress\\n✅ Quality gates configured\\n\\n🧪 Test coverage: Setting up..."
     });
-    ` : ''}
+    `
+        : ''
+    }
     
     // Notion documentation update
     mcp__notion__notion-update-page({
@@ -195,12 +206,12 @@ class DevCycleHandler {
       console.log('📊 Skipping GitHub operations (analysis mode)');
       return;
     }
-    
+
     console.log('🚀 Orchestrating GitHub workflow...');
-    
+
     const branchName = this.generateBranchName(options);
     const commitMessage = this.generateCommitMessage(options);
-    
+
     const operations = `
     // Git workflow automation
     Bash("git checkout -b ${branchName}");
@@ -226,7 +237,9 @@ class DevCycleHandler {
     });
     
     // Linear PR link update
-    ${options.storyId ? `
+    ${
+      options.storyId
+        ? `
     mcp__linear-server__update_issue({
       id: "${options.storyId}",
       description: "\\n\\n📎 **Pull Request**: [#PR-${Date.now()}](https://github.com/org/repo/pull/xxx)\\n\\n" + originalDescription
@@ -236,7 +249,9 @@ class DevCycleHandler {
       issueId: "${options.storyId}",
       body: "🚀 **Phase 3: GitHub Integration Complete**\\n\\n✅ Branch created: ${branchName}\\n✅ Code committed and pushed\\n✅ Pull request created\\n🔄 Automated code review in progress\\n\\n🔗 [View Pull Request](https://github.com/org/repo/pull/xxx)"
     });
-    ` : ''}
+    `
+        : ''
+    }
     
     // Notion PR documentation
     mcp__notion__notion-update-page({
@@ -267,7 +282,7 @@ class DevCycleHandler {
       return {
         title: `Story ${storyId}`,
         description: 'Development task',
-        acceptanceCriteria: []
+        acceptanceCriteria: [],
       };
     } catch (error) {
       console.warn(`Could not fetch Linear story: ${error.message}`);
@@ -280,8 +295,8 @@ class DevCycleHandler {
     const stateMap = {
       'In Progress': 'in-progress-state-id',
       'In Review': 'in-review-state-id',
-      'Done': 'done-state-id',
-      'Backlog': 'backlog-state-id'
+      Done: 'done-state-id',
+      Backlog: 'backlog-state-id',
     };
     return stateMap[stateName] || 'default-state-id';
   }
@@ -291,14 +306,14 @@ class DevCycleHandler {
     const databaseMap = {
       'Development Logs': 'dev-logs-db-id',
       'Sprint Tasks': 'sprint-tasks-db-id',
-      'Architecture Docs': 'architecture-db-id'
+      'Architecture Docs': 'architecture-db-id',
     };
     return databaseMap[databaseName] || 'default-db-id';
   }
 
   async phase4_monitoringOptimization(options) {
     console.log('📊 Monitoring & optimization...');
-    
+
     const operations = `
     // Performance analysis
     mcp__claude-flow__performance_report({ 
@@ -323,7 +338,9 @@ class DevCycleHandler {
     });
     
     // Linear final status update - Move to Review
-    ${options.storyId ? `
+    ${
+      options.storyId
+        ? `
     mcp__linear-server__update_issue({
       id: "${options.storyId}",
       stateId: "${await this.getLinearStateId('In Review')}"
@@ -333,7 +350,9 @@ class DevCycleHandler {
       issueId: "${options.storyId}",
       body: "✅ **Hive Mind Dev Cycle Complete**\\n\\n${this.generateFinalReport(options)}\\n\\n**All phases completed successfully. Ready for review.**"
     });
-    ` : ''}
+    `
+        : ''
+    }
     
     // Notion final documentation
     mcp__notion__notion-update-page({
@@ -382,11 +401,11 @@ class DevCycleHandler {
       storyId: null,
       verbose: false,
       monitor: false,
-      analysisMode: false
+      analysisMode: false,
     };
 
     if (Array.isArray(args)) {
-      args.forEach(arg => {
+      args.forEach((arg) => {
         if (arg === '--verbose') options.verbose = true;
         else if (arg === '--monitor') options.monitor = true;
         else if (arg === '--analysis') options.analysisMode = true;
@@ -457,11 +476,11 @@ module.exports = {
   name: 'dev-cycle',
   description: 'Execute 4-phase development workflow with Hive Mind collective intelligence',
   usage: '/dev-cycle [story-id] [--verbose] [--analysis] [--monitor]',
-  
+
   async execute(args) {
     const handler = new DevCycleHandler();
     return handler.handleCommand(args);
-  }
+  },
 };
 
 // CLI execution

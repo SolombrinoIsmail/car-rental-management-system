@@ -181,6 +181,7 @@ apps/web/
 ## Component Design Patterns
 
 ### 1. Server Components (Default)
+
 ```tsx
 // app/(dashboard)/contracts/page.tsx
 import { createServerClient } from '@/lib/supabase/server';
@@ -197,6 +198,7 @@ export default async function ContractsPage() {
 ```
 
 ### 2. Client Components (Interactive)
+
 ```tsx
 // components/contracts/QuickCreateWizard.tsx
 'use client';
@@ -210,12 +212,13 @@ export function QuickCreateWizard() {
   const form = useForm({
     resolver: zodResolver(contractSchema),
   });
-  
+
   // Interactive multi-step form
 }
 ```
 
 ### 3. Hybrid Patterns (Streaming)
+
 ```tsx
 // app/(dashboard)/page.tsx
 import { Suspense } from 'react';
@@ -238,6 +241,7 @@ export default function DashboardPage() {
 ## State Management Architecture
 
 ### 1. Server State (React Query/TanStack Query)
+
 ```tsx
 // hooks/useContracts.ts
 export function useContracts(filters: ContractFilters) {
@@ -251,6 +255,7 @@ export function useContracts(filters: ContractFilters) {
 ```
 
 ### 2. Client State (Zustand)
+
 ```tsx
 // stores/ui.store.ts
 interface UIStore {
@@ -263,9 +268,10 @@ interface UIStore {
 
 export const useUIStore = create<UIStore>((set) => ({
   sidebarOpen: true,
-  toggleSidebar: () => set((state) => ({ 
-    sidebarOpen: !state.sidebarOpen 
-  })),
+  toggleSidebar: () =>
+    set((state) => ({
+      sidebarOpen: !state.sidebarOpen,
+    })),
   activeModal: null,
   openModal: (modal) => set({ activeModal: modal }),
   closeModal: () => set({ activeModal: null }),
@@ -273,6 +279,7 @@ export const useUIStore = create<UIStore>((set) => ({
 ```
 
 ### 3. Form State (React Hook Form + Zod)
+
 ```tsx
 // schemas/contract.schema.ts
 export const contractSchema = z.object({
@@ -296,6 +303,7 @@ const form = useForm<ContractFormData>({
 ## Performance Optimization
 
 ### Frontend Optimization
+
 ```typescript
 // next.config.js
 module.exports = {
@@ -314,6 +322,5 @@ module.exports = {
 
 ---
 
-**Document Version:** 3.0 - Frontend Architecture
-**Last Updated:** 2025-08-06
-**Status:** Ready for Implementation
+**Document Version:** 3.0 - Frontend Architecture **Last Updated:** 2025-08-06 **Status:** Ready for
+Implementation

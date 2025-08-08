@@ -8,8 +8,10 @@
 ## User Story Statement
 
 **As an** owner  
-**I want to** analyze individual vehicle and fleet performance through comprehensive analytics and reporting  
-**So that** I can make data-driven decisions about fleet composition, pricing optimization, and vehicle lifecycle management to maximize profitability
+**I want to** analyze individual vehicle and fleet performance through comprehensive analytics and
+reporting  
+**So that** I can make data-driven decisions about fleet composition, pricing optimization, and
+vehicle lifecycle management to maximize profitability
 
 ## Detailed Acceptance Criteria
 
@@ -88,6 +90,7 @@
 ## Technical Implementation Notes
 
 ### Database Schema Requirements
+
 ```sql
 -- Vehicle performance metrics (aggregated data)
 CREATE TABLE vehicle_performance_metrics (
@@ -96,14 +99,14 @@ CREATE TABLE vehicle_performance_metrics (
     period_start DATE,
     period_end DATE,
     period_type VARCHAR(20), -- daily, weekly, monthly, yearly
-    
+
     -- Utilization metrics
     total_days_available INTEGER,
     total_days_rented INTEGER,
     utilization_rate DECIMAL(5,2), -- percentage
     average_rental_duration DECIMAL(5,2), -- days
     total_rentals INTEGER,
-    
+
     -- Financial metrics
     total_revenue DECIMAL(12,2),
     revenue_per_day DECIMAL(8,2),
@@ -112,13 +115,13 @@ CREATE TABLE vehicle_performance_metrics (
     total_operational_cost DECIMAL(12,2),
     net_profit DECIMAL(12,2),
     roi_percentage DECIMAL(5,2),
-    
+
     -- Usage metrics
     total_kilometers_driven INTEGER,
     fuel_consumed DECIMAL(8,2),
     fuel_cost DECIMAL(8,2),
     average_trip_distance DECIMAL(6,2),
-    
+
     calculated_at TIMESTAMP DEFAULT NOW()
 );
 
@@ -176,6 +179,7 @@ CREATE TABLE vehicle_predictions (
 ```
 
 ### API Endpoints Needed
+
 - `GET /api/analytics/vehicles/{id}/performance` - Individual vehicle performance
 - `GET /api/analytics/fleet/utilization` - Fleet-wide utilization metrics
 - `GET /api/analytics/revenue/comparison` - Revenue comparison across vehicles
@@ -189,6 +193,7 @@ CREATE TABLE vehicle_predictions (
 - `GET /api/analytics/dashboard/widgets` - Dashboard widget data
 
 ### Analytics Calculation Engine
+
 ```sql
 -- Example utilization calculation
 CREATE OR REPLACE FUNCTION calculate_vehicle_utilization(
@@ -202,9 +207,9 @@ DECLARE
     utilization DECIMAL(5,2);
 BEGIN
     total_days := p_end_date - p_start_date + 1;
-    
+
     SELECT COALESCE(SUM(
-        CASE 
+        CASE
             WHEN c.end_date <= p_end_date THEN c.end_date - c.start_date + 1
             ELSE p_end_date - c.start_date + 1
         END
@@ -214,9 +219,9 @@ BEGIN
       AND c.start_date <= p_end_date
       AND c.end_date >= p_start_date
       AND c.status IN ('completed', 'active');
-    
+
     utilization := (rented_days::DECIMAL / total_days::DECIMAL) * 100;
-    
+
     RETURN ROUND(utilization, 2);
 END;
 $$ LANGUAGE plpgsql;
@@ -340,6 +345,7 @@ $$ LANGUAGE plpgsql;
 ## Estimated Effort: 5 Story Points
 
 **Breakdown:**
+
 - Analytics calculation engine development: 2 days
 - Dashboard UI development with charts: 2 days
 - Report export system implementation: 1 day

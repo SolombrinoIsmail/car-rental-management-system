@@ -1,12 +1,14 @@
 # Story 06: Reservation Calendar Integration
 
 ## Story Information
+
 - **Story ID:** RS-06
 - **Epic:** Epic 5 - Reservation System
 - **Priority:** Medium
 - **Story Points:** 5
 
 ## User Story
+
 **As a** rental staff member  
 **I want to** view and manage reservations within the fleet calendar system  
 **So that** I can holistically manage vehicle availability and optimize fleet utilization
@@ -14,7 +16,8 @@
 ## Detailed Acceptance Criteria
 
 1. **AC-01:** Reservations display in fleet calendar with visual distinction from active rentals
-2. **AC-02:** Different reservation states (confirmed, tentative, overdue) show with distinct colors/patterns
+2. **AC-02:** Different reservation states (confirmed, tentative, overdue) show with distinct
+   colors/patterns
 3. **AC-03:** Staff can drag-and-drop reservations to reschedule within availability constraints
 4. **AC-04:** Calendar shows availability gaps between reservations for potential bookings
 5. **AC-05:** Visual conflict warnings appear when overlapping bookings are detected
@@ -29,12 +32,14 @@
 ## Technical Implementation Notes
 
 ### Calendar Architecture
+
 - **Unified Calendar:** Single calendar component handling both rentals and reservations
-- **Data Separation:** Clear distinction between reservation and rental data structures  
+- **Data Separation:** Clear distinction between reservation and rental data structures
 - **Real-time Updates:** WebSocket or polling for live calendar synchronization
 - **Performance Optimization:** Efficient rendering for large date ranges and fleet sizes
 
 ### Visual Design System
+
 ```
 Reservation Visual Codes:
 - Confirmed: Light blue with solid border
@@ -50,6 +55,7 @@ Rental Visual Codes:
 ```
 
 ### Integration Points
+
 - Fleet calendar component (Epic 2, Story 2)
 - Real-time availability system
 - Reservation management system
@@ -58,12 +64,15 @@ Rental Visual Codes:
 ## API Endpoints Needed
 
 ### GET /api/calendar/events
-**Purpose:** Retrieve calendar events (both reservations and rentals)
-**Query Parameters:**
+
+**Purpose:** Retrieve calendar events (both reservations and rentals) **Query Parameters:**
+
 ```
 startDate, endDate, vehicleIds[], eventTypes[] (reservation|rental)
 ```
+
 **Response:**
+
 ```json
 {
   "events": [
@@ -77,7 +86,7 @@ startDate, endDate, vehicleIds[], eventTypes[] (reservation|rental)
       "endDate": "2024-08-17T10:00:00Z",
       "status": "confirmed",
       "confirmationNumber": "RES-20240806-0001",
-      "estimatedRevenue": 250.00,
+      "estimatedRevenue": 250.0,
       "className": "reservation-confirmed"
     }
   ]
@@ -85,8 +94,9 @@ startDate, endDate, vehicleIds[], eventTypes[] (reservation|rental)
 ```
 
 ### POST /api/reservations/{id}/reschedule
-**Purpose:** Reschedule reservation via drag-and-drop
-**Request Body:**
+
+**Purpose:** Reschedule reservation via drag-and-drop **Request Body:**
+
 ```json
 {
   "newPickupDatetime": "2024-08-16T10:00:00Z",
@@ -97,12 +107,15 @@ startDate, endDate, vehicleIds[], eventTypes[] (reservation|rental)
 ```
 
 ### GET /api/calendar/availability-gaps
-**Purpose:** Identify availability gaps for potential bookings
-**Query Parameters:**
+
+**Purpose:** Identify availability gaps for potential bookings **Query Parameters:**
+
 ```
 startDate, endDate, vehicleId, minimumGapHours
 ```
+
 **Response:**
+
 ```json
 {
   "gaps": [
@@ -111,15 +124,16 @@ startDate, endDate, vehicleId, minimumGapHours
       "startDatetime": "2024-08-16T14:00:00Z",
       "endDatetime": "2024-08-18T09:00:00Z",
       "durationHours": 43,
-      "potentialRevenue": 180.00
+      "potentialRevenue": 180.0
     }
   ]
 }
 ```
 
 ### GET /api/calendar/conflicts
-**Purpose:** Detect and report scheduling conflicts
-**Response:**
+
+**Purpose:** Detect and report scheduling conflicts **Response:**
+
 ```json
 {
   "conflicts": [
@@ -127,8 +141,8 @@ startDate, endDate, vehicleId, minimumGapHours
       "vehicleId": "uuid",
       "conflictType": "overlap",
       "events": [
-        {"id": "uuid1", "type": "reservation"},
-        {"id": "uuid2", "type": "rental"}
+        { "id": "uuid1", "type": "reservation" },
+        { "id": "uuid2", "type": "rental" }
       ],
       "severity": "high",
       "autoResolution": "upgrade_reservation"
@@ -140,6 +154,7 @@ startDate, endDate, vehicleId, minimumGapHours
 ## Database Schema Requirements
 
 ### New Tables
+
 ```sql
 CREATE TABLE calendar_views (
     id UUID PRIMARY KEY,
@@ -163,9 +178,10 @@ CREATE TABLE calendar_interactions (
 ```
 
 ### Views
+
 ```sql
 CREATE VIEW calendar_events AS
-SELECT 
+SELECT
     r.id,
     'reservation' as event_type,
     r.confirmation_number as reference_number,
@@ -181,7 +197,7 @@ WHERE r.status != 'CANCELLED'
 
 UNION ALL
 
-SELECT 
+SELECT
     rc.id,
     'rental' as event_type,
     rc.contract_number as reference_number,
@@ -197,6 +213,7 @@ WHERE rc.status IN ('ACTIVE', 'OVERDUE');
 ```
 
 ### Indexes
+
 ```sql
 CREATE INDEX idx_calendar_events_date_range ON reservations(pickup_datetime, return_datetime);
 CREATE INDEX idx_calendar_events_vehicle ON reservations(vehicle_id);
@@ -205,6 +222,7 @@ CREATE INDEX idx_calendar_events_vehicle ON reservations(vehicle_id);
 ## UI/UX Considerations
 
 ### Calendar Interface
+
 - **Unified Display:** Single calendar showing both reservations and rentals
 - **Color Coding:** Consistent visual language across all event types
 - **Interactive Elements:** Click, hover, and drag interactions
@@ -212,18 +230,21 @@ CREATE INDEX idx_calendar_events_vehicle ON reservations(vehicle_id);
 - **Zoom Levels:** Day, week, month views with appropriate detail levels
 
 ### Navigation and Filtering
+
 - **Quick Filters:** Toggle buttons for event types, statuses, date ranges
 - **Vehicle Selection:** Multi-select dropdown or checkbox list
 - **Date Navigation:** Smooth scrolling and jump-to-date functionality
 - **Search Integration:** Find specific reservations/rentals quickly
 
 ### Interaction Design
+
 - **Drag Feedback:** Visual indicators during drag operations
 - **Drop Zones:** Clear indication of valid drop targets
 - **Confirmation Dialogs:** Verify important actions like rescheduling
 - **Undo Functionality:** Reverse recent changes if needed
 
 ### Information Display
+
 - **Event Tooltips:** Hover for quick details
 - **Side Panel:** Detailed information when event selected
 - **Mini Forms:** Quick edit capabilities without leaving calendar
@@ -232,41 +253,49 @@ CREATE INDEX idx_calendar_events_vehicle ON reservations(vehicle_id);
 ## Testing Scenarios
 
 ### Scenario 1: Basic Calendar Display
+
 **Given:** Staff member opens fleet calendar  
 **When:** Viewing current month with reservations and rentals  
 **Then:** Both event types display with correct colors and information
 
 ### Scenario 2: Drag-and-Drop Rescheduling
+
 **Given:** Confirmed reservation needs to be moved  
 **When:** Staff drags reservation to different dates/vehicle  
 **Then:** System validates availability and updates reservation if valid
 
 ### Scenario 3: Availability Gap Identification
+
 **Given:** Staff looking for optimization opportunities  
 **When:** Viewing calendar with gap analysis enabled  
 **Then:** Available time slots highlighted for potential bookings
 
 ### Scenario 4: Conflict Detection and Warning
+
 **Given:** Overlapping reservation and rental detected  
 **When:** Conflict appears on calendar  
 **Then:** Visual warning displayed with resolution suggestions
 
 ### Scenario 5: Real-time Updates
+
 **Given:** Multiple staff members viewing same calendar  
 **When:** One staff member creates new reservation  
 **Then:** Calendar updates for all users without refresh
 
 ### Scenario 6: Filter and View Management
+
 **Given:** Staff member wants to focus on specific vehicles  
 **When:** Applying filters and saving custom view  
 **Then:** Calendar shows only selected data and saves preferences
 
 ### Scenario 7: Quick Action Menu Usage
+
 **Given:** Staff member right-clicks on reservation  
 **When:** Selecting "Convert to Rental" from context menu  
 **Then:** Conversion workflow opens with reservation pre-populated
 
 ### Scenario 8: Mobile Calendar Interaction
+
 **Given:** Staff member using tablet device  
 **When:** Viewing and interacting with calendar  
 **Then:** Touch interactions work smoothly with appropriate gesture support
@@ -295,12 +324,14 @@ CREATE INDEX idx_calendar_events_vehicle ON reservations(vehicle_id);
 ## Dependencies
 
 ### Internal Dependencies
+
 - Fleet calendar system (Epic 2, Story 2)
 - Reservation management system (Stories 1-5)
 - Real-time availability tracking (Epic 2, Story 3)
 - Staff authentication and permissions system
 
 ### External Dependencies
+
 - Calendar rendering library (FullCalendar, React Calendar, etc.)
 - WebSocket service for real-time updates
 - Drag-and-drop interaction library
@@ -308,26 +339,32 @@ CREATE INDEX idx_calendar_events_vehicle ON reservations(vehicle_id);
 ## Risk Mitigation
 
 ### Risk: Performance issues with large date ranges or fleet sizes
+
 - **Mitigation:** Implement pagination, lazy loading, and data virtualization
 - **Contingency:** Fallback to simplified view mode with reduced features
 
 ### Risk: Real-time synchronization failures
+
 - **Mitigation:** Implement robust error handling and automatic reconnection
 - **Contingency:** Manual refresh capability and offline mode indicators
 
 ### Risk: Drag-and-drop conflicts in multi-user environments
+
 - **Mitigation:** Optimistic locking and conflict detection algorithms
 - **Contingency:** Real-time conflict warnings and resolution workflows
 
 ### Risk: Mobile usability challenges
+
 - **Mitigation:** Touch-optimized interface design and gesture recognition
 - **Contingency:** Simplified mobile view with essential features only
 
 ### Risk: Visual confusion between different event types
+
 - **Mitigation:** Clear color coding and iconography with user testing
 - **Contingency:** Toggle modes to show only one event type at a time
 
 ## Success Criteria
+
 - Calendar loading time <3 seconds for typical month view
 - Drag-and-drop operations complete in <1 second
 - 95% staff adoption rate within 4 weeks

@@ -20,7 +20,8 @@
    - AND show maximum 20 results per page with pagination
    - AND display customer photo thumbnail, full name, phone, and status badge
    - AND indicate customer status with color coding (green=active, red=blacklisted, gold=VIP)
-   - AND handle search errors with specific messages (e.g., "No results found", "Search term too short")
+   - AND handle search errors with specific messages (e.g., "No results found", "Search term too
+     short")
 
 2. **New Customer Creation**
    - GIVEN mandatory fields: first name, last name, email, phone, ID type, ID number
@@ -43,7 +44,7 @@
    - AND track all changes with timestamp, user ID, and field changed
    - AND limit notes field to 2000 characters
    - AND support 5 flag types: blacklist, VIP, payment-risk, damage-risk, special-needs
-   - AND enforce GDPR data retention: 
+   - AND enforce GDPR data retention:
      - Active customers: retain indefinitely
      - Inactive customers: auto-flag for review after 3 years
      - Deleted customers: anonymize after 30 days
@@ -77,7 +78,8 @@
    - GIVEN risk management requirements
    - WHEN flagging customers
    - THEN require selection from predefined risk reasons (max 500 chars custom note)
-   - AND display modal warning when selecting flagged customer: "⚠️ This customer is flagged as [reason]"
+   - AND display modal warning when selecting flagged customer: "⚠️ This customer is flagged as
+     [reason]"
    - AND support temporary blacklist with expiry date (max 2 years)
    - AND support permanent blacklist with mandatory reason
    - AND require manager approval within 24 hours for blacklist changes
@@ -169,7 +171,7 @@ customer_documents (
 );
 
 -- Customer search indexes
-CREATE INDEX idx_customers_search ON customers 
+CREATE INDEX idx_customers_search ON customers
 USING GIN (to_tsvector('english', first_name || ' ' || last_name || ' ' || email));
 CREATE INDEX idx_customers_phone ON customers (phone);
 CREATE INDEX idx_customers_email ON customers (email);
@@ -256,6 +258,7 @@ CREATE INDEX idx_customers_email ON customers (email);
 **Story Points:** 8
 
 **Breakdown:**
+
 - Backend development (3 points)
 - Frontend development (2 points)
 - Photo storage integration (1 point)
@@ -263,11 +266,13 @@ CREATE INDEX idx_customers_email ON customers (email);
 - Testing and bug fixes (1 point)
 
 **Dependencies:**
+
 - Database infrastructure setup
 - Photo storage solution selection
 - Authentication system implementation
 
 **Risks:**
+
 - Photo storage costs may exceed budget
 - Search performance with large datasets
 - GDPR compliance complexity

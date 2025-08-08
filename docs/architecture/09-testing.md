@@ -2,7 +2,9 @@
 
 ## Testing Strategy Overview
 
-The CRMS testing architecture follows a comprehensive pyramid approach ensuring code quality, reliability, and confidence in deployments. Our testing strategy emphasizes automated testing at all levels with particular focus on critical business flows.
+The CRMS testing architecture follows a comprehensive pyramid approach ensuring code quality,
+reliability, and confidence in deployments. Our testing strategy emphasizes automated testing at all
+levels with particular focus on critical business flows.
 
 ### Test Pyramid Structure
 
@@ -10,7 +12,7 @@ The CRMS testing architecture follows a comprehensive pyramid approach ensuring 
             /\
            /E2E\         5%  - Critical user journeys
           /------\
-         /Integr. \     20%  - API & component integration  
+         /Integr. \     20%  - API & component integration
         /----------\
        /    Unit    \   75%  - Business logic & utilities
       /--------------\
@@ -19,6 +21,7 @@ The CRMS testing architecture follows a comprehensive pyramid approach ensuring 
 ## Testing Stack & Tools
 
 ### Core Testing Framework
+
 ```json
 {
   "dependencies": {
@@ -38,6 +41,7 @@ The CRMS testing architecture follows a comprehensive pyramid approach ensuring 
 ### Testing Configuration
 
 #### Vitest Configuration
+
 ```typescript
 // vitest.config.ts
 import { defineConfig } from 'vitest/config';
@@ -53,46 +57,40 @@ export default defineConfig({
     include: [
       'src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
       'tests/unit/**/*.{test,spec}.{js,ts,tsx}',
-      'tests/integration/**/*.{test,spec}.{js,ts,tsx}'
+      'tests/integration/**/*.{test,spec}.{js,ts,tsx}',
     ],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
-      exclude: [
-        'node_modules/',
-        'dist/',
-        'tests/',
-        '**/*.d.ts',
-        '**/*.config.*',
-        'src/types/'
-      ],
+      exclude: ['node_modules/', 'dist/', 'tests/', '**/*.d.ts', '**/*.config.*', 'src/types/'],
       thresholds: {
         global: {
           branches: 80,
           functions: 80,
           lines: 80,
-          statements: 80
+          statements: 80,
         },
         // Critical business logic must have higher coverage
         'src/lib/business/**': {
           branches: 95,
           functions: 95,
           lines: 95,
-          statements: 95
-        }
-      }
-    }
+          statements: 95,
+        },
+      },
+    },
   },
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
-      '@tests': resolve(__dirname, './tests')
-    }
-  }
+      '@tests': resolve(__dirname, './tests'),
+    },
+  },
 });
 ```
 
 #### Test Setup
+
 ```typescript
 // tests/setup.ts
 import '@testing-library/jest-dom';
@@ -119,33 +117,34 @@ expect.extend({
   toBeSwissPhoneNumber: (received: string) => {
     const swissPhoneRegex = /^\+41[0-9\s]{9,}$/;
     const pass = swissPhoneRegex.test(received);
-    
+
     return {
       pass,
-      message: () => 
-        pass 
+      message: () =>
+        pass
           ? `Expected ${received} not to be a valid Swiss phone number`
-          : `Expected ${received} to be a valid Swiss phone number`
+          : `Expected ${received} to be a valid Swiss phone number`,
     };
   },
-  
+
   toBeValidCHF: (received: number) => {
     const pass = Number.isFinite(received) && received >= 0;
-    
+
     return {
       pass,
       message: () =>
         pass
           ? `Expected ${received} not to be a valid CHF amount`
-          : `Expected ${received} to be a valid CHF amount (positive number)`
+          : `Expected ${received} to be a valid CHF amount (positive number)`,
     };
-  }
+  },
 });
 ```
 
 ## Unit Testing
 
 ### Business Logic Testing
+
 ```typescript
 // tests/unit/lib/business/contract-calculator.test.ts
 import { describe, it, expect } from 'vitest';
@@ -157,35 +156,35 @@ describe('ContractCalculator', () => {
 
   describe('calculateTotal', () => {
     it('should calculate correct total for daily rental', () => {
-      const vehicle = vehicleFactory.build({ daily_rate: 89.00 });
+      const vehicle = vehicleFactory.build({ daily_rate: 89.0 });
       const contract = contractFactory.build({
         vehicle,
         total_days: 3,
-        rate_type: 'daily'
+        rate_type: 'daily',
       });
 
       const result = calculator.calculateTotal(contract);
 
-      expect(result.subtotal).toBe(267.00);
+      expect(result.subtotal).toBe(267.0);
       expect(result.vat_amount).toBe(20.56); // 7.7%
       expect(result.total_amount).toBe(287.56);
     });
 
     it('should apply weekly discount correctly', () => {
       const vehicle = vehicleFactory.build({
-        daily_rate: 89.00,
-        weekly_rate: 500.00
+        daily_rate: 89.0,
+        weekly_rate: 500.0,
       });
       const contract = contractFactory.build({
         vehicle,
         total_days: 7,
-        rate_type: 'weekly'
+        rate_type: 'weekly',
       });
 
       const result = calculator.calculateTotal(contract);
 
-      expect(result.subtotal).toBe(500.00);
-      expect(result.savings).toBe(123.00); // vs daily rate
+      expect(result.subtotal).toBe(500.0);
+      expect(result.savings).toBe(123.0); // vs daily rate
     });
 
     it('should handle extra kilometers', () => {
@@ -193,27 +192,27 @@ describe('ContractCalculator', () => {
         km_included: 200,
         extra_km_rate: 0.25,
         pickup_km: 15000,
-        return_km: 15350 // 350km driven, 150km extra
+        return_km: 15350, // 350km driven, 150km extra
       });
 
       const result = calculator.calculateExtraCharges(contract);
 
       expect(result.extra_km).toBe(150);
-      expect(result.extra_km_charge).toBe(37.50);
+      expect(result.extra_km_charge).toBe(37.5);
     });
 
     it('should calculate fuel charges for Swiss prices', () => {
       const contract = contractFactory.build({
         pickup_fuel: 80,
         return_fuel: 20,
-        vehicle: vehicleFactory.build({ fuel_capacity: 50 })
+        vehicle: vehicleFactory.build({ fuel_capacity: 50 }),
       });
 
       const result = calculator.calculateFuelCharges(contract, 1.65); // CHF per liter
 
       expect(result.fuel_difference).toBe(60); // 60% less fuel
       expect(result.fuel_charge).toBeValidCHF();
-      expect(result.fuel_charge).toBe(49.50); // 30L * 1.65
+      expect(result.fuel_charge).toBe(49.5); // 30L * 1.65
     });
   });
 
@@ -221,24 +220,25 @@ describe('ContractCalculator', () => {
     it('should handle zero-day rentals gracefully', () => {
       const contract = contractFactory.build({ total_days: 0 });
 
-      expect(() => calculator.calculateTotal(contract))
-        .toThrow('Rental duration must be at least 1 day');
+      expect(() => calculator.calculateTotal(contract)).toThrow(
+        'Rental duration must be at least 1 day',
+      );
     });
 
     it('should handle negative fuel levels', () => {
       const contract = contractFactory.build({
         pickup_fuel: -10,
-        return_fuel: 50
+        return_fuel: 50,
       });
 
-      expect(() => calculator.calculateFuelCharges(contract))
-        .toThrow('Invalid fuel levels');
+      expect(() => calculator.calculateFuelCharges(contract)).toThrow('Invalid fuel levels');
     });
   });
 });
 ```
 
 ### Utility Function Testing
+
 ```typescript
 // tests/unit/lib/utils/swiss.test.ts
 import { describe, it, expect } from 'vitest';
@@ -246,7 +246,7 @@ import {
   formatSwissPhone,
   validateSwissVAT,
   formatCHF,
-  generateQRReference
+  generateQRReference,
 } from '@/lib/utils/swiss';
 
 describe('Swiss utilities', () => {
@@ -279,8 +279,8 @@ describe('Swiss utilities', () => {
 
   describe('formatCHF', () => {
     it('should format Swiss currency correctly', () => {
-      expect(formatCHF(1234.56)).toBe('CHF 1\'234.56');
-      expect(formatCHF(1000000.00)).toBe('CHF 1\'000\'000.00');
+      expect(formatCHF(1234.56)).toBe("CHF 1'234.56");
+      expect(formatCHF(1000000.0)).toBe("CHF 1'000'000.00");
     });
 
     it('should handle zero and negative amounts', () => {
@@ -292,7 +292,7 @@ describe('Swiss utilities', () => {
   describe('generateQRReference', () => {
     it('should generate valid ISO 11649 reference', () => {
       const ref = generateQRReference('payment-123');
-      
+
       expect(ref).toMatch(/^RF\d{2}\d+$/);
       expect(ref.length).toBeLessThanOrEqual(25);
     });
@@ -300,7 +300,7 @@ describe('Swiss utilities', () => {
     it('should generate unique references', () => {
       const ref1 = generateQRReference('payment-123');
       const ref2 = generateQRReference('payment-124');
-      
+
       expect(ref1).not.toBe(ref2);
     });
   });
@@ -310,6 +310,7 @@ describe('Swiss utilities', () => {
 ## Component Testing
 
 ### Form Component Testing
+
 ```typescript
 // tests/unit/components/forms/ContractForm.test.tsx
 import { describe, it, expect, vi } from 'vitest';
@@ -372,7 +373,7 @@ describe('ContractForm', () => {
   it('should calculate total automatically', async () => {
     const user = userEvent.setup();
     const vehicle = vehicleFactory.build({ daily_rate: 89.00 });
-    
+
     render(<ContractForm {...mockProps} vehicles={[vehicle]} />);
 
     // Fill form
@@ -419,6 +420,7 @@ describe('ContractForm', () => {
 ```
 
 ### Dashboard Component Testing
+
 ```typescript
 // tests/unit/components/dashboard/RevenueChart.test.tsx
 import { describe, it, expect, vi } from 'vitest';
@@ -477,6 +479,7 @@ describe('RevenueChart', () => {
 ## Integration Testing
 
 ### API Route Testing
+
 ```typescript
 // tests/integration/api/contracts.test.ts
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
@@ -510,23 +513,23 @@ describe('/api/contracts', () => {
         pickup_km: 15000,
         pickup_fuel: 80,
         rate_type: 'daily',
-        base_rate: 89.00,
-        deposit_amount: 500.00
+        base_rate: 89.0,
+        deposit_amount: 500.0,
       };
 
       const { req, res } = createMocks({
         method: 'POST',
         body: contractData,
         headers: {
-          'authorization': `Bearer ${testUser.access_token}`,
-          'content-type': 'application/json'
-        }
+          authorization: `Bearer ${testUser.access_token}`,
+          'content-type': 'application/json',
+        },
       });
 
       await POST(req as any);
 
       expect(res._getStatusCode()).toBe(201);
-      
+
       const response = JSON.parse(res._getData());
       expect(response.success).toBe(true);
       expect(response.data.contract_number).toMatch(/^[A-Z]+-2025-\d{5}$/);
@@ -543,14 +546,14 @@ describe('/api/contracts', () => {
         method: 'POST',
         body: invalidData,
         headers: {
-          'authorization': `Bearer ${testUser.access_token}`,
-        }
+          authorization: `Bearer ${testUser.access_token}`,
+        },
       });
 
       await POST(req as any);
 
       expect(res._getStatusCode()).toBe(422);
-      
+
       const response = JSON.parse(res._getData());
       expect(response.success).toBe(false);
       expect(response.error.code).toBe('VALIDATION_ERROR');
@@ -558,22 +561,22 @@ describe('/api/contracts', () => {
 
     it('should enforce company isolation', async () => {
       const otherCompanyUser = await createTestUser(testDb, 'other-company-id');
-      
+
       const contractData = {
         customer_id: 'customer-123',
         vehicle_id: 'vehicle-123',
         start_date: '2025-08-10T10:00:00Z',
         end_date: '2025-08-15T10:00:00Z',
         pickup_km: 15000,
-        pickup_fuel: 80
+        pickup_fuel: 80,
       };
 
       const { req, res } = createMocks({
         method: 'POST',
         body: contractData,
         headers: {
-          'authorization': `Bearer ${otherCompanyUser.access_token}`,
-        }
+          authorization: `Bearer ${otherCompanyUser.access_token}`,
+        },
       });
 
       await POST(req as any);
@@ -585,6 +588,7 @@ describe('/api/contracts', () => {
 ```
 
 ### Database Integration Testing
+
 ```typescript
 // tests/integration/database/contract-queries.test.ts
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
@@ -602,21 +606,16 @@ describe('Contract Database Operations', () => {
 
   afterAll(async () => {
     // Cleanup test data
-    await supabase
-      .from('contracts')
-      .delete()
-      .eq('company_id', testCompanyId);
+    await supabase.from('contracts').delete().eq('company_id', testCompanyId);
   });
 
   it('should enforce row level security', async () => {
     // Create contract with different company_id
     const otherCompanyContract = contractFactory.build({
-      company_id: 'other-company'
+      company_id: 'other-company',
     });
 
-    await supabase
-      .from('contracts')
-      .insert(otherCompanyContract);
+    await supabase.from('contracts').insert(otherCompanyContract);
 
     // Try to fetch with different company context
     const { data, error } = await supabase
@@ -631,14 +630,10 @@ describe('Contract Database Operations', () => {
   it('should automatically generate contract numbers', async () => {
     const contract = contractFactory.build({
       company_id: testCompanyId,
-      contract_number: undefined // Should be auto-generated
+      contract_number: undefined, // Should be auto-generated
     });
 
-    const { data, error } = await supabase
-      .from('contracts')
-      .insert(contract)
-      .select()
-      .single();
+    const { data, error } = await supabase.from('contracts').insert(contract).select().single();
 
     expect(error).toBeNull();
     expect(data.contract_number).toMatch(/^[A-Z]+-2025-\d{5}$/);
@@ -648,12 +643,10 @@ describe('Contract Database Operations', () => {
     const invalidContract = contractFactory.build({
       company_id: testCompanyId,
       start_date: '2025-08-15T10:00:00Z',
-      end_date: '2025-08-10T10:00:00Z' // End before start
+      end_date: '2025-08-10T10:00:00Z', // End before start
     });
 
-    const { error } = await supabase
-      .from('contracts')
-      .insert(invalidContract);
+    const { error } = await supabase.from('contracts').insert(invalidContract);
 
     expect(error).toBeTruthy();
     expect(error.code).toBe('23514'); // Check constraint violation
@@ -664,6 +657,7 @@ describe('Contract Database Operations', () => {
 ## End-to-End Testing
 
 ### Playwright Configuration
+
 ```typescript
 // playwright.config.ts
 import { defineConfig, devices } from '@playwright/test';
@@ -674,10 +668,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: [
-    ['html'],
-    ['junit', { outputFile: 'test-results/junit.xml' }]
-  ],
+  reporter: [['html'], ['junit', { outputFile: 'test-results/junit.xml' }]],
   use: {
     baseURL: process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:3000',
     trace: 'on-first-retry',
@@ -715,6 +706,7 @@ export default defineConfig({
 ```
 
 ### Critical User Journey Tests
+
 ```typescript
 // tests/e2e/contract-creation.spec.ts
 import { test, expect } from '@playwright/test';
@@ -754,17 +746,17 @@ test.describe('Contract Creation Flow', () => {
     await page.selectOption('[data-testid="pickup-fuel"]', '80');
 
     // Upload photos
-    await page.setInputFiles(
-      '[data-testid="photo-upload"]',
-      ['tests/fixtures/vehicle-front.jpg', 'tests/fixtures/vehicle-rear.jpg']
-    );
+    await page.setInputFiles('[data-testid="photo-upload"]', [
+      'tests/fixtures/vehicle-front.jpg',
+      'tests/fixtures/vehicle-rear.jpg',
+    ]);
 
     // Select payment method
     await page.click('[data-testid="payment-card"]');
 
     // Review and confirm
     await page.click('[data-testid="review-button"]');
-    
+
     // Verify calculated amounts
     await expect(page.locator('[data-testid="subtotal"]')).toContainText('CHF 267.00');
     await expect(page.locator('[data-testid="total"]')).toContainText('CHF 287.56');
@@ -792,7 +784,7 @@ test.describe('Contract Creation Flow', () => {
 
     // Wait for Stripe iframe
     const stripeFrame = page.frameLocator('[name^="__privateStripeFrame"]');
-    
+
     // Fill card details
     await stripeFrame.fill('[placeholder="Card number"]', '4242424242424242');
     await stripeFrame.fill('[placeholder="MM / YY"]', '12/25');
@@ -812,19 +804,21 @@ test.describe('Contract Creation Flow', () => {
     // Test Swiss phone number validation
     await page.fill('[data-testid="customer-phone"]', '123456789');
     await page.blur('[data-testid="customer-phone"]');
-    
-    await expect(page.locator('[data-testid="phone-error"]'))
-      .toContainText('Invalid Swiss phone number format');
+
+    await expect(page.locator('[data-testid="phone-error"]')).toContainText(
+      'Invalid Swiss phone number format',
+    );
 
     // Correct the phone number
     await page.fill('[data-testid="customer-phone"]', '+41 79 123 45 67');
-    
+
     await expect(page.locator('[data-testid="phone-error"]')).not.toBeVisible();
   });
 });
 ```
 
 ### Performance Testing
+
 ```typescript
 // tests/e2e/performance.spec.ts
 import { test, expect } from '@playwright/test';
@@ -839,14 +833,16 @@ test.describe('Performance Tests', () => {
 
     // Measure performance
     const performance = await page.evaluate(() => {
-      const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+      const navigation = performance.getEntriesByType(
+        'navigation',
+      )[0] as PerformanceNavigationTiming;
       const paint = performance.getEntriesByType('paint');
-      
+
       return {
         lcp: navigation.loadEventStart - navigation.fetchStart,
-        fcp: paint.find(p => p.name === 'first-contentful-paint')?.startTime || 0,
+        fcp: paint.find((p) => p.name === 'first-contentful-paint')?.startTime || 0,
         cls: 0, // Would need layout shift observer
-        fid: 0  // Would need interaction observer
+        fid: 0, // Would need interaction observer
       };
     });
 
@@ -858,22 +854,22 @@ test.describe('Performance Tests', () => {
   test('should handle large datasets efficiently', async ({ page }) => {
     // Create test data
     await page.goto('/contracts');
-    
+
     // Load large contract list
     await page.selectOption('[data-testid="items-per-page"]', '100');
-    
+
     const startTime = Date.now();
     await page.waitForSelector('[data-testid="contracts-table"]');
     const loadTime = Date.now() - startTime;
-    
+
     expect(loadTime).toBeLessThan(3000); // Should load within 3 seconds
-    
+
     // Test scroll performance
     await page.evaluate(() => {
       const table = document.querySelector('[data-testid="contracts-table"]');
       table?.scrollTo(0, table.scrollHeight);
     });
-    
+
     // Verify no layout thrashing
     await page.waitForTimeout(100);
     await expect(page.locator('[data-testid="loading-spinner"]')).not.toBeVisible();
@@ -884,6 +880,7 @@ test.describe('Performance Tests', () => {
 ## Test Data & Factories
 
 ### Test Factories
+
 ```typescript
 // tests/factories/index.ts
 import { Factory } from 'factory-bot';
@@ -910,7 +907,7 @@ Factory.define('customer', () => ({
   is_blacklisted: false,
   verified: true,
   created_at: faker.date.recent(),
-  updated_at: faker.date.recent()
+  updated_at: faker.date.recent(),
 }));
 
 // Vehicle factory
@@ -938,13 +935,13 @@ Factory.define('vehicle', () => ({
   features: faker.helpers.arrayElements(['GPS', 'Bluetooth', 'Air Conditioning', 'Heated Seats']),
   is_active: true,
   created_at: faker.date.recent(),
-  updated_at: faker.date.recent()
+  updated_at: faker.date.recent(),
 }));
 
 // Contract factory
 Factory.define('contract', () => {
   const startDate = faker.date.future();
-  const endDate = new Date(startDate.getTime() + (3 * 24 * 60 * 60 * 1000)); // 3 days later
+  const endDate = new Date(startDate.getTime() + 3 * 24 * 60 * 60 * 1000); // 3 days later
   const baseRate = faker.number.float({ min: 50, max: 200, precision: 0.05 });
   const totalDays = 3;
   const subtotal = baseRate * totalDays;
@@ -979,7 +976,7 @@ Factory.define('contract', () => {
     status: 'draft',
     created_at: faker.date.recent(),
     updated_at: faker.date.recent(),
-    version: 1
+    version: 1,
   };
 });
 
@@ -990,6 +987,7 @@ export const contractFactory = Factory.build('contract');
 ```
 
 ### Test Helpers
+
 ```typescript
 // tests/helpers/database.ts
 import { createClient } from '@supabase/supabase-js';
@@ -997,7 +995,7 @@ import { createClient } from '@supabase/supabase-js';
 export async function createTestDatabase() {
   const supabase = createClient(
     process.env.TEST_SUPABASE_URL!,
-    process.env.TEST_SUPABASE_ANON_KEY!
+    process.env.TEST_SUPABASE_ANON_KEY!,
   );
 
   return supabase;
@@ -1035,6 +1033,7 @@ export async function seedTestData(supabase: any) {
 ## Test Scripts & Commands
 
 ### Package.json Scripts
+
 ```json
 {
   "scripts": {
@@ -1053,6 +1052,7 @@ export async function seedTestData(supabase: any) {
 ```
 
 ### CI/CD Integration
+
 ```yaml
 # .github/workflows/test.yml
 name: Test Suite
@@ -1068,11 +1068,11 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-      
+
       - run: npm ci
       - run: npm run test:unit
       - run: npm run test:coverage
-      
+
       - uses: codecov/codecov-action@v3
         with:
           file: ./coverage/lcov.info
@@ -1085,10 +1085,7 @@ jobs:
         env:
           POSTGRES_PASSWORD: postgres
         options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -1114,6 +1111,5 @@ jobs:
 
 ---
 
-**Document Version:** 3.0 - Testing Architecture
-**Last Updated:** 2025-08-06
-**Status:** Ready for Implementation
+**Document Version:** 3.0 - Testing Architecture **Last Updated:** 2025-08-06 **Status:** Ready for
+Implementation

@@ -1,12 +1,14 @@
 # Story 05: Reservation Modifications
 
 ## Story Information
+
 - **Story ID:** RS-05
 - **Epic:** Epic 5 - Reservation System
 - **Priority:** Medium
 - **Story Points:** 8
 
 ## User Story
+
 **As a** rental staff member  
 **I want to** modify existing reservations efficiently  
 **So that** customer changes are accommodated while maintaining data integrity and proper pricing
@@ -29,6 +31,7 @@
 ## Technical Implementation Notes
 
 ### Modification Types
+
 - **Date Changes:** Pickup/return date or time adjustments
 - **Duration Changes:** Extending or shortening rental period
 - **Vehicle Changes:** Upgrade, downgrade, or lateral moves
@@ -36,12 +39,14 @@
 - **Customer Details:** Contact information or special requirements
 
 ### Business Rules
+
 - **Modification Fees:** Flat fee or percentage-based depending on change type
 - **Price Protection:** Some modifications may honor original rates vs. current rates
 - **Availability Priority:** Existing reservations have priority over new bookings
 - **Change Limits:** Restrict number of modifications per reservation
 
 ### Version Control
+
 - Each modification creates new version while preserving original
 - Change history tracks what changed, when, who made change
 - Original reservation remains intact for audit purposes
@@ -49,8 +54,9 @@
 ## API Endpoints Needed
 
 ### PUT /api/reservations/{id}
-**Purpose:** Modify existing reservation
-**Request Body:**
+
+**Purpose:** Modify existing reservation **Request Body:**
+
 ```json
 {
   "modifications": {
@@ -64,7 +70,9 @@
   "applyModificationFee": true
 }
 ```
+
 **Response:**
+
 ```json
 {
   "reservationId": "uuid",
@@ -74,37 +82,40 @@
       "field": "returnDatetime",
       "oldValue": "2024-08-17T10:00:00Z",
       "newValue": "2024-08-19T10:00:00Z",
-      "priceImpact": 85.00
+      "priceImpact": 85.0
     }
   ],
-  "newTotal": 335.00,
-  "modificationFee": 15.00,
+  "newTotal": 335.0,
+  "modificationFee": 15.0,
   "confirmationSent": true
 }
 ```
 
 ### GET /api/reservations/{id}/modification-preview
-**Purpose:** Preview modification impacts before applying
-**Query Parameters:**
+
+**Purpose:** Preview modification impacts before applying **Query Parameters:**
+
 ```
 pickupDatetime, returnDatetime, vehicleId, extras
 ```
+
 **Response:**
+
 ```json
 {
   "availabilityStatus": "available",
   "priceChanges": {
-    "originalTotal": 250.00,
-    "newTotal": 335.00,
-    "difference": 85.00,
-    "modificationFee": 15.00
+    "originalTotal": 250.0,
+    "newTotal": 335.0,
+    "difference": 85.0,
+    "modificationFee": 15.0
   },
   "conflicts": [],
   "suggestions": [
     {
       "type": "vehicle_upgrade",
       "vehicleId": "uuid",
-      "additionalCost": 25.00,
+      "additionalCost": 25.0,
       "reason": "Original vehicle unavailable for new dates"
     }
   ]
@@ -112,8 +123,9 @@ pickupDatetime, returnDatetime, vehicleId, extras
 ```
 
 ### GET /api/reservations/{id}/modification-history
-**Purpose:** Retrieve complete modification history
-**Response:**
+
+**Purpose:** Retrieve complete modification history **Response:**
+
 ```json
 {
   "reservationId": "uuid",
@@ -132,8 +144,9 @@ pickupDatetime, returnDatetime, vehicleId, extras
 ```
 
 ### POST /api/reservations/{id}/suggest-alternatives
-**Purpose:** Get alternative options when modification conflicts arise
-**Request Body:**
+
+**Purpose:** Get alternative options when modification conflicts arise **Request Body:**
+
 ```json
 {
   "desiredChanges": {
@@ -146,6 +159,7 @@ pickupDatetime, returnDatetime, vehicleId, extras
 ## Database Schema Requirements
 
 ### New Tables
+
 ```sql
 CREATE TABLE reservation_modifications (
     id UUID PRIMARY KEY,
@@ -184,6 +198,7 @@ CREATE TABLE reservation_versions (
 ```
 
 ### Updated Tables
+
 ```sql
 ALTER TABLE reservations ADD COLUMN current_version INTEGER DEFAULT 1;
 ALTER TABLE reservations ADD COLUMN total_modifications INTEGER DEFAULT 0;
@@ -192,6 +207,7 @@ ALTER TABLE reservations ADD COLUMN modification_fee_total DECIMAL(10,2) DEFAULT
 ```
 
 ### Indexes
+
 ```sql
 CREATE INDEX idx_modifications_reservation ON reservation_modifications(reservation_id);
 CREATE INDEX idx_modifications_date ON reservation_modifications(modified_at);
@@ -201,6 +217,7 @@ CREATE INDEX idx_versions_reservation ON reservation_versions(reservation_id, ve
 ## UI/UX Considerations
 
 ### Modification Interface
+
 - **Side-by-side Comparison:** Original vs. modified reservation details
 - **Real-time Validation:** Instant feedback on availability and pricing
 - **Change Summary:** Clear display of what's changing and cost impact
@@ -208,12 +225,14 @@ CREATE INDEX idx_versions_reservation ON reservation_versions(reservation_id, ve
 - **Preview Mode:** Allow staff to explore changes before committing
 
 ### Customer Communication
+
 - **Change Summary Email:** Professional template highlighting key changes
 - **Price Explanation:** Breakdown of additional charges or savings
 - **New Confirmation:** Updated reservation details with same confirmation number
 - **Modification Receipt:** Separate document for the changes made
 
 ### Staff Workflow
+
 - **Quick Modification:** Common changes (extend by 1 day) with one-click options
 - **Batch Modifications:** Handle multiple related changes efficiently
 - **Approval Workflow:** Manager approval for large price increases
@@ -222,41 +241,49 @@ CREATE INDEX idx_versions_reservation ON reservation_versions(reservation_id, ve
 ## Testing Scenarios
 
 ### Scenario 1: Simple Date Extension
+
 **Given:** Customer wants to extend return date by 2 days  
 **When:** Staff modifies return date with vehicle available  
 **Then:** Price recalculated, modification fee applied, confirmation sent
 
 ### Scenario 2: Vehicle Upgrade Due to Availability
+
 **Given:** Original vehicle unavailable for extended dates  
 **When:** Staff selects alternative vehicle during modification  
 **Then:** System suggests appropriate upgrade, calculates new pricing
 
 ### Scenario 3: Conflicting Date Change
+
 **Given:** Customer wants to change pickup date  
 **When:** Desired dates conflict with existing booking  
 **Then:** System shows conflict warning, suggests alternative dates/vehicles
 
 ### Scenario 4: Multiple Simultaneous Changes
+
 **Given:** Customer wants different dates, vehicle, and extras  
 **When:** Staff makes all changes in single modification  
 **Then:** All changes tracked as single version, total impact calculated
 
 ### Scenario 5: Free Modification Within Grace Period
+
 **Given:** Modification made within 24 hours of original booking  
 **When:** Staff processes change  
 **Then:** No modification fee applied, only price difference charged
 
 ### Scenario 6: Modification Exceeding Limits
+
 **Given:** Reservation already modified 3 times (system limit)  
 **When:** Staff attempts 4th modification  
 **Then:** System requires manager approval or suggests cancellation/rebook
 
 ### Scenario 7: Price Protection Scenario
+
 **Given:** Customer has promotional rate, now wants to extend  
 **When:** Extension would use higher current rates  
 **Then:** System honors original rate structure for modifications
 
 ### Scenario 8: Modification History Review
+
 **Given:** Customer disputes charges on modified reservation  
 **When:** Staff reviews modification history  
 **Then:** Complete timeline shows what changed, when, and by whom
@@ -285,6 +312,7 @@ CREATE INDEX idx_versions_reservation ON reservation_versions(reservation_id, ve
 ## Dependencies
 
 ### Internal Dependencies
+
 - Reservation system (Stories 1, 2)
 - Fleet availability system (Epic 2)
 - Payment processing for additional charges (Epic 3)
@@ -292,32 +320,39 @@ CREATE INDEX idx_versions_reservation ON reservation_versions(reservation_id, ve
 - Staff management system for approval workflows
 
 ### External Dependencies
+
 - Email service for customer notifications
 - Payment gateway for processing additional charges
 
 ## Risk Mitigation
 
 ### Risk: Complex pricing calculations leading to errors
+
 - **Mitigation:** Comprehensive testing with edge cases and preview functionality
 - **Contingency:** Manual price override capability with audit trail
 
 ### Risk: Availability conflicts during modification process
+
 - **Mitigation:** Real-time availability checking with locking mechanism
 - **Contingency:** Alternative suggestion engine and staff override options
 
 ### Risk: Customer confusion about changes and charges
+
 - **Mitigation:** Clear communication templates and detailed change summaries
 - **Contingency:** Customer service scripts and dispute resolution procedures
 
 ### Risk: Data integrity issues with version control
+
 - **Mitigation:** Transaction-based modifications with rollback capability
 - **Contingency:** Data recovery procedures and manual correction tools
 
 ### Risk: Performance degradation with complex modifications
+
 - **Mitigation:** Optimized database queries and caching strategies
 - **Contingency:** Background processing for complex calculations
 
 ## Success Criteria
+
 - Modification processing time <90 seconds for standard changes
 - Price calculation accuracy >99.5%
 - Customer satisfaction >4.3/5 for modification experience

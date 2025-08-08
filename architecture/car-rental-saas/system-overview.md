@@ -2,13 +2,18 @@
 
 ## Executive Summary
 
-Based on comprehensive analysis of all documentation in the `docs/` folder, this document presents the complete Car Rental Management System (CRMS) architecture. The system is designed as a Swiss-compliant, multi-tenant SaaS platform for car rental SMEs, targeting 2-minute digital contracts and 10-15% revenue improvement.
+Based on comprehensive analysis of all documentation in the `docs/` folder, this document presents
+the complete Car Rental Management System (CRMS) architecture. The system is designed as a
+Swiss-compliant, multi-tenant SaaS platform for car rental SMEs, targeting 2-minute digital
+contracts and 10-15% revenue improvement.
 
 ## System Vision
 
-**Business Goal:** Modernize Swiss car rental operations with a streamlined, compliant, and profitable SaaS solution.
+**Business Goal:** Modernize Swiss car rental operations with a streamlined, compliant, and
+profitable SaaS solution.
 
 **Key Metrics:**
+
 - 2-minute digital contract creation (vs 15-30 minutes paper-based)
 - 10-15% revenue capture improvement
 - Swiss GDPR/FADP compliance
@@ -22,19 +27,19 @@ graph TB
         Web[Web Application<br/>Next.js PWA]
         Mobile[Mobile Browsers<br/>Responsive UI]
     end
-    
+
     subgraph "Edge Layer"
         CDN[Vercel Edge Network<br/>Frankfurt Region]
         Cache[Redis Cache<br/>Session & API Caching]
     end
-    
+
     subgraph "Application Tier"
         NextJS[Next.js 14 Application<br/>App Router + Server Actions]
         API[API Layer<br/>REST + GraphQL]
         Auth[Supabase Auth<br/>JWT + 2FA]
         RT[Real-time Layer<br/>WebSocket Subscriptions]
     end
-    
+
     subgraph "Business Logic"
         Contract[Contract Engine<br/>Digital Contracts]
         Payment[Payment Engine<br/>Swiss QR + Stripe]
@@ -42,26 +47,26 @@ graph TB
         PDF[PDF Generator<br/>Legal Documents]
         Fleet[Fleet Manager<br/>Real-time Tracking]
     end
-    
+
     subgraph "Data Tier"
         PG[(PostgreSQL 15<br/>Multi-tenant)]
         Storage[Supabase Storage<br/>Photos + PDFs]
         Search[Full-text Search<br/>Customer/Contract]
     end
-    
+
     subgraph "External Services"
         StripeAPI[Stripe API<br/>Payment Processing]
         QRBill[Swiss QR-Bill<br/>Generator]
         Email[Resend Email<br/>Notifications]
         Swiss[Swiss APIs<br/>Address/Banking]
     end
-    
+
     subgraph "Infrastructure"
         Monitor[Sentry + Analytics<br/>Error Tracking]
         Backup[Automated Backups<br/>PITR + Export]
         CICD[GitHub Actions<br/>Automated Deployment]
     end
-    
+
     Web --> CDN
     Mobile --> CDN
     CDN --> NextJS
@@ -91,6 +96,7 @@ graph TB
 ## Technology Stack Overview
 
 ### Core Platform
+
 - **Frontend Framework:** Next.js 14 with App Router (React 18+)
 - **Backend Platform:** Next.js API Routes + Supabase
 - **Database:** PostgreSQL 15 (Supabase managed)
@@ -98,12 +104,14 @@ graph TB
 - **Language:** TypeScript 5.0+ (strict mode)
 
 ### Swiss-Specific Stack
+
 - **Hosting:** Vercel Pro (Frankfurt region)
 - **Data Storage:** Supabase (Zurich/Frankfurt for Swiss residency)
 - **Payments:** Stripe + Swiss QR-Bill generation
 - **Compliance:** GDPR/FADP ready with audit logging
 
 ### Key Features
+
 - **Multi-tenancy:** Company-isolated data with RLS
 - **Real-time:** Fleet status and contract updates
 - **Photo Management:** Evidence capture with compression
@@ -114,6 +122,7 @@ graph TB
 ## Core Business Domains
 
 ### 1. Contract Operations (Epic 1)
+
 - Digital contract creation (<2 minutes)
 - Customer management with GDPR compliance
 - Contract modifications and completions
@@ -121,6 +130,7 @@ graph TB
 - Legal document generation with embedded photos
 
 ### 2. Fleet Management (Epic 2)
+
 - Real-time vehicle availability tracking
 - Maintenance scheduling and alerts
 - Fleet calendar visualization
@@ -128,6 +138,7 @@ graph TB
 - Status workflow management
 
 ### 3. Financial Processing (Epic 3)
+
 - Multi-channel payment processing (card, cash, TWINT, QR-bills)
 - Swiss QR-bill generation and validation
 - Automated deposit management
@@ -135,6 +146,7 @@ graph TB
 - Payment failure handling and recovery
 
 ### 4. Dashboard & Analytics (Epic 4)
+
 - Staff operations dashboard with real-time metrics
 - Owner business intelligence with ROI tracking
 - Revenue analytics and forecasting
@@ -142,6 +154,7 @@ graph TB
 - Alert and notification system
 
 ### 5. Photo Documentation (Epic 7)
+
 - Legal evidence capture system
 - Before/after comparison tools
 - Damage annotation and documentation
@@ -149,6 +162,7 @@ graph TB
 - Secure storage with access controls
 
 ### 6. System Security (Epic 6)
+
 - Multi-tenant user management
 - Authentication with 2FA
 - Comprehensive audit logging
@@ -158,6 +172,7 @@ graph TB
 ## Architecture Principles
 
 ### 1. Swiss Compliance First
+
 - Data residency in Switzerland/EU
 - GDPR/FADP compliance built-in
 - Audit logging for all operations
@@ -165,6 +180,7 @@ graph TB
 - Right to erasure implementation
 
 ### 2. Multi-Tenant SaaS
+
 - Complete company data isolation
 - Scalable pricing tiers (CHF 99-299/month)
 - Self-service onboarding
@@ -172,6 +188,7 @@ graph TB
 - White-label capabilities
 
 ### 3. Performance Optimized
+
 - Edge-first delivery (Vercel CDN)
 - Database query optimization
 - Image compression and CDN
@@ -179,6 +196,7 @@ graph TB
 - Offline-first PWA
 
 ### 4. Security by Design
+
 - JWT-based authentication
 - Row-level security (RLS)
 - API rate limiting
@@ -186,6 +204,7 @@ graph TB
 - Comprehensive security headers
 
 ### 5. Scalability Ready
+
 - Horizontal scaling architecture
 - Database connection pooling
 - CDN for static assets
@@ -195,6 +214,7 @@ graph TB
 ## User Experience Architecture
 
 ### Staff Operations Flow
+
 1. **Dashboard Review** → Quick status overview
 2. **Contract Creation** → 2-minute digital process
 3. **Photo Capture** → Evidence documentation
@@ -202,12 +222,14 @@ graph TB
 5. **Vehicle Management** → Real-time status updates
 
 ### Owner Management Flow
+
 1. **Business Dashboard** → ROI and revenue tracking
 2. **Fleet Overview** → Utilization analytics
 3. **Financial Reports** → Automated reconciliation
 4. **Staff Management** → Role-based access
 
 ### Customer Experience Flow
+
 1. **Quick Registration** → Streamlined onboarding
 2. **Digital Contract** → Tablet-based signing
 3. **Photo Verification** → Damage documentation
@@ -217,6 +239,7 @@ graph TB
 ## Integration Architecture
 
 ### External APIs
+
 - **Stripe API** → Credit card processing
 - **Swiss QR-Bill** → Local payment method
 - **Swiss Post API** → Address validation
@@ -224,6 +247,7 @@ graph TB
 - **Email Service** → Automated notifications
 
 ### Internal Services
+
 - **Auth Service** → User management
 - **Contract Service** → Business logic
 - **Payment Service** → Financial processing
@@ -241,7 +265,7 @@ sequenceDiagram
     participant DB as PostgreSQL
     participant Storage as File Storage
     participant Payment as Payment APIs
-    
+
     Staff->>App: Create Contract
     App->>Auth: Verify Session
     Auth-->>App: Valid JWT
@@ -260,24 +284,28 @@ sequenceDiagram
 ## Security Architecture Layers
 
 ### 1. Network Security
+
 - TLS 1.3 encryption
 - Web Application Firewall
 - DDoS protection
 - Geographic restrictions
 
 ### 2. Application Security
+
 - JWT authentication
 - RBAC permissions
 - Input validation
 - XSS/CSRF protection
 
 ### 3. Database Security
+
 - Row-level security (RLS)
 - Encrypted at rest
 - Audit logging
 - Connection pooling
 
 ### 4. File Security
+
 - Virus scanning
 - Type validation
 - Access controls
@@ -286,6 +314,7 @@ sequenceDiagram
 ## Deployment Architecture
 
 ### Production Environment
+
 - **Primary:** Vercel Pro (Frankfurt)
 - **Database:** Supabase Production (Zurich)
 - **CDN:** Global edge network
@@ -293,6 +322,7 @@ sequenceDiagram
 - **Backups:** Automated daily with PITR
 
 ### Development Workflow
+
 - **Local:** Docker development environment
 - **Staging:** Vercel preview deployments
 - **Testing:** Separate Supabase project
@@ -301,6 +331,7 @@ sequenceDiagram
 ## Scalability & Performance
 
 ### Performance Targets
+
 - **Page Load:** <2 seconds on 4G
 - **API Response:** <500ms average
 - **Photo Upload:** <5 seconds per image
@@ -308,6 +339,7 @@ sequenceDiagram
 - **Concurrent Users:** 100+ per company
 
 ### Scalability Features
+
 - **Database:** Connection pooling and read replicas
 - **CDN:** Global asset distribution
 - **Caching:** Redis for sessions and API responses
@@ -317,12 +349,14 @@ sequenceDiagram
 ## Monitoring & Analytics
 
 ### System Monitoring
+
 - **Error Tracking:** Sentry for bug reporting
 - **Performance:** Web vitals and API metrics
 - **Uptime:** 99.9% availability target
 - **Security:** Failed login attempts and anomalies
 
 ### Business Analytics
+
 - **Revenue Tracking:** Real-time financial metrics
 - **Usage Analytics:** Feature adoption and user behavior
 - **Fleet Utilization:** Vehicle usage optimization

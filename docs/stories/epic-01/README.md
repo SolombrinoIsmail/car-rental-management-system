@@ -1,27 +1,30 @@
 # Epic 01: Core Contract Operations - User Stories
 
-This directory contains detailed user stories for Epic 1: Core Contract Operations of the Car Rental Management System.
+This directory contains detailed user stories for Epic 1: Core Contract Operations of the Car Rental
+Management System.
 
 ## Story Overview
 
-| Story ID | Story Name | Story Points | Priority | Dependencies |
-|----------|------------|--------------|----------|--------------|
-| CRMS-001 | Customer Management Foundation | 8 | High | Database infrastructure |
-| CRMS-002 | Digital Contract Creation | 13 | High | CRMS-001, PDF service |
-| CRMS-003 | Contract Modifications | 8 | Medium | CRMS-002, User management |
-| CRMS-004 | Contract Completion & Return | 8 | High | CRMS-002, Payment gateway |
-| CRMS-005 | Digital Signature System | 5 | High | CRMS-002, Legal compliance |
+| Story ID | Story Name                     | Story Points | Priority | Dependencies               |
+| -------- | ------------------------------ | ------------ | -------- | -------------------------- |
+| CRMS-001 | Customer Management Foundation | 8            | High     | Database infrastructure    |
+| CRMS-002 | Digital Contract Creation      | 13           | High     | CRMS-001, PDF service      |
+| CRMS-003 | Contract Modifications         | 8            | Medium   | CRMS-002, User management  |
+| CRMS-004 | Contract Completion & Return   | 8            | High     | CRMS-002, Payment gateway  |
+| CRMS-005 | Digital Signature System       | 5            | High     | CRMS-002, Legal compliance |
 
 **Total Estimated Effort:** 42 Story Points
 
 ## Implementation Phases
 
 ### Phase 1 (Weeks 1-4): Foundation
+
 - **CRMS-001:** Customer Management Foundation (8 points)
 - **CRMS-002:** Digital Contract Creation (13 points)
 - **CRMS-005:** Digital Signature System (5 points)
 
 ### Phase 2 (Weeks 5-8): Advanced Features
+
 - **CRMS-004:** Contract Completion & Return (8 points)
 - **CRMS-003:** Contract Modifications (8 points)
 
@@ -86,6 +89,7 @@ This directory contains detailed user stories for Epic 1: Core Contract Operatio
 ## Quality Assurance
 
 Each story includes comprehensive testing scenarios covering:
+
 - Functional testing (acceptance criteria validation)
 - Performance testing (response times, concurrent users)
 - Security testing (authentication, data protection)
@@ -104,6 +108,7 @@ Each story includes comprehensive testing scenarios covering:
 ## Documentation Requirements
 
 Each story requires completion of:
+
 - API documentation for all endpoints
 - Database schema documentation
 - User procedure guides

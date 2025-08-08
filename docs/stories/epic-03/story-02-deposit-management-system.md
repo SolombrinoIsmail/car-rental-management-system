@@ -88,18 +88,21 @@
 ## Technical Implementation Notes
 
 ### Deposit Tracking Architecture
+
 - **State Machine:** Implement deposit lifecycle as finite state machine
 - **Status Flow:** held → released → refunded OR held → claimed → processed
 - **Concurrency:** Handle concurrent access to deposit records safely
 - **Atomicity:** Ensure deposit operations are atomic and consistent
 
 ### Integration Points
+
 - **Payment System:** Direct integration with payment processing
 - **Contract Management:** Link deposits to rental contracts
 - **Vehicle Inspection:** Trigger deposit decisions from inspection results
 - **Notification System:** Send status updates to customers and staff
 
 ### Business Rules Engine
+
 ```typescript
 interface DepositRule {
   condition: (rental: Rental, deposit: Deposit) => boolean;
@@ -111,11 +114,12 @@ enum DepositAction {
   HOLD = 'hold',
   RELEASE = 'release',
   CLAIM_PARTIAL = 'claim_partial',
-  REQUIRE_APPROVAL = 'require_approval'
+  REQUIRE_APPROVAL = 'require_approval',
 }
 ```
 
 ### Database Design
+
 ```sql
 -- Deposits table
 CREATE TABLE deposits (
@@ -149,6 +153,7 @@ CREATE TABLE deposit_status_history (
 ## API Endpoints Needed
 
 ### Deposit Management
+
 ```
 POST /api/v1/deposits
 - Body: { contract_id, type, amount, payment_method }
@@ -163,6 +168,7 @@ PUT /api/v1/deposits/{deposit_id}/status
 ```
 
 ### Deposit Release
+
 ```
 POST /api/v1/deposits/{deposit_id}/release
 - Body: { release_reason, immediate? }
@@ -174,6 +180,7 @@ POST /api/v1/deposits/{deposit_id}/claim
 ```
 
 ### Deposit Queries
+
 ```
 GET /api/v1/deposits/by-contract/{contract_id}
 - Response: { deposits[], total_held, total_claimed }
@@ -186,18 +193,21 @@ GET /api/v1/deposits/pending-release
 ## Database Schema Requirements
 
 ### Core Tables
+
 - `deposits` - Main deposit records with full lifecycle tracking
 - `deposit_status_history` - Immutable audit trail of status changes
 - `deposit_rules` - Configurable business rules for deposit handling
 - `deposit_notifications` - Automated notification tracking
 
 ### Indexes Required
+
 - `deposits(rental_contract_id, status)`
 - `deposits(status, release_date)`
 - `deposit_status_history(deposit_id, changed_at DESC)`
 - `deposits(created_at DESC)` for reporting
 
 ### Constraints
+
 - Deposit amount must be positive
 - Claimed amount cannot exceed deposit amount
 - Status transitions must be valid according to business rules
@@ -206,23 +216,27 @@ GET /api/v1/deposits/pending-release
 ## UI/UX Considerations
 
 ### Deposit Dashboard
+
 - **Overview:** Quick view of all deposits by status
 - **Filtering:** Filter by status, date, amount, customer
 - **Bulk Actions:** Release multiple deposits simultaneously
 - **Alerts:** Highlight deposits requiring attention
 
 ### Deposit Detail View
+
 - **Status Timeline:** Visual representation of deposit lifecycle
 - **Transaction History:** All related payment transactions
 - **Documentation:** Attach evidence for claims or releases
 - **Communication Log:** Track all customer communications
 
 ### Mobile Interface
+
 - **Status Checking:** Quick deposit status lookup by contract number
 - **Photo Upload:** Attach damage photos directly to deposit claims
 - **Approval Workflow:** Mobile-friendly approval interface for supervisors
 
 ### Customer Portal
+
 - **Deposit Summary:** Clear view of all held deposits
 - **Status Updates:** Real-time notifications of deposit changes
 - **Dispute Process:** Easy way to question deposit claims
@@ -230,6 +244,7 @@ GET /api/v1/deposits/pending-release
 ## Testing Scenarios
 
 ### Standard Deposit Flow
+
 1. **Deposit Collection and Hold**
    - Create rental with security deposit requirement
    - Process deposit payment via card
@@ -246,6 +261,7 @@ GET /api/v1/deposits/pending-release
    - Verify remaining deposit released to customer
 
 ### Complex Scenarios
+
 4. **Multiple Deposit Types**
    - Collect security, fuel, and cleaning deposits
    - Process return with fuel shortage only
@@ -257,6 +273,7 @@ GET /api/v1/deposits/pending-release
    - Verify deposit history maintained across transfer
 
 ### Error Handling
+
 6. **Payment Failure During Refund**
    - Process deposit release with original payment method expired
    - Verify fallback to alternative refund method
@@ -294,18 +311,21 @@ GET /api/v1/deposits/pending-release
 ## Estimated Effort: 5 Story Points
 
 ### Breakdown
+
 - **State Machine Implementation:** 2 points
 - **Payment Integration:** 1 point
 - **Audit Trail System:** 1 point
 - **UI/UX Implementation:** 1 point
 
 ### Dependencies
+
 - Payment processing system (Story 01) completed
 - Vehicle inspection system framework
 - Notification system infrastructure
 - Supervisor approval workflow
 
 ### Risks
+
 - **Medium:** Complex state transitions causing bugs
 - **Medium:** Refund processing delays
 - **Low:** Audit trail data volume growth

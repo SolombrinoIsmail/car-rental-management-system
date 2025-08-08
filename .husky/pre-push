@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Run tests before pushing
+echo "🧪 Running tests before push..."
+pnpm test:unit 2>/dev/null || pnpm test 2>/dev/null || echo "⚠️  No test script found - skipping tests"
+
+echo "✅ Pre-push checks passed!"

@@ -9,7 +9,8 @@
 
 **As a** rental staff member  
 **I want to** modify active contracts safely  
-**So that** I can handle extensions, early returns, corrections, and customer requests while maintaining data integrity
+**So that** I can handle extensions, early returns, corrections, and customer requests while
+maintaining data integrity
 
 ## Detailed Acceptance Criteria
 
@@ -253,6 +254,7 @@ modification_audit_logs (
 **Story Points:** 8
 
 **Breakdown:**
+
 - Extension and early return logic (2 points)
 - Manager approval workflow system (2 points)
 - Audit trail and versioning (2 points)
@@ -260,6 +262,7 @@ modification_audit_logs (
 - PDF regeneration and notifications (1 point)
 
 **Dependencies:**
+
 - Digital contract creation system (Story 02)
 - User management and role system
 - Notification infrastructure
@@ -267,6 +270,7 @@ modification_audit_logs (
 - Pricing calculation service
 
 **Risks:**
+
 - Complex approval workflow requirements
 - Data consistency during concurrent modifications
 - Performance impact of extensive audit logging

@@ -1,12 +1,16 @@
 # Story 6: Evidence Chain Management
 
 ## Story ID
+
 **Epic 7 - Story 6**
 
 ## User Story Statement
+
 **As an** owner and rental business operator  
-**I want to** maintain a complete, tamper-proof legal evidence chain for all photos and documentation  
-**So that** photos are admissible in court proceedings, disputes can be resolved with confidence, and the business is protected from false claims
+**I want to** maintain a complete, tamper-proof legal evidence chain for all photos and
+documentation  
+**So that** photos are admissible in court proceedings, disputes can be resolved with confidence,
+and the business is protected from false claims
 
 ## Detailed Acceptance Criteria
 
@@ -85,19 +89,21 @@
 ## Technical Implementation Notes
 
 ### Cryptographic Architecture
+
 - **TimestampService.js**: RFC 3161 timestamp authority integration
 - **HashManager.js**: SHA-256 generation and verification system
 - **BlockchainIntegrity.js**: Distributed ledger for critical evidence
 - **AuditLogger.js**: Tamper-evident audit trail management
 
 ### Digital Signature Implementation
+
 ```javascript
 // Evidence chain with cryptographic signatures
 class EvidenceChainManager {
   async capturePhotoWithEvidence(photoData, captureContext) {
-    const timestamp = await this.getRFC3161Timestamp()
-    const hash = this.generateSHA256Hash(photoData)
-    
+    const timestamp = await this.getRFC3161Timestamp();
+    const hash = this.generateSHA256Hash(photoData);
+
     // Create evidence record
     const evidenceRecord = {
       photoHash: hash,
@@ -105,101 +111,102 @@ class EvidenceChainManager {
       capturedBy: captureContext.userId,
       device: captureContext.deviceInfo,
       location: captureContext.gpsCoordinates,
-      contractId: captureContext.contractId
-    }
-    
+      contractId: captureContext.contractId,
+    };
+
     // Sign with private key
-    const signature = await this.signWithPrivateKey(evidenceRecord)
-    
+    const signature = await this.signWithPrivateKey(evidenceRecord);
+
     // Store in immutable ledger
     await this.storeInBlockchain({
       ...evidenceRecord,
-      signature: signature
-    })
-    
+      signature: signature,
+    });
+
     return {
       photoId: await this.storePhoto(photoData),
       evidenceId: evidenceRecord.id,
-      legalFingerprint: this.generateLegalFingerprint(evidenceRecord)
-    }
+      legalFingerprint: this.generateLegalFingerprint(evidenceRecord),
+    };
   }
-  
+
   async verifyPhotoIntegrity(photoId) {
-    const currentPhoto = await this.retrievePhoto(photoId)
-    const originalEvidence = await this.getEvidenceRecord(photoId)
-    
-    const currentHash = this.generateSHA256Hash(currentPhoto)
-    
+    const currentPhoto = await this.retrievePhoto(photoId);
+    const originalEvidence = await this.getEvidenceRecord(photoId);
+
+    const currentHash = this.generateSHA256Hash(currentPhoto);
+
     if (currentHash !== originalEvidence.photoHash) {
-      throw new EvidenceIntegrityError('Photo has been modified since capture')
+      throw new EvidenceIntegrityError('Photo has been modified since capture');
     }
-    
+
     return {
       verified: true,
       timestamp: originalEvidence.timestamp,
-      chainOfCustody: await this.getChainOfCustody(photoId)
-    }
+      chainOfCustody: await this.getChainOfCustody(photoId),
+    };
   }
 }
 ```
 
 ### Blockchain Integration for Critical Evidence
+
 ```typescript
 interface EvidenceBlock {
-  blockHash: string
-  previousHash: string
-  timestamp: Date
-  evidenceRecords: EvidenceRecord[]
-  merkleRoot: string
-  digitalSignature: string
+  blockHash: string;
+  previousHash: string;
+  timestamp: Date;
+  evidenceRecords: EvidenceRecord[];
+  merkleRoot: string;
+  digitalSignature: string;
 }
 
 class BlockchainEvidenceSystem {
   async addEvidenceToChain(evidence: EvidenceRecord): Promise<string> {
-    const previousBlock = await this.getLatestBlock()
-    
+    const previousBlock = await this.getLatestBlock();
+
     const newBlock: EvidenceBlock = {
       blockHash: '',
       previousHash: previousBlock.blockHash,
       timestamp: new Date(),
       evidenceRecords: [evidence],
       merkleRoot: this.calculateMerkleRoot([evidence]),
-      digitalSignature: ''
-    }
-    
-    newBlock.blockHash = this.calculateBlockHash(newBlock)
-    newBlock.digitalSignature = await this.signBlock(newBlock)
-    
-    await this.storeBlock(newBlock)
-    return newBlock.blockHash
+      digitalSignature: '',
+    };
+
+    newBlock.blockHash = this.calculateBlockHash(newBlock);
+    newBlock.digitalSignature = await this.signBlock(newBlock);
+
+    await this.storeBlock(newBlock);
+    return newBlock.blockHash;
   }
-  
+
   async verifyChainIntegrity(): Promise<ValidationResult> {
-    const chain = await this.getAllBlocks()
-    
+    const chain = await this.getAllBlocks();
+
     for (let i = 1; i < chain.length; i++) {
-      const currentBlock = chain[i]
-      const previousBlock = chain[i - 1]
-      
+      const currentBlock = chain[i];
+      const previousBlock = chain[i - 1];
+
       // Verify hash links
       if (currentBlock.previousHash !== previousBlock.blockHash) {
-        return { valid: false, error: `Block ${i} has invalid previous hash` }
+        return { valid: false, error: `Block ${i} has invalid previous hash` };
       }
-      
+
       // Verify block hash
-      const calculatedHash = this.calculateBlockHash(currentBlock)
+      const calculatedHash = this.calculateBlockHash(currentBlock);
       if (calculatedHash !== currentBlock.blockHash) {
-        return { valid: false, error: `Block ${i} has invalid hash` }
+        return { valid: false, error: `Block ${i} has invalid hash` };
       }
-      
+
       // Verify digital signature
-      const signatureValid = await this.verifyBlockSignature(currentBlock)
+      const signatureValid = await this.verifyBlockSignature(currentBlock);
       if (!signatureValid) {
-        return { valid: false, error: `Block ${i} has invalid signature` }
+        return { valid: false, error: `Block ${i} has invalid signature` };
       }
     }
-    
-    return { valid: true }
+
+    return { valid: true };
   }
 }
 ```
@@ -207,6 +214,7 @@ class BlockchainEvidenceSystem {
 ## API Endpoints Needed
 
 ### Evidence Chain Operations
+
 ```
 POST /api/v1/evidence/photos/{photo_id}/chain
 - Create evidence chain record for photo
@@ -228,6 +236,7 @@ GET /api/v1/evidence/photos/{photo_id}/chain-of-custody
 ```
 
 ### Legal Export
+
 ```
 POST /api/v1/evidence/legal-export
 - Generate legal evidence package
@@ -245,6 +254,7 @@ POST /api/v1/evidence/court-package
 ```
 
 ### System Verification
+
 ```
 POST /api/v1/evidence/system/integrity-check
 - Perform system-wide evidence integrity verification
@@ -262,6 +272,7 @@ GET /api/v1/evidence/blockchain/verify
 ## Database Schema Requirements
 
 ### evidence_chain Table
+
 ```sql
 CREATE TABLE evidence_chain (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -290,6 +301,7 @@ CREATE INDEX idx_evidence_chain_fingerprint ON evidence_chain(legal_fingerprint)
 ```
 
 ### audit_trail Table
+
 ```sql
 CREATE TABLE audit_trail (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -320,6 +332,7 @@ ALTER TABLE audit_trail PARTITION BY RANGE (occurred_at);
 ```
 
 ### chain_of_custody Table
+
 ```sql
 CREATE TABLE chain_of_custody (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -347,6 +360,7 @@ CREATE INDEX idx_chain_custody_occurred ON chain_of_custody(occurred_at);
 ```
 
 ### legal_exports Table
+
 ```sql
 CREATE TABLE legal_exports (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -378,6 +392,7 @@ CREATE INDEX idx_legal_exports_created ON legal_exports(created_at);
 ```
 
 ### integrity_violations Table
+
 ```sql
 CREATE TABLE integrity_violations (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -406,24 +421,28 @@ CREATE INDEX idx_integrity_violations_detected ON integrity_violations(detected_
 ## UI/UX Considerations
 
 ### Evidence Dashboard
+
 - Real-time integrity status indicators for all photos
 - Chain of custody visualization with timeline view
 - Legal compliance status dashboard with Swiss law requirements
 - Automated alerts for integrity violations or compliance issues
 
 ### Court Package Generation
+
 - Wizard-style interface for creating legal evidence packages
 - Template selection based on case type and jurisdiction
 - Preview of generated packages before finalization
 - Digital signature and authentication status indicators
 
 ### Audit Trail Interface
+
 - Searchable and filterable audit log viewer
 - Visual timeline of all evidence-related activities
 - Export capabilities for legal review
 - Role-based access to sensitive audit information
 
 ### Integrity Monitoring
+
 - Real-time monitoring dashboard for system integrity
 - Automated reporting of verification status
 - Investigation workflow for detected violations
@@ -432,6 +451,7 @@ CREATE INDEX idx_integrity_violations_detected ON integrity_violations(detected_
 ## Testing Scenarios
 
 ### Scenario 1: Complete Evidence Chain Creation
+
 **Given** a photo is captured during vehicle inspection  
 **When** evidence chain is established  
 **Then** cryptographic timestamp is applied correctly  
@@ -439,6 +459,7 @@ CREATE INDEX idx_integrity_violations_detected ON integrity_violations(detected_
 **And** blockchain record is created for critical evidence
 
 ### Scenario 2: Integrity Verification After Storage
+
 **Given** photos have been stored for several months  
 **When** integrity verification is performed  
 **Then** all hashes match original values  
@@ -446,6 +467,7 @@ CREATE INDEX idx_integrity_violations_detected ON integrity_violations(detected_
 **And** any discrepancies are flagged immediately
 
 ### Scenario 3: Legal Export Generation
+
 **Given** court case requires photo evidence  
 **When** legal export package is generated  
 **Then** package includes all required authentication  
@@ -453,6 +475,7 @@ CREATE INDEX idx_integrity_violations_detected ON integrity_violations(detected_
 **And** expert witness documentation is included
 
 ### Scenario 4: Tamper Detection
+
 **Given** attempt is made to modify stored photo  
 **When** integrity check runs  
 **Then** modification is detected immediately  
@@ -460,6 +483,7 @@ CREATE INDEX idx_integrity_violations_detected ON integrity_violations(detected_
 **And** security team is alerted
 
 ### Scenario 5: Chain of Custody Tracking
+
 **Given** photo evidence is accessed by multiple users  
 **When** custody transfers occur  
 **Then** all transfers are logged with authorization  
@@ -467,6 +491,7 @@ CREATE INDEX idx_integrity_violations_detected ON integrity_violations(detected_
 **And** custody gaps are prevented
 
 ### Scenario 6: Blockchain Verification
+
 **Given** critical evidence stored in blockchain  
 **When** blockchain integrity check is performed  
 **Then** all blocks validate correctly  
@@ -474,6 +499,7 @@ CREATE INDEX idx_integrity_violations_detected ON integrity_violations(detected_
 **And** digital signatures verify successfully
 
 ### Scenario 7: Long-term Archival Validation
+
 **Given** photos archived for legal retention period  
 **When** evidence validity is checked after years  
 **Then** integrity remains intact  
@@ -481,6 +507,7 @@ CREATE INDEX idx_integrity_violations_detected ON integrity_violations(detected_
 **And** format compatibility is preserved
 
 ### Scenario 8: Multi-jurisdiction Compliance
+
 **Given** evidence may be used in different jurisdictions  
 **When** compliance status is assessed  
 **Then** Swiss, EU, and international standards are met  
@@ -514,15 +541,18 @@ CREATE INDEX idx_integrity_violations_detected ON integrity_violations(detected_
 - [ ] Staff training materials created for evidence procedures
 
 ## Estimated Effort
+
 **8 Story Points** (2 Developer Days)
 
 ### Breakdown:
+
 - Cryptographic timestamping and hash system: 3 points
 - Blockchain integration and immutable storage: 2 points
 - Audit trail and chain of custody: 2 points
 - Legal compliance and export capabilities: 1 point
 
 ### Dependencies:
+
 - Photo storage system (Story 5) completed
 - Legal review of Swiss evidence requirements
 - Cryptographic library selection and security audit

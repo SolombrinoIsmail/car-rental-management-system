@@ -3,14 +3,14 @@ const nextConfig = {
   experimental: {
     turbo: {
       rules: {
-        "*.svg": {
-          loaders: ["@svgr/webpack"],
-          as: "*.js",
+        '*.svg': {
+          loaders: ['@svgr/webpack'],
+          as: '*.js',
         },
       },
     },
   },
-  transpilePackages: ["@swiss-car-rental/ui", "@swiss-car-rental/shared"],
+  transpilePackages: ['@swiss-car-rental/ui', '@swiss-car-rental/shared'],
   images: {
     formats: ['image/avif', 'image/webp'],
   },
@@ -20,6 +20,6 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: false,
   },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

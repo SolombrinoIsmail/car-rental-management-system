@@ -9,12 +9,14 @@
 
 **As an** owner  
 **I want to** track and manage vehicle maintenance schedules, costs, and service history  
-**So that** my fleet remains safe, reliable, and compliant while minimizing unexpected breakdowns and maximizing vehicle lifespan
+**So that** my fleet remains safe, reliable, and compliant while minimizing unexpected breakdowns
+and maximizing vehicle lifespan
 
 ## Detailed Acceptance Criteria
 
 1. **Maintenance Scheduling System**
-   - System shall allow setting maintenance schedules based on mileage intervals (e.g., every 5,000 km)
+   - System shall allow setting maintenance schedules based on mileage intervals (e.g., every 5,000
+     km)
    - System shall support time-based maintenance schedules (e.g., every 6 months)
    - System shall combine mileage and time criteria for comprehensive scheduling
    - System shall automatically calculate next maintenance due dates
@@ -88,6 +90,7 @@
 ## Technical Implementation Notes
 
 ### Database Schema Requirements
+
 ```sql
 -- Maintenance schedules table
 CREATE TABLE maintenance_schedules (
@@ -179,6 +182,7 @@ CREATE TABLE vehicle_maintenance_status (
 ```
 
 ### API Endpoints Needed
+
 - `GET /api/maintenance/schedules/{vehicleId}` - Get maintenance schedule for vehicle
 - `POST /api/maintenance/schedules` - Create maintenance schedule
 - `PUT /api/maintenance/schedules/{id}` - Update maintenance schedule
@@ -313,6 +317,7 @@ CREATE TABLE vehicle_maintenance_status (
 ## Estimated Effort: 6 Story Points
 
 **Breakdown:**
+
 - Database schema design and setup: 1 day
 - Maintenance scheduling engine: 1.5 days
 - Service history and documentation system: 1.5 days

@@ -5,7 +5,7 @@
  */
 
 // Swiss-specific ID document types
-export type SwissIdDocumentType = 
+export type SwissIdDocumentType =
   | 'swiss_passport'
   | 'swiss_id_card'
   | 'residence_permit_b'
@@ -36,7 +36,7 @@ export interface CustomerFlags {
 }
 
 // Document types for customer verification
-export type CustomerDocumentType = 
+export type CustomerDocumentType =
   | 'id_front'
   | 'id_back'
   | 'license_front'
@@ -83,7 +83,15 @@ export interface CustomerDocument {
 export interface CustomerRiskHistory {
   id: string;
   customerId: string;
-  riskType: 'blacklist' | 'payment_risk' | 'damage_risk' | 'vip' | 'special_needs' | 'requires_deposit' | 'credit_check' | 'police_check';
+  riskType:
+    | 'blacklist'
+    | 'payment_risk'
+    | 'damage_risk'
+    | 'vip'
+    | 'special_needs'
+    | 'requires_deposit'
+    | 'credit_check'
+    | 'police_check';
   action: 'added' | 'removed' | 'modified' | 'expired';
   reason: string;
   expiryDate?: string;
@@ -102,7 +110,7 @@ export interface Customer {
   id: string;
   tenantId: string;
   customerCode: string;
-  
+
   // Personal Information
   firstName: string;
   lastName: string;
@@ -111,45 +119,45 @@ export interface Customer {
   dateOfBirth: string; // ISO 8601 date
   nationality: string; // ISO 3166-1 alpha-3
   preferredLanguage: string; // RFC 5646 language tag
-  
+
   // Address
   address: SwissAddress;
-  
+
   // Swiss ID Documentation
   idDocumentType: SwissIdDocumentType;
   idDocumentNumber: string; // May be masked for security
   idDocumentExpiry?: string;
-  
+
   // Driver License
   driverLicenseNumber: string; // May be masked for security
   driverLicenseCountry: string;
   driverLicenseExpiry: string;
   driverLicenseCategory: Record<string, boolean>; // Swiss license categories
-  
+
   // Risk Management
   flags: CustomerFlags;
   blacklistReason?: string;
   blacklistExpiry?: string;
   blacklistApprovedBy?: string;
   blacklistApprovedAt?: string;
-  
+
   // Business Metrics
   notes?: string;
   lifetimeValue: number;
   totalRentals: number;
-  
+
   // GDPR/FADP Compliance
   gdprConsentDate?: string;
   gdprConsentVersion?: string;
   marketingConsent: boolean;
   dataRetentionExpiry?: string;
-  
+
   // Metadata
   createdAt: string;
   updatedAt: string;
   createdBy?: string;
   updatedBy?: string;
-  
+
   // Optional related data
   documents?: CustomerDocument[];
   riskHistory?: CustomerRiskHistory[];
@@ -289,16 +297,42 @@ export const SWISS_ID_VALIDATORS = {
 
 // Swiss cantons for address validation
 export const SWISS_CANTONS = [
-  'AG', 'AR', 'AI', 'BL', 'BS', 'BE', 'FR', 'GE', 'GL', 'GR',
-  'JU', 'LU', 'NE', 'NW', 'OW', 'SG', 'SH', 'SZ', 'SO', 'TG',
-  'TI', 'UR', 'VD', 'VS', 'ZG', 'ZH'
+  'AG',
+  'AR',
+  'AI',
+  'BL',
+  'BS',
+  'BE',
+  'FR',
+  'GE',
+  'GL',
+  'GR',
+  'JU',
+  'LU',
+  'NE',
+  'NW',
+  'OW',
+  'SG',
+  'SH',
+  'SZ',
+  'SO',
+  'TG',
+  'TI',
+  'UR',
+  'VD',
+  'VS',
+  'ZG',
+  'ZH',
 ] as const;
 
-export type SwissCanton = typeof SWISS_CANTONS[number];
+export type SwissCanton = (typeof SWISS_CANTONS)[number];
 
 // Error types for customer management
 export class CustomerValidationError extends Error {
-  constructor(public field: string, message: string) {
+  constructor(
+    public field: string,
+    message: string,
+  ) {
     super(`Invalid ${field}: ${message}`);
     this.name = 'CustomerValidationError';
   }
@@ -319,7 +353,10 @@ export class DuplicateCustomerError extends Error {
 }
 
 export class DocumentProcessingError extends Error {
-  constructor(message: string, public originalError?: Error) {
+  constructor(
+    message: string,
+    public originalError?: Error,
+  ) {
     super(`Document processing failed: ${message}`);
     this.name = 'DocumentProcessingError';
   }
@@ -349,7 +386,11 @@ export interface CustomerServiceInterface {
   createCustomer(data: CreateCustomerRequest): Promise<Customer>;
   updateCustomer(data: UpdateCustomerRequest): Promise<Customer>;
   deleteCustomer(id: string): Promise<void>;
-  uploadDocument(customerId: string, file: File, documentType: CustomerDocumentType): Promise<CustomerDocument>;
+  uploadDocument(
+    customerId: string,
+    file: File,
+    documentType: CustomerDocumentType,
+  ): Promise<CustomerDocument>;
   updateCustomerFlag(update: CustomerFlagUpdate): Promise<Customer>;
   getCustomerStats(): Promise<CustomerStats>;
   getExpiringDocuments(days?: number): Promise<DocumentExpiryWarning[]>;
@@ -366,7 +407,7 @@ export const SwissUtils = {
   formatPhone: (phone: string): string => {
     // Convert Swiss phone to +41 format
     if (phone.startsWith('0')) {
-      return '+41' + phone.substring(1);
+      return `+41${phone.substring(1)}`;
     }
     return phone;
   },
@@ -381,5 +422,5 @@ export const SwissUtils = {
       default:
         return '***MASKED***';
     }
-  }
+  },
 } as const;

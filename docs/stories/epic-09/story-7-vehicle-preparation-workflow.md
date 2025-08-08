@@ -1,14 +1,17 @@
 # Story 7: Vehicle Preparation Workflow
 
 ## Story Information
+
 - **Story ID:** CRMS-E9-S7
 - **Epic:** 9 - Operational Edge Cases
 - **Story Points:** 3
 
 ## User Story
+
 **As a** rental staff member  
 **I want to** prepare returned vehicles systematically for the next rental  
-**So that** vehicles meet quality standards, customer expectations are exceeded, and operational efficiency is maintained
+**So that** vehicles meet quality standards, customer expectations are exceeded, and operational
+efficiency is maintained
 
 ## Detailed Acceptance Criteria
 
@@ -87,6 +90,7 @@
 ## Technical Implementation Notes
 
 ### Backend Services
+
 - `VehiclePreparationService`: Manages the complete preparation workflow
 - `QualityAssuranceService`: Handles inspection and quality verification
 - `InventoryManagementService`: Tracks supplies and restocking needs
@@ -94,6 +98,7 @@
 - `PerformanceTrackingService`: Collects and analyzes preparation metrics
 
 ### Data Models
+
 ```sql
 vehicle_preparations (
   id, vehicle_id, returned_rental_id, preparation_date,
@@ -111,11 +116,13 @@ preparation_checklists (
 ```
 
 ### State Machine
+
 Assigned → In Progress → Cleaning → Inspection → Restocking → Quality Check → Approved → Ready
 
 ## API Endpoints
 
 ### Preparation Management
+
 - `POST /api/vehicles/{id}/preparation/start` - Begin vehicle preparation
 - `GET /api/vehicles/{id}/preparation/checklist` - Get preparation tasks
 - `POST /api/vehicles/{id}/preparation/complete-item` - Mark checklist item done
@@ -124,16 +131,19 @@ Assigned → In Progress → Cleaning → Inspection → Restocking → Quality 
 - `GET /api/vehicles/{id}/preparation/status` - Check preparation progress
 
 ### Quality Assurance
+
 - `POST /api/vehicles/{id}/preparation/quality-check` - Submit quality inspection
 - `GET /api/vehicles/{id}/preparation/quality-score` - Get quality metrics
 - `POST /api/vehicles/{id}/preparation/supervisor-approval` - Supervisor sign-off
 
 ### Performance Analytics
+
 - `GET /api/preparation/staff-performance` - Staff preparation metrics
 - `GET /api/preparation/time-analysis` - Preparation time analytics
 - `GET /api/preparation/quality-trends` - Quality score trending
 
 ### Inventory Integration
+
 - `GET /api/preparation/supply-levels` - Check supply inventory
 - `POST /api/preparation/restock-request` - Request supply replenishment
 - `GET /api/preparation/supply-usage` - Track supply consumption
@@ -141,6 +151,7 @@ Assigned → In Progress → Cleaning → Inspection → Restocking → Quality 
 ## Database Schema Requirements
 
 ### New Tables
+
 ```sql
 CREATE TABLE vehicle_preparations (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -228,6 +239,7 @@ CREATE TABLE preparation_supply_usage (
 ```
 
 ### Schema Updates
+
 - Add `last_preparation_date` to vehicles table
 - Add `preparation_count` to vehicles table for tracking
 - Add `average_preparation_time` to users table for performance metrics
@@ -235,24 +247,28 @@ CREATE TABLE preparation_supply_usage (
 ## UI/UX Considerations
 
 ### Mobile-First Checklist Interface
+
 - Large, touch-friendly checkboxes for easy completion
 - Progressive disclosure showing next steps as current ones complete
 - Photo capture integration with automatic GPS and timestamp
 - Voice notes capability for hands-free documentation
 
 ### Visual Quality Assessment
+
 - Before/after photo comparison interface
 - Color-coded quality scoring with visual indicators
 - Damage marking on interactive vehicle diagrams
 - Quick access to previous preparation reports for comparison
 
 ### Workflow Optimization Dashboard
+
 - Real-time preparation queue with priority indicators
 - Staff workload balancing with task assignment suggestions
 - Performance metrics display with individual and team scores
 - Supply level monitoring with automated reorder alerts
 
 ### Supervisor Oversight Interface
+
 - Quality score trending with drill-down capability
 - Staff performance comparison and coaching tools
 - Customer complaint correlation with preparation quality
@@ -261,44 +277,49 @@ CREATE TABLE preparation_supply_usage (
 ## Testing Scenarios
 
 ### Scenario 1: Standard Vehicle Preparation
-**Given:** Economy vehicle returned in normal condition
-**When:** Staff completes full preparation workflow
-**Then:** All checklist items completed, quality scores recorded, vehicle status updated to "Ready"
+
+**Given:** Economy vehicle returned in normal condition **When:** Staff completes full preparation
+workflow **Then:** All checklist items completed, quality scores recorded, vehicle status updated to
+"Ready"
 
 ### Scenario 2: Vehicle with Lost Items
-**Given:** Customer items found during cleaning process
-**When:** Staff logs items and initiates customer contact
-**Then:** Items photographed and stored, customer notified, return process tracked
+
+**Given:** Customer items found during cleaning process **When:** Staff logs items and initiates
+customer contact **Then:** Items photographed and stored, customer notified, return process tracked
 
 ### Scenario 3: Damage Discovery During Inspection
-**Given:** New damage found that wasn't present at rental start
-**When:** Staff documents damage and assesses severity
-**Then:** Previous renter charged, repair estimate obtained, vehicle status updated appropriately
+
+**Given:** New damage found that wasn't present at rental start **When:** Staff documents damage and
+assesses severity **Then:** Previous renter charged, repair estimate obtained, vehicle status
+updated appropriately
 
 ### Scenario 4: Maintenance Due Alert
-**Given:** Vehicle preparation triggers maintenance due warning
-**When:** Staff reviews maintenance requirements
-**Then:** Maintenance scheduled, vehicle held from rental, fleet management notified
+
+**Given:** Vehicle preparation triggers maintenance due warning **When:** Staff reviews maintenance
+requirements **Then:** Maintenance scheduled, vehicle held from rental, fleet management notified
 
 ### Scenario 5: Failed Quality Inspection
-**Given:** Vehicle preparation doesn't meet quality standards
-**When:** Supervisor conducts quality check
-**Then:** Re-preparation assigned, quality issues documented, staff coaching triggered
+
+**Given:** Vehicle preparation doesn't meet quality standards **When:** Supervisor conducts quality
+check **Then:** Re-preparation assigned, quality issues documented, staff coaching triggered
 
 ### Scenario 6: Supply Shortage During Preparation
-**Given:** Cleaning supplies run low during preparation
-**When:** Staff attempts to restock vehicle amenities
-**Then:** Supply shortage flagged, reorder triggered, preparation completed with available items
+
+**Given:** Cleaning supplies run low during preparation **When:** Staff attempts to restock vehicle
+amenities **Then:** Supply shortage flagged, reorder triggered, preparation completed with available
+items
 
 ### Scenario 7: Rush Preparation for VIP Customer
-**Given:** High-priority customer reservation requires immediate vehicle
-**When:** Staff receives urgent preparation assignment
-**Then:** Expedited workflow completed, quality maintained, VIP standards met
+
+**Given:** High-priority customer reservation requires immediate vehicle **When:** Staff receives
+urgent preparation assignment **Then:** Expedited workflow completed, quality maintained, VIP
+standards met
 
 ### Scenario 8: Technology System Issues
-**Given:** Vehicle infotainment system has customer data remaining
-**When:** Staff performs technology reset procedures
-**Then:** All personal data cleared, system functionality verified, privacy compliance confirmed
+
+**Given:** Vehicle infotainment system has customer data remaining **When:** Staff performs
+technology reset procedures **Then:** All personal data cleared, system functionality verified,
+privacy compliance confirmed
 
 ## Definition of Done
 
@@ -320,14 +341,16 @@ CREATE TABLE preparation_supply_usage (
 - [ ] Quality assurance procedures validated with management
 
 ## Dependencies
+
 - Vehicle fleet management system
 - Maintenance scheduling system
-- Supply inventory management system  
+- Supply inventory management system
 - Customer notification service
 - Photo storage and management service
 - Staff training and certification platform
 
 ## Risks and Mitigation
+
 - **Risk:** Preparation quality inconsistency affecting customer satisfaction
   - **Mitigation:** Standardized checklists and supervisor quality audits
 - **Risk:** Staff rushing through preparation to meet demand

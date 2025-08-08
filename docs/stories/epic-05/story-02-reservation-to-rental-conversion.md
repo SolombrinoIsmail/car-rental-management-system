@@ -1,12 +1,14 @@
 # Story 02: Reservation to Rental Conversion
 
 ## Story Information
+
 - **Story ID:** RS-02
 - **Epic:** Epic 5 - Reservation System
 - **Priority:** High
 - **Story Points:** 5
 
 ## User Story
+
 **As a** rental staff member  
 **I want to** efficiently convert reservations to active rental contracts  
 **So that** the customer pickup process is streamlined and data integrity is maintained
@@ -29,6 +31,7 @@
 ## Technical Implementation Notes
 
 ### Data Flow
+
 1. Search and retrieve reservation
 2. Validate reservation eligibility for conversion
 3. Pre-populate rental contract form
@@ -39,6 +42,7 @@
 8. Generate rental contract confirmation
 
 ### Business Rules
+
 - Reservations can be converted up to 24 hours after pickup time
 - Vehicle substitutions must be same category or upgrade
 - Price adjustments reflect current rates at time of pickup
@@ -47,12 +51,15 @@
 ## API Endpoints Needed
 
 ### GET /api/reservations/search
-**Purpose:** Search reservations for conversion
-**Query Parameters:**
+
+**Purpose:** Search reservations for conversion **Query Parameters:**
+
 ```
 confirmationNumber, customerName, customerPhone, pickupDate
 ```
+
 **Response:**
+
 ```json
 {
   "reservations": [
@@ -70,8 +77,9 @@ confirmationNumber, customerName, customerPhone, pickupDate
 ```
 
 ### POST /api/reservations/{id}/convert-to-rental
-**Purpose:** Convert reservation to active rental
-**Request Body:**
+
+**Purpose:** Convert reservation to active rental **Request Body:**
+
 ```json
 {
   "actualPickupDatetime": "2024-08-15T10:30:00Z",
@@ -84,29 +92,34 @@ confirmationNumber, customerName, customerPhone, pickupDate
   "staffNotes": "Customer arrived 30 min late, no issues"
 }
 ```
+
 **Response:**
+
 ```json
 {
   "rentalContractId": "uuid",
   "contractNumber": "RC-20240815-0042",
-  "finalAmount": 267.80,
+  "finalAmount": 267.8,
   "priceAdjustments": [
-    {"reason": "Late pickup", "amount": 0},
-    {"reason": "Current rate increase", "amount": 22.30}
+    { "reason": "Late pickup", "amount": 0 },
+    { "reason": "Current rate increase", "amount": 22.3 }
   ]
 }
 ```
 
 ### GET /api/reservations/{id}/conversion-preview
-**Purpose:** Preview conversion details before finalizing
-**Response:** Estimated final pricing and contract details
+
+**Purpose:** Preview conversion details before finalizing **Response:** Estimated final pricing and
+contract details
 
 ### PUT /api/reservations/{id}/substitute-vehicle
+
 **Purpose:** Change vehicle assignment during conversion
 
 ## Database Schema Requirements
 
 ### Updated Tables
+
 ```sql
 -- Add conversion tracking to reservations
 ALTER TABLE reservations ADD COLUMN converted_to_rental_id UUID REFERENCES rental_contracts(id);
@@ -131,6 +144,7 @@ CREATE TABLE reservation_conversions (
 ```
 
 ### Indexes
+
 ```sql
 CREATE INDEX idx_reservations_search_name ON reservations USING gin(to_tsvector('english', customer_name));
 CREATE INDEX idx_reservations_phone ON reservations(customer_phone);
@@ -140,12 +154,14 @@ CREATE INDEX idx_reservations_pickup_date ON reservations(pickup_datetime);
 ## UI/UX Considerations
 
 ### Search Interface
+
 - **Multi-field Search:** Single search box accepting confirmation numbers, names, or phone
 - **Auto-complete:** Predictive search as staff types
 - **Quick Filters:** Today's pickups, overdue, confirmed status
 - **Results Display:** List with key details and "Convert" button
 
 ### Conversion Workflow
+
 - **Split Screen:** Reservation details on left, rental form on right
 - **Pre-filled Form:** All reservation data automatically populated
 - **Real-time Pricing:** Live updates as modifications made
@@ -153,6 +169,7 @@ CREATE INDEX idx_reservations_pickup_date ON reservations(pickup_datetime);
 - **One-click Convert:** Single button to finalize conversion
 
 ### Performance Optimizations
+
 - **Caching:** Recent searches cached for quick access
 - **Prefetching:** Load conversion preview automatically
 - **Background Processing:** Price calculations happen asynchronously
@@ -160,41 +177,49 @@ CREATE INDEX idx_reservations_pickup_date ON reservations(pickup_datetime);
 ## Testing Scenarios
 
 ### Scenario 1: Standard On-time Conversion
+
 **Given:** Customer arrives on time with confirmed reservation  
 **When:** Staff searches by confirmation number and converts  
 **Then:** Conversion completes in under 60 seconds with pre-filled contract
 
 ### Scenario 2: Late Pickup Conversion
+
 **Given:** Customer arrives 3 hours after scheduled pickup time  
 **When:** Staff attempts conversion  
 **Then:** System allows conversion with price adjustment for late pickup
 
 ### Scenario 3: Vehicle Substitution
+
 **Given:** Reserved vehicle is unexpectedly unavailable  
 **When:** Staff selects alternative vehicle during conversion  
 **Then:** System suggests appropriate alternatives and updates pricing accordingly
 
 ### Scenario 4: Customer Information Updates
+
 **Given:** Customer's phone number has changed since reservation  
 **When:** Staff updates contact information during conversion  
 **Then:** Customer record updated and rental contract uses new information
 
 ### Scenario 5: Partial Conversion - Shorter Period
+
 **Given:** Customer wants to rent for 3 days instead of reserved 5 days  
 **When:** Staff modifies return date during conversion  
 **Then:** System recalculates pricing and creates contract for shorter period
 
 ### Scenario 6: Search by Customer Name
+
 **Given:** Customer arrives without confirmation number  
 **When:** Staff searches using customer's name  
 **Then:** System displays matching reservations for selection
 
 ### Scenario 7: Concurrent Conversion Attempt
+
 **Given:** Same reservation being converted by two staff members  
 **When:** Both attempt to finalize conversion  
 **Then:** First succeeds, second receives error about already converted reservation
 
 ### Scenario 8: Price Adjustment Transparency
+
 **Given:** Rates have increased since reservation was made  
 **When:** Converting reservation to rental  
 **Then:** System clearly shows price differences and reasons for adjustments
@@ -219,6 +244,7 @@ CREATE INDEX idx_reservations_pickup_date ON reservations(pickup_datetime);
 ## Dependencies
 
 ### Internal Dependencies
+
 - Reservation creation system (Story 1)
 - Rental contract system (Epic 1)
 - Customer management system
@@ -226,27 +252,33 @@ CREATE INDEX idx_reservations_pickup_date ON reservations(pickup_datetime);
 - Fleet calendar system
 
 ### External Dependencies
+
 - None specific to this story
 
 ## Risk Mitigation
 
 ### Risk: Data loss during conversion process
+
 - **Mitigation:** Transaction-based conversion with rollback capability
 - **Contingency:** Manual data recovery procedures documented
 
 ### Risk: Performance degradation with large reservation volume
+
 - **Mitigation:** Database indexing and query optimization
 - **Contingency:** Background processing for complex conversions
 
 ### Risk: Price calculation discrepancies
+
 - **Mitigation:** Transparent pricing display with itemized adjustments
 - **Contingency:** Manual price override capability with approval workflow
 
 ### Risk: Vehicle availability conflicts during conversion
+
 - **Mitigation:** Real-time availability checking before finalization
 - **Contingency:** Automatic upgrade offers and notification system
 
 ## Success Criteria
+
 - Conversion completion time <60 seconds for 95% of cases
 - Zero data loss incidents during conversion
 - Staff satisfaction score >4.5/5 for conversion process

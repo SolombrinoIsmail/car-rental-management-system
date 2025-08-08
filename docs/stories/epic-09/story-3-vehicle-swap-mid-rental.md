@@ -1,14 +1,17 @@
 # Story 3: Vehicle Swap Mid-Rental
 
 ## Story Information
+
 - **Story ID:** CRMS-E9-S3
 - **Epic:** 9 - Operational Edge Cases
 - **Story Points:** 5
 
 ## User Story
+
 **As a** rental staff member  
 **I want to** swap vehicles during an active rental period  
-**So that** customers can continue their rental without interruption when the original vehicle becomes unavailable
+**So that** customers can continue their rental without interruption when the original vehicle
+becomes unavailable
 
 ## Detailed Acceptance Criteria
 
@@ -87,6 +90,7 @@
 ## Technical Implementation Notes
 
 ### Backend Services
+
 - `VehicleSwapService`: Orchestrates the complete swap process
 - `ContractTransferService`: Handles rental agreement transitions
 - `PricingAdjustmentService`: Calculates cost differences and billing changes
@@ -94,6 +98,7 @@
 - `DocumentationService`: Handles photo storage and condition reports
 
 ### Data Models
+
 ```sql
 vehicle_swaps (
   id, original_rental_id, original_vehicle_id, replacement_vehicle_id,
@@ -109,11 +114,14 @@ swap_documentation (
 ```
 
 ### State Machine
-Initiated → Vehicle Selected → Customer Contacted → Customer Approved → Documents Prepared → Swap Executed → Completed
+
+Initiated → Vehicle Selected → Customer Contacted → Customer Approved → Documents Prepared → Swap
+Executed → Completed
 
 ## API Endpoints
 
 ### Core Swap Endpoints
+
 - `POST /api/rentals/{id}/swap/initiate` - Start vehicle swap process
 - `GET /api/rentals/{id}/swap/available-vehicles` - Get eligible replacement vehicles
 - `POST /api/rentals/{id}/swap/select-vehicle` - Choose replacement vehicle
@@ -122,11 +130,13 @@ Initiated → Vehicle Selected → Customer Contacted → Customer Approved → 
 - `GET /api/rentals/{id}/swap/status` - Check swap progress
 
 ### Documentation Endpoints
+
 - `POST /api/swaps/{id}/photos` - Upload vehicle condition photos
 - `POST /api/swaps/{id}/mileage` - Record vehicle mileage readings
 - `POST /api/swaps/{id}/condition-report` - Submit vehicle condition reports
 
 ### Administrative Endpoints
+
 - `GET /api/swaps/pending-approval` - Get swaps requiring manager approval
 - `POST /api/swaps/{id}/approve` - Manager approval for swap
 - `GET /api/swaps/analytics` - Swap frequency and reason analysis
@@ -134,6 +144,7 @@ Initiated → Vehicle Selected → Customer Contacted → Customer Approved → 
 ## Database Schema Requirements
 
 ### New Tables
+
 ```sql
 CREATE TABLE vehicle_swaps (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -184,6 +195,7 @@ CREATE TABLE swap_pricing_adjustments (
 ```
 
 ### Schema Updates
+
 - Add `swap_history` JSONB column to rentals table for quick reference
 - Add `swap_eligible` boolean to vehicles table
 - Add `swap_count` to customer profiles for analytics
@@ -191,24 +203,28 @@ CREATE TABLE swap_pricing_adjustments (
 ## UI/UX Considerations
 
 ### Swap Initiation Interface
+
 - Quick-access "Vehicle Swap" button in rental detail view
 - Reason selection with visual icons and descriptions
 - Photo capture workflow with guided instructions
 - Customer contact information prominently displayed
 
 ### Vehicle Selection Interface
+
 - Visual vehicle comparison with original vs. replacement details
 - Real-time pricing impact calculator
 - Availability calendar for replacement vehicle
 - Feature comparison highlighting upgrades/downgrades
 
 ### Customer Approval Interface
+
 - Digital signature capture for tablet/touch devices
 - Clear explanation of swap terms and pricing changes
 - Side-by-side vehicle comparison for customer review
 - Electronic document delivery confirmation
 
 ### Progress Tracking Dashboard
+
 - Visual progress indicator for swap stages
 - Pending approvals highlighted for management attention
 - Completion time tracking with performance metrics
@@ -217,44 +233,50 @@ CREATE TABLE swap_pricing_adjustments (
 ## Testing Scenarios
 
 ### Scenario 1: Emergency Breakdown Swap
-**Given:** Customer's vehicle breaks down during rental period
-**When:** Staff initiates emergency swap with comparable vehicle
-**Then:** Replacement vehicle assigned, customer contacted, swap completed within 2 hours
+
+**Given:** Customer's vehicle breaks down during rental period **When:** Staff initiates emergency
+swap with comparable vehicle **Then:** Replacement vehicle assigned, customer contacted, swap
+completed within 2 hours
 
 ### Scenario 2: Upgrade Swap with Pricing
-**Given:** Original vehicle unavailable, only premium vehicle available
-**When:** Staff selects higher-class replacement vehicle
-**Then:** System calculates upgrade charges, gets customer approval, processes additional payment
+
+**Given:** Original vehicle unavailable, only premium vehicle available **When:** Staff selects
+higher-class replacement vehicle **Then:** System calculates upgrade charges, gets customer
+approval, processes additional payment
 
 ### Scenario 3: Insurance Coverage Transfer
-**Given:** Customer has comprehensive coverage on original rental
-**When:** Vehicle swap is executed to replacement vehicle
-**Then:** All insurance coverage automatically transfers, no gaps in protection
+
+**Given:** Customer has comprehensive coverage on original rental **When:** Vehicle swap is executed
+to replacement vehicle **Then:** All insurance coverage automatically transfers, no gaps in
+protection
 
 ### Scenario 4: Manager Approval Required
-**Given:** Swap involves significant downgrade or cost impact >$200
-**When:** Staff attempts to complete swap
-**Then:** System requires manager approval, sends notification, holds swap until approved
+
+**Given:** Swap involves significant downgrade or cost impact >$200 **When:** Staff attempts to
+complete swap **Then:** System requires manager approval, sends notification, holds swap until
+approved
 
 ### Scenario 5: Customer Declines Swap
-**Given:** Customer is offered replacement vehicle with pricing changes
-**When:** Customer declines the swap option
-**Then:** Original rental terminated, refund processed, alternative solutions offered
+
+**Given:** Customer is offered replacement vehicle with pricing changes **When:** Customer declines
+the swap option **Then:** Original rental terminated, refund processed, alternative solutions
+offered
 
 ### Scenario 6: Multi-Day Rental Mid-Swap
-**Given:** 7-day rental requires vehicle swap on day 3
-**When:** Swap executed with different daily rate
-**Then:** Pricing correctly prorated, customer billed for 3 days original + 4 days replacement
+
+**Given:** 7-day rental requires vehicle swap on day 3 **When:** Swap executed with different daily
+rate **Then:** Pricing correctly prorated, customer billed for 3 days original + 4 days replacement
 
 ### Scenario 7: Same-Day Return After Swap
-**Given:** Customer's replacement vehicle is also problematic
-**When:** Customer requests immediate rental termination
-**Then:** Full refund processed, incident documented, customer service escalation triggered
+
+**Given:** Customer's replacement vehicle is also problematic **When:** Customer requests immediate
+rental termination **Then:** Full refund processed, incident documented, customer service escalation
+triggered
 
 ### Scenario 8: Documentation Quality Check
-**Given:** Staff uploads blurry photos during swap documentation
-**When:** System processes uploaded images
-**Then:** Quality validation rejects poor images, prompts for retake with guidance
+
+**Given:** Staff uploads blurry photos during swap documentation **When:** System processes uploaded
+images **Then:** Quality validation rejects poor images, prompts for retake with guidance
 
 ## Definition of Done
 
@@ -278,8 +300,9 @@ CREATE TABLE swap_pricing_adjustments (
 - [ ] Staff training documentation and procedures
 
 ## Dependencies
+
 - Vehicle availability management system
-- Customer notification service  
+- Customer notification service
 - Payment processing system integration
 - Digital signature capture capability
 - Photo storage and management service
@@ -287,6 +310,7 @@ CREATE TABLE swap_pricing_adjustments (
 - Manager approval workflow system
 
 ## Risks and Mitigation
+
 - **Risk:** Replacement vehicle also has issues
   - **Mitigation:** Multi-level backup vehicle selection and validation
 - **Risk:** Customer refuses replacement vehicle

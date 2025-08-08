@@ -36,8 +36,10 @@
    - GIVEN vehicle and rental duration selected
    - WHEN calculating pricing
    - THEN update total price within 500ms of any change
-   - AND apply discount rules in order: Corporate (up to 20%), Loyalty (up to 15%), Seasonal (up to 10%)
-   - AND support extras with quantities: GPS (CHF 15/day), Child seat (CHF 10/day), Additional driver (CHF 25/contract)
+   - AND apply discount rules in order: Corporate (up to 20%), Loyalty (up to 15%), Seasonal (up to
+     10%)
+   - AND support extras with quantities: GPS (CHF 15/day), Child seat (CHF 10/day), Additional
+     driver (CHF 25/contract)
    - AND display breakdown: Base (CHF X), Extras (CHF Y), Discount (-CHF Z), VAT (7.7%), Total
    - AND support CHF (default) and EUR with live exchange rate (±2% margin)
    - AND validate total price is within bounds: min CHF 50, max CHF 10,000 per day
@@ -68,7 +70,8 @@
    - GIVEN completed contract data
    - WHEN generating PDF
    - THEN create PDF within 10 seconds for standard contract (up to 10 pages)
-   - AND include: header with logo, customer details, vehicle info, all photos, terms, signature blocks
+   - AND include: header with logo, customer details, vehicle info, all photos, terms, signature
+     blocks
    - AND embed photos at 300DPI quality in PDF
    - AND generate unique contract number: YYYY-MM-XXXXX (year-month-sequence)
    - AND store PDF with versioning (v1, v2, etc.) for any modifications
@@ -92,8 +95,10 @@
    - GIVEN efficiency requirements
    - WHEN using quick actions
    - THEN scan vehicle barcode/QR to select in <2 seconds
-   - AND support keyboard shortcuts: Ctrl+N (new contract), Ctrl+S (save draft), Ctrl+P (generate PDF)
-   - AND provide 5 contract templates for common scenarios (daily, weekly, monthly, long-term, corporate)
+   - AND support keyboard shortcuts: Ctrl+N (new contract), Ctrl+S (save draft), Ctrl+P (generate
+     PDF)
+   - AND provide 5 contract templates for common scenarios (daily, weekly, monthly, long-term,
+     corporate)
    - AND capture up to 20 photos in burst mode with auto-categorization
    - AND auto-save draft every 30 seconds with "Draft saved" toast notification
    - AND restore last draft if browser crashes (up to 24 hours old)
@@ -298,6 +303,7 @@ contract_photos (
 **Story Points:** 13
 
 **Breakdown:**
+
 - Contract creation workflow (3 points)
 - Pricing engine development (2 points)
 - PDF generation system (2 points)
@@ -307,6 +313,7 @@ contract_photos (
 - Testing and optimization (1 point)
 
 **Dependencies:**
+
 - Customer management system (Story 01)
 - Vehicle management system
 - PDF generation service setup
@@ -314,6 +321,7 @@ contract_photos (
 - Legal contract template review
 
 **Risks:**
+
 - PDF generation performance with large photo sets
 - Swiss legal compliance complexity
 - Mobile camera integration reliability

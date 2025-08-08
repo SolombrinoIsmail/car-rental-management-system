@@ -1,9 +1,11 @@
 # Story 3: Before/After Comparison
 
 ## Story ID
+
 **Epic 7 - Story 3**
 
 ## User Story Statement
+
 **As a** rental staff member  
 **I want to** compare vehicle pickup and return photos side-by-side with synchronized controls  
 **So that** I can quickly identify new damage and generate accurate damage reports for billing
@@ -85,34 +87,36 @@
 ## Technical Implementation Notes
 
 ### Frontend Architecture
+
 - **PhotoComparison.vue**: Main comparison interface component
 - **SynchronizedViewer.vue**: Dual photo viewer with sync controls
 - **DifferenceDetection.vue**: Difference highlighting overlay
 - **ComparisonReport.vue**: Report generation and export
 
 ### Image Comparison Algorithm
+
 ```javascript
 // Computer vision approach using canvas pixel comparison
 class ImageComparator {
   async compareImages(image1, image2, threshold = 0.1) {
     const canvas1 = this.getCanvas(image1)
     const canvas2 = this.getCanvas(image2)
-    
+
     const ctx1 = canvas1.getContext('2d')
     const ctx2 = canvas2.getContext('2d')
-    
+
     const data1 = ctx1.getImageData(0, 0, canvas1.width, canvas1.height)
     const data2 = ctx2.getImageData(0, 0, canvas2.width, canvas2.height)
-    
+
     return this.pixelDifference(data1, data2, threshold)
   }
-  
+
   pixelDifference(data1, data2, threshold) {
     const diff = []
     for (let i = 0; i < data1.data.length; i += 4) {
       const r1 = data1.data[i], g1 = data1.data[i+1], b1 = data1.data[i+2]
       const r2 = data2.data[i], g2 = data2.data[i+1], b2 = data2.data[i+2]
-      
+
       const distance = Math.sqrt((r1-r2)² + (g1-g2)² + (b1-b2)²)
       if (distance > threshold * 255) {
         diff.push({ index: i/4, distance })
@@ -124,13 +128,14 @@ class ImageComparator {
 ```
 
 ### Synchronized Controls Implementation
+
 ```typescript
 interface ComparisonState {
-  zoom: number
-  panX: number
-  panY: number
-  rotation: number
-  selectedPhoto: 'pickup' | 'return'
+  zoom: number;
+  panX: number;
+  panY: number;
+  rotation: number;
+  selectedPhoto: 'pickup' | 'return';
 }
 
 class SynchronizedController {
@@ -139,18 +144,18 @@ class SynchronizedController {
     panX: 0,
     panY: 0,
     rotation: 0,
-    selectedPhoto: 'pickup'
-  }
-  
+    selectedPhoto: 'pickup',
+  };
+
   updateZoom(newZoom: number) {
-    this.state.zoom = newZoom
-    this.syncBothViews()
+    this.state.zoom = newZoom;
+    this.syncBothViews();
   }
-  
+
   updatePan(deltaX: number, deltaY: number) {
-    this.state.panX += deltaX
-    this.state.panY += deltaY
-    this.syncBothViews()
+    this.state.panX += deltaX;
+    this.state.panY += deltaY;
+    this.syncBothViews();
   }
 }
 ```
@@ -158,6 +163,7 @@ class SynchronizedController {
 ## API Endpoints Needed
 
 ### Comparison Operations
+
 ```
 POST /api/v1/contracts/{contract_id}/photo-comparison
 - Initiate comparison between pickup and return photos
@@ -184,6 +190,7 @@ PUT /api/v1/photo-comparison/{comparison_id}/photo-pairs
 ```
 
 ### Smart Matching
+
 ```
 POST /api/v1/photos/smart-match
 - Get AI-suggested photo pairings
@@ -199,6 +206,7 @@ POST /api/v1/photos/analyze-differences
 ## Database Schema Requirements
 
 ### photo_comparisons Table
+
 ```sql
 CREATE TABLE photo_comparisons (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -223,6 +231,7 @@ CREATE INDEX idx_photo_comparisons_status ON photo_comparisons(comparison_status
 ```
 
 ### photo_pairs Table
+
 ```sql
 CREATE TABLE photo_pairs (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -241,6 +250,7 @@ CREATE UNIQUE INDEX idx_photo_pairs_unique ON photo_pairs(pickup_photo_id, retur
 ```
 
 ### detected_differences Table
+
 ```sql
 CREATE TABLE detected_differences (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -263,6 +273,7 @@ CREATE INDEX idx_detected_differences_confirmed ON detected_differences(is_confi
 ```
 
 ### comparison_reports Table
+
 ```sql
 CREATE TABLE comparison_reports (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -282,24 +293,28 @@ CREATE INDEX idx_comparison_reports_comparison ON comparison_reports(comparison_
 ## UI/UX Considerations
 
 ### Split-Screen Layout
+
 - Adjustable divider for different screen sizes
 - Responsive breakpoints for mobile/tablet/desktop
 - Full-screen mode for detailed inspection
 - Thumbnail strip for quick photo navigation
 
 ### Visual Feedback
+
 - Color-coded difference highlighting (red for damage, yellow for uncertain)
 - Progressive disclosure of difference details
 - Loading indicators for comparison processing
 - Success/warning states for comparison results
 
 ### Interactive Controls
+
 - Slider controls for zoom synchronization
 - Toggle buttons for overlay modes
 - Drag-and-drop for manual photo pairing
 - Context menus for damage marking
 
 ### Mobile Considerations
+
 - Swipe gestures for photo navigation
 - Touch-friendly zoom and pan controls
 - Portrait/landscape mode optimization
@@ -308,6 +323,7 @@ CREATE INDEX idx_comparison_reports_comparison ON comparison_reports(comparison_
 ## Testing Scenarios
 
 ### Scenario 1: Perfect Photo Match Comparison
+
 **Given** pickup and return photos of same vehicle angle with new damage  
 **When** staff initiates comparison  
 **Then** photos are automatically paired correctly  
@@ -315,6 +331,7 @@ CREATE INDEX idx_comparison_reports_comparison ON comparison_reports(comparison_
 **And** synchronized controls work properly
 
 ### Scenario 2: Algorithm Difference Detection
+
 **Given** before/after photos with subtle damage  
 **When** automatic difference detection runs  
 **Then** algorithm identifies damage areas correctly  
@@ -322,6 +339,7 @@ CREATE INDEX idx_comparison_reports_comparison ON comparison_reports(comparison_
 **And** confidence scores are accurate
 
 ### Scenario 3: Manual Photo Pairing
+
 **Given** return photos don't match pickup angles exactly  
 **When** staff manually pairs photos  
 **Then** manual pairing override works  
@@ -329,6 +347,7 @@ CREATE INDEX idx_comparison_reports_comparison ON comparison_reports(comparison_
 **And** pairing decisions are saved
 
 ### Scenario 4: Mobile Comparison Interface
+
 **Given** staff using mobile device for comparison  
 **When** they navigate the comparison interface  
 **Then** touch controls work smoothly  
@@ -336,6 +355,7 @@ CREATE INDEX idx_comparison_reports_comparison ON comparison_reports(comparison_
 **And** difference highlighting is clearly visible
 
 ### Scenario 5: Multiple Damage Areas
+
 **Given** vehicle with multiple new damage areas  
 **When** comparison analysis completes  
 **Then** all damage areas are identified  
@@ -343,6 +363,7 @@ CREATE INDEX idx_comparison_reports_comparison ON comparison_reports(comparison_
 **And** total damage cost is calculated
 
 ### Scenario 6: Poor Quality Photo Handling
+
 **Given** photos with different lighting or blur  
 **When** comparison algorithm processes them  
 **Then** quality differences are normalized where possible  
@@ -350,6 +371,7 @@ CREATE INDEX idx_comparison_reports_comparison ON comparison_reports(comparison_
 **And** manual review is flagged
 
 ### Scenario 7: Report Generation
+
 **Given** completed photo comparison with identified damage  
 **When** staff generates damage report  
 **Then** PDF includes before/after photo pairs  
@@ -357,6 +379,7 @@ CREATE INDEX idx_comparison_reports_comparison ON comparison_reports(comparison_
 **And** cost estimates are included
 
 ### Scenario 8: Performance with Large Photo Sets
+
 **Given** rental with 20+ photos for comparison  
 **When** comparison process is initiated  
 **Then** performance remains acceptable (<5 seconds)  
@@ -386,15 +409,18 @@ CREATE INDEX idx_comparison_reports_comparison ON comparison_reports(comparison_
 - [ ] Documentation for staff training on comparison features
 
 ## Estimated Effort
+
 **8 Story Points** (2 Developer Days)
 
 ### Breakdown:
+
 - Comparison algorithm implementation: 3 points
 - Synchronized UI controls: 2 points
 - Report generation system: 2 points
 - Mobile optimization and testing: 1 point
 
 ### Dependencies:
+
 - Photo capture system (Story 1) completed
 - Photo annotation tools (Story 2) completed
 - Image processing library with comparison capabilities
