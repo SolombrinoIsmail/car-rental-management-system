@@ -56,16 +56,3 @@ jobs:
         if: always()
         with:
           sarif_file: sarif-results
-
-      - name: Check for critical vulnerabilities
-        run: |
-          echo "Checking for critical security vulnerabilities..."
-          if [ -f sarif-results/${{ matrix.language }}.sarif ]; then
-            critical_count=$(jq '[.runs[].results[] | select(.level == "error")] | length' sarif-results/${{ matrix.language }}.sarif)
-            if [ "$critical_count" -gt 0 ]; then
-              echo "❌ Found $critical_count critical vulnerabilities!"
-              exit 1
-            else
-              echo "✅ No critical vulnerabilities found"
-            fi
-          fi

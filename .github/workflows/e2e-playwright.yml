@@ -72,8 +72,13 @@ jobs:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
 
+      - name: Start web server
+        run: |
+          pnpm --filter @swiss-car-rental/web start &
+          npx -y wait-on http://localhost:3000
+
       - name: Run Playwright tests
-        run: pnpm exec playwright test --shard=${{ matrix.shard }}/4
+        run: pnpm exec playwright test --shard=${{ matrix.shard }}/4 --reporter=blob --output=test-results
         env:
           CI: true
           PLAYWRIGHT_TEST_BASE_URL: http://localhost:3000
@@ -126,9 +131,14 @@ jobs:
       - name: Build application
         run: pnpm build
 
+      - name: Start web server
+        run: |
+          pnpm --filter @swiss-car-rental/web start &
+          npx -y wait-on http://localhost:3000
+
       - name: Run visual regression tests
         run: |
-          pnpm exec playwright test --grep @visual --update-snapshots=false
+          pnpm exec playwright test --grep @visual --update-snapshots=none --reporter=blob --output=test-results
         env:
           CI: true
 
@@ -185,9 +195,6 @@ jobs:
       - name: Install Playwright
         run: pnpm exec playwright install --with-deps chromium
 
-      - name: Install axe-core
-        run: pnpm add -D @axe-core/playwright
-
       - name: Build application
         run: pnpm build
 
@@ -210,6 +217,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [playwright-tests, visual-regression, accessibility-tests]
     if: always()
+    continue-on-error: true
 
     steps:
       - name: Checkout code
@@ -220,7 +228,7 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Download all artifacts
+      - name: Download shard artifacts
         uses: actions/download-artifact@v4
         with:
           pattern: playwright-results-shard-*
@@ -229,7 +237,7 @@ jobs:
 
       - name: Merge reports
         run: |
-          npx playwright merge-reports --reporter html ./all-reports
+          npx -y playwright merge-reports --reporter html ./all-reports
 
       - name: Upload merged report
         uses: actions/upload-artifact@v4
