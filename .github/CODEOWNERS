@@ -1,0 +1,41 @@
+# Swiss Car Rental Management System - Code Ownership
+
+# Default owner for everything
+* @SolombrinoIsmail
+
+# Frontend & UI Components
+/apps/web/ @SolombrinoIsmail
+/packages/ui/ @SolombrinoIsmail
+
+# Backend & Database
+/packages/database/ @SolombrinoIsmail
+/apps/api/ @SolombrinoIsmail
+
+# Configuration & DevOps
+/.github/ @SolombrinoIsmail
+/turbo.json @SolombrinoIsmail
+/.env* @SolombrinoIsmail
+/vercel.json @SolombrinoIsmail
+
+# Documentation
+*.md @SolombrinoIsmail
+/docs/ @SolombrinoIsmail
+
+# Security-sensitive files
+/.github/workflows/security.yml @SolombrinoIsmail
+/.github/workflows/codeql.yml @SolombrinoIsmail
+/.github/dependabot.yml @SolombrinoIsmail
+/.github/codeql/ @SolombrinoIsmail
+
+# Testing
+*.test.ts @SolombrinoIsmail
+*.test.tsx @SolombrinoIsmail
+*.spec.ts @SolombrinoIsmail
+*.spec.tsx @SolombrinoIsmail
+/tests/ @SolombrinoIsmail
+/e2e/ @SolombrinoIsmail
+
+# Package configuration
+package.json @SolombrinoIsmail
+pnpm-lock.yaml @SolombrinoIsmail
+pnpm-workspace.yaml @SolombrinoIsmail
