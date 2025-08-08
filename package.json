@@ -20,6 +20,13 @@
     "clean:all": "pnpm clean && pnpm -r exec rm -rf node_modules",
     "ui:add": "pnpm dlx shadcn-ui@latest add",
     "ui:diff": "pnpm dlx shadcn-ui@latest diff",
+    "db:generate": "pnpm --filter @car-rental/database db:generate",
+    "db:push": "pnpm --filter @car-rental/database db:push",
+    "db:migrate": "pnpm --filter @car-rental/database db:migrate",
+    "db:migrate:deploy": "pnpm --filter @car-rental/database db:migrate:deploy",
+    "db:reset": "pnpm --filter @car-rental/database db:reset",
+    "db:seed": "pnpm --filter @car-rental/database db:seed",
+    "db:studio": "pnpm --filter @car-rental/database db:studio",
     "prepare": "husky",
     "pre-commit": "lint-staged",
     "commit": "cz"

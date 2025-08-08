@@ -1,0 +1,540 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ============================================
+// ENUMS
+// ============================================
+
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN
+  MANAGER
+  STAFF
+  CUSTOMER
+}
+
+enum VehicleStatus {
+  AVAILABLE
+  RENTED
+  MAINTENANCE
+  RESERVED
+  OUT_OF_SERVICE
+}
+
+enum VehicleTransmission {
+  MANUAL
+  AUTOMATIC
+}
+
+enum VehicleFuelType {
+  PETROL
+  DIESEL
+  ELECTRIC
+  HYBRID
+  PLUGIN_HYBRID
+}
+
+enum ContractStatus {
+  DRAFT
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
+}
+
+enum PaymentMethod {
+  CASH
+  CREDIT_CARD
+  DEBIT_CARD
+  BANK_TRANSFER
+  TWINT
+}
+
+enum DocumentType {
+  PASSPORT
+  ID_CARD
+  DRIVERS_LICENSE
+  RESIDENCE_PERMIT
+}
+
+enum DamageStatus {
+  REPORTED
+  ASSESSED
+  APPROVED
+  REJECTED
+  REPAIRED
+}
+
+enum MaintenanceStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+// ============================================
+// ORGANIZATIONS (Multi-tenant support)
+// ============================================
+
+model Organization {
+  id                String              @id @default(uuid())
+  name              String
+  slug              String              @unique
+  email             String
+  phone             String
+  address           String
+  city              String
+  canton            String
+  postalCode        String
+  country           String              @default("CH")
+  vatNumber         String?
+  logo              String?
+  settings          Json                @default("{}")
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  
+  // Relations
+  users             User[]
+  customers         Customer[]
+  vehicles          Vehicle[]
+  contracts         Contract[]
+  payments          Payment[]
+  vehicleCategories VehicleCategory[]
+  locations         Location[]
+  
+  @@map("organizations")
+}
+
+// ============================================
+// USERS & AUTHENTICATION
+// ============================================
+
+model User {
+  id               String            @id @default(uuid())
+  organizationId   String
+  email            String            @unique
+  firstName        String
+  lastName         String
+  phone            String?
+  role             UserRole          @default(STAFF)
+  avatar           String?
+  isActive         Boolean           @default(true)
+  lastLoginAt      DateTime?
+  settings         Json              @default("{}")
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  
+  // Relations
+  organization     Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  contractsCreated Contract[]        @relation("ContractCreatedBy")
+  paymentsCreated  Payment[]         @relation("PaymentCreatedBy")
+  maintenances     Maintenance[]
+  activityLogs     ActivityLog[]
+  
+  @@index([organizationId])
+  @@index([email])
+  @@map("users")
+}
+
+// ============================================
+// CUSTOMERS
+// ============================================
+
+model Customer {
+  id                  String              @id @default(uuid())
+  organizationId      String
+  firstName           String
+  lastName            String
+  email               String
+  phone               String
+  dateOfBirth         DateTime
+  documentType        DocumentType
+  documentNumber      String
+  documentExpiry      DateTime
+  documentCountry     String              @default("CH")
+  
+  // Swiss-specific fields
+  address             String
+  city                String
+  canton              String?
+  postalCode          String
+  country             String              @default("CH")
+  
+  // Additional fields
+  notes               String?
+  blacklisted         Boolean             @default(false)
+  blacklistReason     String?
+  preferredLanguage   String              @default("de")
+  marketingConsent    Boolean             @default(false)
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+  
+  // Relations
+  organization        Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  contracts           Contract[]
+  documents           CustomerDocument[]
+  
+  @@unique([organizationId, email])
+  @@index([organizationId])
+  @@index([email])
+  @@index([documentNumber])
+  @@map("customers")
+}
+
+model CustomerDocument {
+  id           String   @id @default(uuid())
+  customerId   String
+  type         String
+  url          String
+  uploadedAt   DateTime @default(now())
+  
+  // Relations
+  customer     Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  
+  @@index([customerId])
+  @@map("customer_documents")
+}
+
+// ============================================
+// VEHICLES
+// ============================================
+
+model VehicleCategory {
+  id              String         @id @default(uuid())
+  organizationId  String
+  name            String
+  description     String?
+  dailyRate       Decimal        @db.Decimal(10, 2)
+  weeklyRate      Decimal        @db.Decimal(10, 2)
+  monthlyRate     Decimal        @db.Decimal(10, 2)
+  depositAmount   Decimal        @db.Decimal(10, 2)
+  excessMileageFee Decimal       @db.Decimal(10, 2)
+  insuranceDaily  Decimal        @db.Decimal(10, 2)
+  sortOrder       Int            @default(0)
+  isActive        Boolean        @default(true)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  
+  // Relations
+  organization    Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  vehicles        Vehicle[]
+  
+  @@unique([organizationId, name])
+  @@index([organizationId])
+  @@map("vehicle_categories")
+}
+
+model Vehicle {
+  id                String              @id @default(uuid())
+  organizationId    String
+  categoryId        String
+  locationId        String?
+  registrationNumber String             @unique
+  make              String
+  model             String
+  year              Int
+  color             String
+  vin               String              @unique
+  mileage           Int
+  fuelType          VehicleFuelType
+  transmission      VehicleTransmission
+  seats             Int
+  status            VehicleStatus       @default(AVAILABLE)
+  
+  // Features
+  features          String[]            @default([])
+  
+  // Insurance & Documents
+  insurancePolicy   String?
+  insuranceExpiry   DateTime?
+  registrationExpiry DateTime?
+  lastServiceDate   DateTime?
+  nextServiceDate   DateTime?
+  nextServiceMileage Int?
+  
+  // Additional
+  notes             String?
+  images            String[]            @default([])
+  purchaseDate      DateTime?
+  purchasePrice     Decimal?            @db.Decimal(10, 2)
+  isActive          Boolean             @default(true)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  
+  // Relations
+  organization      Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  category          VehicleCategory     @relation(fields: [categoryId], references: [id])
+  location          Location?           @relation(fields: [locationId], references: [id])
+  contracts         Contract[]
+  maintenances      Maintenance[]
+  damages           VehicleDamage[]
+  
+  @@index([organizationId])
+  @@index([categoryId])
+  @@index([status])
+  @@index([registrationNumber])
+  @@map("vehicles")
+}
+
+// ============================================
+// LOCATIONS
+// ============================================
+
+model Location {
+  id             String       @id @default(uuid())
+  organizationId String
+  name           String
+  address        String
+  city           String
+  canton         String
+  postalCode     String
+  country        String       @default("CH")
+  phone          String?
+  email          String?
+  operatingHours Json         @default("{}")
+  isActive       Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  
+  // Relations
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  vehicles       Vehicle[]
+  pickupContracts Contract[]  @relation("PickupLocation")
+  returnContracts Contract[]  @relation("ReturnLocation")
+  
+  @@unique([organizationId, name])
+  @@index([organizationId])
+  @@map("locations")
+}
+
+// ============================================
+// CONTRACTS
+// ============================================
+
+model Contract {
+  id                 String          @id @default(uuid())
+  organizationId     String
+  contractNumber     String          @unique
+  customerId         String
+  vehicleId          String
+  createdById        String
+  
+  // Locations
+  pickupLocationId   String
+  returnLocationId   String
+  
+  // Dates & Times
+  startDate          DateTime
+  endDate            DateTime
+  actualReturnDate   DateTime?
+  
+  // Pricing
+  dailyRate          Decimal         @db.Decimal(10, 2)
+  totalDays          Int
+  baseAmount         Decimal         @db.Decimal(10, 2)
+  additionalCharges  Decimal         @db.Decimal(10, 2) @default(0)
+  discountAmount     Decimal         @db.Decimal(10, 2) @default(0)
+  taxAmount          Decimal         @db.Decimal(10, 2)
+  totalAmount        Decimal         @db.Decimal(10, 2)
+  depositAmount      Decimal         @db.Decimal(10, 2)
+  
+  // Mileage
+  startMileage       Int
+  endMileage         Int?
+  allowedMileage     Int?
+  excessMileageFee   Decimal?        @db.Decimal(10, 2)
+  
+  // Fuel
+  startFuelLevel     Int             // Percentage (0-100)
+  endFuelLevel       Int?            // Percentage (0-100)
+  refuelCharge       Decimal?        @db.Decimal(10, 2)
+  
+  // Insurance & Extras
+  insuranceType      String?
+  insuranceDaily     Decimal?        @db.Decimal(10, 2)
+  extras             Json            @default("[]")
+  
+  // Status
+  status             ContractStatus  @default(DRAFT)
+  notes              String?
+  termsAccepted      Boolean         @default(false)
+  signatureUrl       String?
+  
+  // Timestamps
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  
+  // Relations
+  organization       Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  customer           Customer        @relation(fields: [customerId], references: [id])
+  vehicle            Vehicle         @relation(fields: [vehicleId], references: [id])
+  createdBy          User            @relation("ContractCreatedBy", fields: [createdById], references: [id])
+  pickupLocation     Location        @relation("PickupLocation", fields: [pickupLocationId], references: [id])
+  returnLocation     Location        @relation("ReturnLocation", fields: [returnLocationId], references: [id])
+  payments           Payment[]
+  damages            VehicleDamage[]
+  additionalDrivers  AdditionalDriver[]
+  
+  @@index([organizationId])
+  @@index([customerId])
+  @@index([vehicleId])
+  @@index([status])
+  @@index([startDate])
+  @@index([contractNumber])
+  @@map("contracts")
+}
+
+model AdditionalDriver {
+  id             String   @id @default(uuid())
+  contractId     String
+  firstName      String
+  lastName       String
+  documentType   DocumentType
+  documentNumber String
+  documentExpiry DateTime
+  phone          String?
+  fee            Decimal  @db.Decimal(10, 2)
+  createdAt      DateTime @default(now())
+  
+  // Relations
+  contract       Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  
+  @@index([contractId])
+  @@map("additional_drivers")
+}
+
+// ============================================
+// PAYMENTS
+// ============================================
+
+model Payment {
+  id              String        @id @default(uuid())
+  organizationId  String
+  contractId      String
+  createdById     String
+  amount          Decimal       @db.Decimal(10, 2)
+  method          PaymentMethod
+  status          PaymentStatus @default(PENDING)
+  transactionId   String?       @unique
+  description     String?
+  receiptUrl      String?
+  refundAmount    Decimal?      @db.Decimal(10, 2)
+  refundReason    String?
+  refundedAt      DateTime?
+  metadata        Json          @default("{}")
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  
+  // Relations
+  organization    Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  contract        Contract      @relation(fields: [contractId], references: [id])
+  createdBy       User          @relation("PaymentCreatedBy", fields: [createdById], references: [id])
+  
+  @@index([organizationId])
+  @@index([contractId])
+  @@index([status])
+  @@index([transactionId])
+  @@map("payments")
+}
+
+// ============================================
+// VEHICLE DAMAGES
+// ============================================
+
+model VehicleDamage {
+  id              String        @id @default(uuid())
+  vehicleId       String
+  contractId      String?
+  reportedDate    DateTime      @default(now())
+  description     String
+  location        String        // Location on vehicle (e.g., "Front bumper")
+  severity        String        // Minor, Major, Severe
+  estimatedCost   Decimal?      @db.Decimal(10, 2)
+  actualCost      Decimal?      @db.Decimal(10, 2)
+  status          DamageStatus  @default(REPORTED)
+  images          String[]      @default([])
+  notes           String?
+  repairedDate    DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  
+  // Relations
+  vehicle         Vehicle       @relation(fields: [vehicleId], references: [id])
+  contract        Contract?     @relation(fields: [contractId], references: [id])
+  
+  @@index([vehicleId])
+  @@index([contractId])
+  @@index([status])
+  @@map("vehicle_damages")
+}
+
+// ============================================
+// MAINTENANCE
+// ============================================
+
+model Maintenance {
+  id              String            @id @default(uuid())
+  vehicleId       String
+  performedById   String
+  type            String            // Oil Change, Tire Rotation, etc.
+  description     String
+  scheduledDate   DateTime
+  completedDate   DateTime?
+  cost            Decimal?          @db.Decimal(10, 2)
+  mileage         Int
+  nextDueMileage  Int?
+  nextDueDate     DateTime?
+  vendor          String?
+  invoiceNumber   String?
+  status          MaintenanceStatus @default(SCHEDULED)
+  notes           String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  
+  // Relations
+  vehicle         Vehicle           @relation(fields: [vehicleId], references: [id])
+  performedBy     User              @relation(fields: [performedById], references: [id])
+  
+  @@index([vehicleId])
+  @@index([status])
+  @@index([scheduledDate])
+  @@map("maintenance_records")
+}
+
+// ============================================
+// ACTIVITY LOGS
+// ============================================
+
+model ActivityLog {
+  id          String   @id @default(uuid())
+  userId      String?
+  action      String
+  entity      String
+  entityId    String
+  metadata    Json     @default("{}")
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+  
+  // Relations
+  user        User?    @relation(fields: [userId], references: [id])
+  
+  @@index([userId])
+  @@index([entity, entityId])
+  @@index([createdAt])
+  @@map("activity_logs")
+}
