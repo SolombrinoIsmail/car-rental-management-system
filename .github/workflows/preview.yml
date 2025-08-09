@@ -4,6 +4,13 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+concurrency:
+  group: preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
@@ -35,6 +42,9 @@ jobs:
       pull-requests: write
       contents: read
 
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -56,15 +66,15 @@ jobs:
         run: pnpm add -g vercel@latest
 
       - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel pull --yes --environment=preview
 
       - name: Build Project Artifacts
-        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel build
 
       - name: Deploy Preview to Vercel
         id: deploy
         run: |
-          url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
+          url=$(vercel deploy --prebuilt)
           echo "url=$url" >> $GITHUB_OUTPUT
           echo "Preview deployed to: $url"
 
