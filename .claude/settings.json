@@ -30,7 +30,12 @@
       "Bash(pwd)",
       "Bash(ls *)"
     ],
-    "deny": ["Bash(rm -rf /)", "Bash(curl * | bash)", "Bash(wget * | sh)", "Bash(eval *)"]
+    "deny": [
+      "Bash(rm -rf /)",
+      "Bash(curl * | bash)",
+      "Bash(wget * | sh)",
+      "Bash(eval *)"
+    ]
   },
   "hooks": {
     "PreToolUse": [
@@ -105,12 +110,5 @@
     ]
   },
   "includeCoAuthoredBy": true,
-  "enabledMcpjsonServers": ["claude-flow", "ruv-swarm"],
-  "slashCommands": {
-    "dev-cycle": {
-      "description": "Execute 4-phase development workflow with Hive Mind collective intelligence",
-      "usage": "/dev-cycle [story-id] [--verbose] [--analysis] [--monitor]",
-      "script": "./scripts/dev-cycle-command.js"
-    }
-  }
+  "enabledMcpjsonServers": ["claude-flow", "ruv-swarm"]
 }

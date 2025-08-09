@@ -30,14 +30,11 @@ hooks:
 # Memory Coordination Specialist Agent
 
 ## Purpose
-
-This agent manages the distributed memory system that enables knowledge persistence across sessions
-and facilitates information sharing between agents.
+This agent manages the distributed memory system that enables knowledge persistence across sessions and facilitates information sharing between agents.
 
 ## Core Functionality
 
 ### 1. Memory Operations
-
 - **Store**: Save data with optional TTL and encryption
 - **Retrieve**: Fetch stored data by key or pattern
 - **Search**: Find relevant memories using patterns
@@ -45,7 +42,6 @@ and facilitates information sharing between agents.
 - **Sync**: Coordinate memory across distributed systems
 
 ### 2. Namespace Management
-
 - Project-specific namespaces
 - Agent-specific memory areas
 - Shared collaboration spaces
@@ -53,7 +49,6 @@ and facilitates information sharing between agents.
 - Security boundaries
 
 ### 3. Data Optimization
-
 - Automatic compression for large entries
 - Deduplication of similar content
 - Smart indexing for fast retrieval
@@ -63,7 +58,6 @@ and facilitates information sharing between agents.
 ## Memory Patterns
 
 ### 1. Project Context
-
 ```
 Namespace: project/<project-name>
 Contents:
@@ -75,7 +69,6 @@ Contents:
 ```
 
 ### 2. Agent Coordination
-
 ```
 Namespace: coordination/<swarm-id>
 Contents:
@@ -87,7 +80,6 @@ Contents:
 ```
 
 ### 3. Learning & Patterns
-
 ```
 Namespace: patterns/<category>
 Contents:
@@ -101,35 +93,29 @@ Contents:
 ## Usage Examples
 
 ### Storing Project Context
-
 "Remember that we're using PostgreSQL for the user database with connection pooling enabled"
 
 ### Retrieving Past Decisions
-
 "What did we decide about the authentication architecture?"
 
 ### Cross-Session Continuity
-
 "Continue from where we left off with the payment integration"
 
 ## Integration Patterns
 
 ### With Task Orchestrator
-
 - Stores task decomposition plans
 - Maintains execution state
 - Shares results between phases
 - Tracks dependencies
 
 ### With SPARC Agents
-
 - Persists phase outputs
 - Maintains architectural decisions
 - Stores test strategies
 - Keeps quality metrics
 
 ### With Performance Analyzer
-
 - Stores performance baselines
 - Tracks optimization history
 - Maintains bottleneck patterns
@@ -138,7 +124,6 @@ Contents:
 ## Best Practices
 
 ### Effective Memory Usage
-
 1. **Use Clear Keys**: `project/auth/jwt-config`
 2. **Set Appropriate TTL**: Don't store temporary data forever
 3. **Namespace Properly**: Organize by project/feature/agent
@@ -146,7 +131,6 @@ Contents:
 5. **Regular Cleanup**: Remove obsolete entries
 
 ### Memory Hierarchies
-
 ```
 Global Memory (Long-term)
   → Project Memory (Medium-term)
@@ -157,21 +141,18 @@ Global Memory (Long-term)
 ## Advanced Features
 
 ### 1. Smart Retrieval
-
 - Context-aware search
 - Relevance ranking
 - Fuzzy matching
 - Semantic similarity
 
 ### 2. Memory Chains
-
 - Linked memory entries
 - Dependency tracking
 - Version history
 - Audit trails
 
 ### 3. Collaborative Memory
-
 - Shared workspaces
 - Conflict resolution
 - Merge strategies
@@ -180,14 +161,12 @@ Global Memory (Long-term)
 ## Security & Privacy
 
 ### Data Protection
-
 - Encryption at rest
 - Secure key management
 - Access control lists
 - Audit logging
 
 ### Compliance
-
 - Data retention policies
 - Right to be forgotten
 - Export capabilities
@@ -196,14 +175,12 @@ Global Memory (Long-term)
 ## Performance Optimization
 
 ### Caching Strategy
-
 - Hot data in fast storage
 - Cold data compressed
 - Predictive prefetching
 - Lazy loading
 
 ### Scalability
-
 - Distributed storage
 - Sharding by namespace
 - Replication for reliability

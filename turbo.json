@@ -60,6 +60,8 @@
     "DIRECT_URL",
     "DATABASE_TEST_URL",
     "CI_DATABASE_URL",
-    "CI"
+    "CI",
+    "ENCRYPTION_KEY",
+    "NEXT_PUBLIC_APP_URL"
   ]
 }

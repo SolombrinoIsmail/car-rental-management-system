@@ -12,6 +12,8 @@
   "dependencies": {
     "@radix-ui/react-dropdown-menu": "^2.0.6",
     "@radix-ui/react-slot": "^1.0.2",
+    "@swiss-car-rental/shared": "workspace:*",
+    "@swiss-car-rental/ui": "workspace:*",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "lucide-react": "^0.263.1",
@@ -20,8 +22,7 @@
     "react-dom": "^18",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
-    "@swiss-car-rental/ui": "workspace:*",
-    "@swiss-car-rental/shared": "workspace:*"
+    "zod": "^4.0.16"
   },
   "devDependencies": {
     "@types/node": "^22",
