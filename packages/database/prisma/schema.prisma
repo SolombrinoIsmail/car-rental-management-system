@@ -69,6 +69,27 @@ enum DocumentType {
   ID_CARD
   DRIVERS_LICENSE
   RESIDENCE_PERMIT
+  ID_DOCUMENT
+  PROOF_OF_ADDRESS
+  INSURANCE
+  CREDIT_CARD
+  OTHER
+}
+
+enum CustomerStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  BLACKLISTED
+  VIP
+}
+
+enum CustomerFlag {
+  BLACKLIST
+  VIP
+  PAYMENT_RISK
+  DAMAGE_RISK
+  SPECIAL_NEEDS
 }
 
 enum DamageStatus {
@@ -157,15 +178,25 @@ model User {
 model Customer {
   id                  String              @id @default(uuid())
   organizationId      String
+  customerCode        String              @unique // e.g., "C-2024-0001"
+  
+  // Personal Information
   firstName           String
   lastName            String
   email               String
   phone               String
   dateOfBirth         DateTime
+  
+  // Identity Documents
   documentType        DocumentType
   documentNumber      String
   documentExpiry      DateTime
   documentCountry     String              @default("CH")
+  
+  // Driver's License
+  driversLicenseNumber String?
+  driversLicenseExpiry DateTime?
+  driversLicenseCountry String?           @default("CH")
   
   // Swiss-specific fields
   address             String
@@ -174,12 +205,33 @@ model Customer {
   postalCode          String
   country             String              @default("CH")
   
-  // Additional fields
-  notes               String?
+  // Customer Management
+  status              CustomerStatus      @default(ACTIVE)
+  flags               CustomerFlag[]      @default([])
+  
+  // Financial & Risk Management
+  lifetimeValue       Decimal             @default(0) @db.Decimal(10, 2)
+  paymentRisk         Boolean             @default(false)
+  damageRisk          Boolean             @default(false)
+  
+  // VIP & Special Status
+  vipStatus           Boolean             @default(false)
+  specialNeeds        String?
+  
+  // Blacklist Management
   blacklisted         Boolean             @default(false)
   blacklistReason     String?
+  blacklistExpiry     DateTime?
+  
+  // Additional Information
+  notes               String?
+  photoUrl            String?
   preferredLanguage   String              @default("de")
   marketingConsent    Boolean             @default(false)
+  
+  // Timestamps
+  lastActivityDate    DateTime?
+  anonymizedAt        DateTime?
   createdAt           DateTime            @default(now())
   updatedAt           DateTime            @updatedAt
   
@@ -187,26 +239,69 @@ model Customer {
   organization        Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   contracts           Contract[]
   documents           CustomerDocument[]
+  auditLogs           CustomerAuditLog[]
   
   @@unique([organizationId, email])
   @@index([organizationId])
   @@index([email])
+  @@index([customerCode])
   @@index([documentNumber])
+  @@index([status])
+  @@index([flags])
+  @@index([blacklisted])
+  @@index([vipStatus])
+  @@index([createdAt])
+  @@index([lastActivityDate])
   @@map("customers")
 }
 
 model CustomerDocument {
-  id           String   @id @default(uuid())
-  customerId   String
-  type         String
-  url          String
-  uploadedAt   DateTime @default(now())
+  id              String        @id @default(uuid())
+  customerId      String
+  type            DocumentType
+  fileName        String
+  fileSize        Int
+  mimeType        String
+  url             String
+  thumbnailUrl    String?
+  expiryDate      DateTime?
+  notes           String?
+  verified        Boolean       @default(false)
+  verifiedAt      DateTime?
+  verifiedBy      String?
+  uploadedAt      DateTime      @default(now())
   
   // Relations
-  customer     Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customer        Customer      @relation(fields: [customerId], references: [id], onDelete: Cascade)
   
   @@index([customerId])
+  @@index([type])
+  @@index([expiryDate])
+  @@index([verified])
   @@map("customer_documents")
+}
+
+model CustomerAuditLog {
+  id              String        @id @default(uuid())
+  customerId      String
+  userId          String        // Who made the change
+  action          String        // CREATE, UPDATE, DELETE, FLAG_CHANGE, etc.
+  fieldChanged    String?       // Which field was changed
+  oldValue        String?       // Previous value (JSON)
+  newValue        String?       // New value (JSON)
+  reason          String?       // Reason for change
+  ipAddress       String?
+  userAgent       String?
+  createdAt       DateTime      @default(now())
+  
+  // Relations
+  customer        Customer      @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  
+  @@index([customerId])
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("customer_audit_logs")
 }
 
 // ============================================
